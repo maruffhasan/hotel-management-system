@@ -1,4 +1,4 @@
-package com.marufhasan.hms.model;
+package com.marufhasan.hms.model.room;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,9 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class BedType {
+public class RoomStatus {
     Integer id;
-    String name;
-    Integer max_person;
-    Double price_per_bed;
+    String status;
 }

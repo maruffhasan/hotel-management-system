@@ -1,4 +1,4 @@
-package com.marufhasan.hms.repository;
+package com.marufhasan.hms.repository.room;
 
 import com.marufhasan.hms.DTO.FeatureDTO;
 import com.marufhasan.hms.DTO.RoomDetailsDTO;

@@ -2,7 +2,7 @@ package com.marufhasan.hms.service.imp;
 
 import com.marufhasan.hms.DTO.RoomDetailsDTO;
 import com.marufhasan.hms.exception.NotFoundException;
-import com.marufhasan.hms.repository.RoomRepository;
+import com.marufhasan.hms.repository.room.RoomRepository;
 import com.marufhasan.hms.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

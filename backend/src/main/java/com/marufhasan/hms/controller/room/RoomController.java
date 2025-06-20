@@ -1,4 +1,4 @@
-package com.marufhasan.hms.controller;
+package com.marufhasan.hms.controller.room;
 
 import com.marufhasan.hms.DTO.RoomDetailsDTO;
 import com.marufhasan.hms.exception.NotFoundException;

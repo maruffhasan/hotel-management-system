@@ -1,4 +1,4 @@
-package com.marufhasan.hms.model;
+package com.marufhasan.hms.model.room;
 
 
 import lombok.AllArgsConstructor;
