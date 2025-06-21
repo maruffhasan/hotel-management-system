@@ -2,6 +2,7 @@ package com.marufhasan.hms.repository.room;
 
 import com.marufhasan.hms.DTO.FeatureDTO;
 import com.marufhasan.hms.DTO.RoomDetailsDTO;
+import com.marufhasan.hms.model.room.Room;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -59,7 +60,8 @@ public class RoomRepository {
                         rs.getInt("room_status_id"),
                         rs.getString("room_status_name"),
 
-                        getAllFeatures(rs.getInt("id"))
+                        getAllFeatures(rs.getInt("id")),
+                        null
                 ), id);
             return  Optional.of(roomDetailsDTO);
 
@@ -159,7 +161,8 @@ public class RoomRepository {
                     rs.getInt("room_status_id"),
                     rs.getString("room_status_name"),
 
-                    getAllFeatures(rs.getInt("id"))
+                    getAllFeatures(rs.getInt("id")),
+                    null
             );
 
             return dto;
@@ -178,5 +181,67 @@ public class RoomRepository {
                     rs.getString("name"),
                     rs.getDouble("price_per_use")
             ));
+    }
+
+    public Integer add(Room room) {
+        String sql =
+                """
+                INSERT INTO room 
+                (room_class_id, bed_type_id, room_status_id, image_url, floor, bed_count)
+                VALUES (?, ?, ?, ?, ?, ?) RETURNING id
+                 """;
+        return jdbcTemplate.queryForObject(
+                sql,
+                new Object[] {
+                        room.getRoom_class_id(),
+                        room.getBed_type_id(),
+                        room.getRoom_status_id(),
+                        room.getImage_url(),
+                        room.getFloor(),
+                        room.getBed_count()
+                },
+                Integer.class
+        );
+    }
+
+    public void edit(Room room) {
+            StringBuilder sql = new StringBuilder("UPDATE room SET ");
+            List<Object> params = new ArrayList<>();
+
+            if (room.getBed_type_id() != null) {
+                sql.append("bed_type_id = ?, ");
+                params.add(room.getBed_type_id());
+            }
+            if (room.getRoom_status_id() != null) {
+                sql.append("room_status_id = ?, ");
+                params.add(room.getRoom_status_id());
+            }
+            if (room.getImage_url() != null) {
+                sql.append("image_url = ?, ");
+                params.add(room.getImage_url());
+            }
+            if (room.getFloor() != null) {
+                sql.append("floor = ?, ");
+                params.add(room.getFloor());
+            }
+            if (room.getBed_count() != null) {
+                sql.append("bed_count = ?, ");
+                params.add(room.getBed_count());
+            }
+
+            // Remove trailing comma
+            if (params.isEmpty()) return; // nothing to update
+
+            sql.setLength(sql.length() - 2);
+
+            sql.append(" WHERE id = ?");
+            params.add(room.getId());
+
+            jdbcTemplate.update(sql.toString(), params.toArray());
+    }
+
+    public void delete(int id) {
+        String sql = "DELETE FROM room WHERE id = ?";
+        jdbcTemplate.update(sql, id);
     }
 }

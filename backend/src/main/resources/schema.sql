@@ -84,6 +84,27 @@ CREATE TABLE room_class_feature (
     PRIMARY KEY (room_class_id, feature_id)
 );
 
+ALTER TABLE room_class_feature
+ADD CONSTRAINT rc_id_delete
+FOREIGN KEY (room_class_id) REFERENCES room_class(id)
+ON DELETE CASCADE;
+
+ALTER TABLE room_class_feature
+ADD CONSTRAINT fc_id_delete
+FOREIGN KEY (feature_id) REFERENCES feature(id)
+ON DELETE CASCADE;
+
+-- Step 1: Drop the existing constraint
+ALTER TABLE room_class_feature
+DROP CONSTRAINT room_class_feature_room_class_id_fkey;
+
+-- Step 2: Add it back with ON DELETE CASCADE
+ALTER TABLE room_class_feature
+ADD CONSTRAINT room_class_feature_room_class_id_fkey
+FOREIGN KEY (room_class_id) REFERENCES room_class(id)
+ON DELETE CASCADE;
+
+
 -- Standard
 INSERT INTO room_class_feature (room_class_id, feature_id) VALUES
 (1, 3),  -- Air Conditioning
@@ -146,8 +167,33 @@ CREATE TABLE room (
       floor INT NOT NULL CHECK (floor >= 0)
 );
 
+
 ALTER TABLE room
-    ADD COLUMN image_url TEXT;
+ADD COLUMN image_url TEXT;
+
+-- Step 1: Drop NOT NULL constraints
+ALTER TABLE room ALTER COLUMN room_class_id DROP NOT NULL;
+ALTER TABLE room ALTER COLUMN bed_type_id DROP NOT NULL;
+ALTER TABLE room ALTER COLUMN room_status_id DROP NOT NULL;
+
+-- Step 2: Drop existing foreign key constraints
+ALTER TABLE room DROP CONSTRAINT room_room_class_id_fkey;
+ALTER TABLE room DROP CONSTRAINT room_bed_type_id_fkey;
+ALTER TABLE room DROP CONSTRAINT room_room_status_id_fkey;
+
+-- Step 3: Re-add foreign key constraints with ON DELETE SET NULL
+ALTER TABLE room
+ADD CONSTRAINT room_room_class_id_fkey
+FOREIGN KEY (room_class_id) REFERENCES room_class(id) ON DELETE SET NULL;
+
+ALTER TABLE room
+ADD CONSTRAINT room_bed_type_id_fkey
+FOREIGN KEY (bed_type_id) REFERENCES bed_type(id) ON DELETE SET NULL;
+
+ALTER TABLE room
+ADD CONSTRAINT room_room_status_id_fkey
+FOREIGN KEY (room_status_id) REFERENCES room_status(id) ON DELETE SET NULL;
+
 
 
 -- Deluxe Room with 1 King bed

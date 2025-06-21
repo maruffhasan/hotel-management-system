@@ -1,5 +1,8 @@
 package com.marufhasan.hms.DTO;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.marufhasan.hms.model.room.Feature;
 import lombok.*;
 
 import java.util.List;
@@ -8,6 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RoomDetailsDTO {
     private int id;
     private int floor;
@@ -26,4 +30,5 @@ public class RoomDetailsDTO {
     private String room_status_name;
 
     List<FeatureDTO> features;
+    List<Integer> features_ids;
 }

@@ -2,6 +2,7 @@ package com.marufhasan.hms.service;
 
 import com.marufhasan.hms.DTO.RoomDetailsDTO;
 import com.marufhasan.hms.exception.NotFoundException;
+import com.marufhasan.hms.model.room.Room;
 
 import java.util.List;
 
@@ -14,4 +15,10 @@ public interface RoomService {
                                 Double max_price, Integer person_count);
 
     RoomDetailsDTO getRoomById(int id) throws NotFoundException;
+
+    Integer add(Room room);
+
+    RoomDetailsDTO edit(Room room);
+
+    void delete(int id);
 }

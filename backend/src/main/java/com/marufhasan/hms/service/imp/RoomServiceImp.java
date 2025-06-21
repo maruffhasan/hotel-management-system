@@ -2,6 +2,7 @@ package com.marufhasan.hms.service.imp;
 
 import com.marufhasan.hms.DTO.RoomDetailsDTO;
 import com.marufhasan.hms.exception.NotFoundException;
+import com.marufhasan.hms.model.room.Room;
 import com.marufhasan.hms.repository.room.RoomRepository;
 import com.marufhasan.hms.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,5 +30,21 @@ public class RoomServiceImp implements RoomService {
         } else {
             throw new NotFoundException("This room is not present");
         }
+    }
+
+    @Override
+    public Integer add(Room room) {
+        return roomRepository.add(room);
+    }
+
+    @Override
+    public RoomDetailsDTO edit(Room room) {
+        roomRepository.edit(room);
+        return roomRepository.getRoomDetailsById(room.getId()).get();
+    }
+
+    @Override
+    public void delete(int id) {
+        roomRepository.delete(id);
     }
 }
