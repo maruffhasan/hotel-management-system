@@ -242,3 +242,58 @@ INSERT INTO room (room_class_id, bed_type_id, bed_count, room_status_id, floor) 
 (5, 4, 1, 2, 4),  -- R18: King, Occupied
 (5, 3, 1, 3, 4),  -- R19: Queen, Maintenance
 (5, 1, 2, 6, 4);  -- R20: 2 Singles, Out of Service
+
+
+-- Create table
+CREATE TABLE addon (
+   id SERIAL PRIMARY KEY,
+   name VARCHAR(100) NOT NULL,
+   price NUMERIC(10, 2) NOT NULL
+);
+
+-- Insert sample data
+INSERT INTO addon (name, price) VALUES
+('Extra Pillow', 5.00),
+('Breakfast', 10.50),
+('Late Checkout', 15.00),
+('Airport Pickup', 25.00),
+('Spa Access', 30.00);
+
+
+
+CREATE TABLE booking (
+     id SERIAL PRIMARY KEY,
+     user_email TEXT,
+     check_in DATE NOT NULL,
+     check_out DATE NOT NULL,
+     price NUMERIC(10, 2) NOT NULL,
+     CONSTRAINT fk_user_email FOREIGN KEY (user_email) REFERENCES users(email) ON DELETE SET NULL
+);
+
+CREATE TABLE booking_addon (
+       booking_id INTEGER NOT NULL,
+       addon_id INTEGER NOT NULL,
+       PRIMARY KEY (booking_id, addon_id),
+       CONSTRAINT fk_booking FOREIGN KEY (booking_id) REFERENCES booking(id) ON DELETE CASCADE,
+       CONSTRAINT fk_addon FOREIGN KEY (addon_id) REFERENCES addon(id) ON DELETE CASCADE
+);
+
+CREATE TABLE booking_room (
+      booking_id INTEGER NOT NULL,
+      room_id INTEGER NOT NULL,
+      PRIMARY KEY (booking_id, room_id),
+      CONSTRAINT fk_booking_room_booking FOREIGN KEY (booking_id) REFERENCES booking(id) ON DELETE CASCADE,
+      CONSTRAINT fk_booking_room_room FOREIGN KEY (room_id) REFERENCES room(id) ON DELETE CASCADE
+);
+
+CREATE TABLE review (
+        id SERIAL PRIMARY KEY,
+        user_email VARCHAR(255),
+        room_id INT,
+        rating INT CHECK (rating BETWEEN 1 AND 5),
+        comment TEXT,
+
+        FOREIGN KEY (user_email) REFERENCES users(email) ON DELETE SET NULL,
+        FOREIGN KEY (room_id) REFERENCES room(id) ON DELETE SET NULL
+);
+

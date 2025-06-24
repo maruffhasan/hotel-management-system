@@ -5,6 +5,7 @@ import com.marufhasan.hms.model.Hotel;
 import com.marufhasan.hms.service.HotelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,6 +14,7 @@ public class HotelController {
 
     @Autowired
     private HotelService hotelService;
+
 
     @GetMapping("/details")
     public ResponseEntity<Hotel> hotel(){

@@ -1,6 +1,8 @@
 package com.marufhasan.hms.repository;
 
+import com.marufhasan.hms.DTO.ReviewDTO;
 import com.marufhasan.hms.model.User;
+import com.marufhasan.hms.model.booking.Review;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -35,5 +37,29 @@ public class UserRepository {
         } catch (Exception e) {
             return Optional.empty();
         }
+    }
+
+    public Integer postReview(Review review) {
+        String sql = "INSERT INTO review (user_email, room_id, rating, comment) VALUES (?, ?, ?, ?) RETURNING id";
+        return jdbcTemplate.queryForObject(sql, new Object[] {
+                review.getUser_email(),
+                review.getRoom_id(),
+                review.getRating(),
+                review.getComment()
+        }, Integer.class);
+    }
+
+    public void editReview(String email, ReviewDTO reviewDTO) {
+        String sql = """
+                UPDATE review
+                SET rating = ?, comment = ?
+                WHERE user_email = ? AND id = ?
+                """;
+        jdbcTemplate.update(sql, reviewDTO.getRating(), reviewDTO.getComment(), email, reviewDTO.getId());
+    }
+
+    public void deleteReview(String email, Integer id) {
+        String sql = "DELETE FROM review WHERE user_email = ? AND id = ?";
+        jdbcTemplate.update(sql, email, id);
     }
 }

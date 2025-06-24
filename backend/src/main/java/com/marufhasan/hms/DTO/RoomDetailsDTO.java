@@ -2,6 +2,7 @@ package com.marufhasan.hms.DTO;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.marufhasan.hms.model.booking.Review;
 import com.marufhasan.hms.model.room.Feature;
 import lombok.*;
 
@@ -29,6 +30,8 @@ public class RoomDetailsDTO {
     private int room_status_id;
     private String room_status_name;
 
-    List<FeatureDTO> features;
+    List<Feature> features;
     List<Integer> features_ids;
+
+    List<ReviewDTO> reviews;
 }

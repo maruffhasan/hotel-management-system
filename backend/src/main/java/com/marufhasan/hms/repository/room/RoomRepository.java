@@ -1,12 +1,16 @@
 package com.marufhasan.hms.repository.room;
 
-import com.marufhasan.hms.DTO.FeatureDTO;
+import com.marufhasan.hms.DTO.ReviewDTO;
 import com.marufhasan.hms.DTO.RoomDetailsDTO;
+import com.marufhasan.hms.model.booking.Review;
+import com.marufhasan.hms.model.room.Feature;
 import com.marufhasan.hms.model.room.Room;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -61,7 +65,8 @@ public class RoomRepository {
                         rs.getString("room_status_name"),
 
                         getAllFeatures(rs.getInt("id")),
-                        null
+                        null,
+                        getAllReviews(rs.getInt("id"))
                 ), id);
             return  Optional.of(roomDetailsDTO);
 
@@ -71,6 +76,8 @@ public class RoomRepository {
     }
 
     public List<RoomDetailsDTO> getAllRooms(
+            LocalDate check_in,
+            LocalDate check_out,
             Integer room_class_id,
             Integer bed_type_id,
             Integer room_status_id,
@@ -100,11 +107,18 @@ public class RoomRepository {
             JOIN room_class rc ON r.room_class_id = rc.id
             JOIN bed_type bt ON r.bed_type_id = bt.id
             JOIN room_status rs ON r.room_status_id = rs.id
-            WHERE 1=1
+            WHERE r.id NOT IN (
+                      SELECT room_id FROM booking_room br
+                      JOIN booking b ON br.booking_id = b.id
+                      WHERE
+                      (check_in < ? AND check_out > ?)
+                    )
         """);
 
 
         List<Object> params = new ArrayList<>();
+        params.add(check_out);
+        params.add(check_in);
 
         if (room_class_id != null) {
             sql.append(" AND rc.id = ?");
@@ -162,21 +176,33 @@ public class RoomRepository {
                     rs.getString("room_status_name"),
 
                     getAllFeatures(rs.getInt("id")),
-                    null
+                    null,
+                    getAllReviews(rs.getInt("id"))
             );
 
             return dto;
         });
     }
 
-    public List<FeatureDTO> getAllFeatures(int room_class_id) {
+    private List<ReviewDTO> getAllReviews(int id) {
+        String sql = """
+                    SELECT re.id, u.first_name || ' ' || u.last_name AS "name", re.rating, re.comment
+                    FROM users u
+                    JOIN review re ON re.user_email = u.email
+                    JOIN room r ON r.id = re.room_id
+                    WHERE r.id = ?
+                """;
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(ReviewDTO.class), id);
+    }
+
+    public List<Feature> getAllFeatures(int room_class_id) {
         String sql = """
                             SELECT f.id, f.name, f.price_per_use
                             FROM room_class_feature rcf
                             JOIN feature f ON rcf.feature_id = f.id
                             WHERE rcf.room_class_id = ?
                         """;
-        return jdbcTemplate.query(sql, new Object[]{room_class_id}, (rs, rowNum) -> new FeatureDTO(
+        return jdbcTemplate.query(sql, new Object[]{room_class_id}, (rs, rowNum) -> new Feature(
                     rs.getInt("id"),
                     rs.getString("name"),
                     rs.getDouble("price_per_use")

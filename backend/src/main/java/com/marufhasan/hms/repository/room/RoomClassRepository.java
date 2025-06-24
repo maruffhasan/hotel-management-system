@@ -38,26 +38,6 @@ public class RoomClassRepository {
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(RoomClassDTO.class));
     }
 
-    public void delete(int id) {
-        String sql = "DELETE FROM room_class WHERE id = ?";
-        jdbcTemplate.update(sql, id);
-    }
-
-    public void edit(RoomClassDTO roomClassDTO) {
-        String sql = "UPDATE room_class SET name = ?, base_price = ? WHERE id = ?";
-        jdbcTemplate.update(sql, roomClassDTO.getName(), roomClassDTO.getBase_price(), roomClassDTO.getId());
-    }
-
-    public void addRoomClassFeature(Integer id, Integer id1) {
-        String sql = "INSERT INTO room_class_feature (room_class_id, feature_id) VALUES (?, ?)";
-        jdbcTemplate.update(sql, id, id1);
-    }
-
-    public void deleteRoomClassFeature(Integer id, Integer id1) {
-        String sql = "DELETE FROM room_class_feature WHERE room_class_id = ? AND feature_id = ?";
-        jdbcTemplate.update(sql, id, id1);
-    }
-
     public Optional<RoomClassDTO> getById(int id) {
         try {
             String sql = "SELECT * FROM room_class WHERE id = ?";
@@ -68,6 +48,19 @@ public class RoomClassRepository {
         }
     }
 
+    public void delete(int id) {
+        String sql = "DELETE FROM room_class WHERE id = ?";
+        jdbcTemplate.update(sql, id);
+    }
+
+    public void edit(RoomClassDTO roomClassDTO) {
+        String sql = "UPDATE room_class SET name = ?, base_price = ? WHERE id = ?";
+        jdbcTemplate.update(sql, roomClassDTO.getName(), roomClassDTO.getBase_price(), roomClassDTO.getId());
+    }
+
+
+    // for join table
+
     public List<Feature> getFeatures(Integer id) {
         String sql = """
                 SELECT f.id, f.name, f.price_per_use
@@ -77,5 +70,15 @@ public class RoomClassRepository {
                 WHERE rc.id = ?
                 """;
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Feature.class), id);
+    }
+
+    public void addRoomClassFeature(Integer id, Integer id1) {
+        String sql = "INSERT INTO room_class_feature (room_class_id, feature_id) VALUES (?, ?)";
+        jdbcTemplate.update(sql, id, id1);
+    }
+
+    public void deleteRoomClassFeature(Integer id) {
+        String sql = "DELETE FROM room_class_feature WHERE room_class_id = ?";
+        jdbcTemplate.update(sql, id);
     }
 }

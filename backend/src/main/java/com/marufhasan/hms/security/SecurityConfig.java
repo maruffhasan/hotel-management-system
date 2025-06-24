@@ -39,6 +39,7 @@ public class SecurityConfig {
                                 authorizeRequests
 //                                        .requestMatchers("/").hasRole("ADMIN")
 //                                        .requestMatchers("/api/user/signup").permitAll()
+                                        .requestMatchers("/api/booking/**").authenticated()
                                         .anyRequest().permitAll()
                 )
                 .httpBasic(Customizer.withDefaults())

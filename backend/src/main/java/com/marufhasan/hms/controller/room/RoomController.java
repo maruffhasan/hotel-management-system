@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -31,6 +32,8 @@ public class RoomController {
 
     @GetMapping("/all")
     public ResponseEntity<List<RoomDetailsDTO>> getAllRooms(
+            @RequestParam(required = true) LocalDate check_in,
+            @RequestParam(required = true) LocalDate check_out,
             @RequestParam(required = false) Integer room_class_id,
             @RequestParam(required = false) Integer bed_type_id,
             @RequestParam(required = false) Integer room_status_id,
@@ -39,7 +42,7 @@ public class RoomController {
             @RequestParam(required = false) Double max_price,
             @RequestParam(required = false) Integer person_count
     ){
-        return ResponseEntity.ok(roomService.getAll(room_status_id, bed_type_id, room_class_id, floor, min_price, max_price, person_count));
+        return ResponseEntity.ok(roomService.getAll(check_in, check_out, room_status_id, bed_type_id, room_class_id, floor, min_price, max_price, person_count));
     }
 
     @PutMapping("/{id}")

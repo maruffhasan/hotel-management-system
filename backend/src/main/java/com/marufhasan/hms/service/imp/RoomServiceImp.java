@@ -8,6 +8,7 @@ import com.marufhasan.hms.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,8 +19,17 @@ public class RoomServiceImp implements RoomService {
     RoomRepository roomRepository;
 
     @Override
-    public List<RoomDetailsDTO> getAll(Integer room_class_id, Integer bed_type_id, Integer room_status_id, Integer floor, Double min_price, Double max_price, Integer person_count) {
-        return roomRepository.getAllRooms(room_class_id, bed_type_id, room_status_id, floor, min_price, max_price, person_count);
+    public List<RoomDetailsDTO> getAll(
+            LocalDate check_in,
+            LocalDate check_out,
+            Integer room_class_id,
+            Integer bed_type_id,
+            Integer room_status_id,
+            Integer floor,
+            Double min_price,
+            Double max_price,
+            Integer person_count) {
+        return roomRepository.getAllRooms(check_in, check_out, room_class_id, bed_type_id, room_status_id, floor, min_price, max_price, person_count);
     }
 
     @Override

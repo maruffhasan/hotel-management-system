@@ -48,20 +48,9 @@ public class RoomClassServiceImp implements RoomClassService {
 
     @Override
     public void edit(RoomClassDTO roomClassDTO) {
-        ArrayList<Integer> addId = new ArrayList<>();
-        ArrayList<Integer> deleteID = new ArrayList<>();
-        RoomClassDTO present = roomClassRepository.getById(roomClassDTO.getId()).get();
-
-        if (roomClassDTO.getFeatures_id() != null) {
-            for (Integer featureId : roomClassDTO.getFeatures_id()) {
-                if (!present.getFeatures().contains(featureId)) {
-                    addId.add(featureId);
-                }
-            }
-
-            for (Integer featureId : roomClassDTO.getFeatures_id()) {
-
-            }
+        roomClassRepository.deleteRoomClassFeature(roomClassDTO.getId());
+        for (Integer featureId : roomClassDTO.getFeatures_id()) {
+            roomClassRepository.addRoomClassFeature(roomClassDTO.getId(), featureId);
         }
         roomClassRepository.edit(roomClassDTO);
     }
