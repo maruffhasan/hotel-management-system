@@ -12,14 +12,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class User {
     private String email;
     private String first_name;
     private String last_name;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String password;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String role;
 }

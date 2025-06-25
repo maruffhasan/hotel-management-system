@@ -63,7 +63,9 @@ public class ChatBotController {
                 "Hotel Details:\n" + hotelInfo + "\n\n" +
                 "Available Rooms:\n" + roomsInfo + "\n\n" +
                 "User's Question:\n" + qns + "\n\n" +
-                "Based on the above hotel details and available rooms, please provide a clear, friendly, and informative answer to the user's question.";
+                "Based on the above hotel details and available rooms, " +
+                "please provide a clear, friendly, and informative answer to the user's question. " +
+                "(give answer in html format so that frontend can direct render to user)";
 
         Client client = new Client();
 
