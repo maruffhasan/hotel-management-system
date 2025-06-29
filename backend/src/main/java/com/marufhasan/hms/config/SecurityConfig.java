@@ -50,7 +50,7 @@ public class SecurityConfig {
                                 authorizeRequests
 //                                        .requestMatchers("/**").permitAll()
                                         .requestMatchers("/api/auth/**").permitAll()
-                                        .anyRequest().hasRole("USER")
+                                        .anyRequest().permitAll()
 //                                        .anyRequest().authenticated()
 //                                        .requestMatchers("/").hasRole("ADMIN")
 //                                        .requestMatchers("/api/user/signup").permitAll()
