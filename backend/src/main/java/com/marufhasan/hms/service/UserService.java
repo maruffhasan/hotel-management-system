@@ -23,4 +23,6 @@ public interface UserService {
     void editReview(String name, ReviewDTO reviewDTO);
 
     void deleteReview(String name, Integer id);
+
+    User getUser(String email);
 }
