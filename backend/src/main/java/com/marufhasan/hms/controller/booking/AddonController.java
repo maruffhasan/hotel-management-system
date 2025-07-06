@@ -6,6 +6,7 @@ import com.marufhasan.hms.repository.booking.AddonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -16,6 +17,7 @@ public class AddonController {
     @Autowired
     private AddonRepository addonRepository;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add")
     public ResponseEntity<Integer> save(@RequestBody Addon addon) {
         return new ResponseEntity<>(addonRepository.save(addon), HttpStatus.CREATED);
@@ -31,12 +33,14 @@ public class AddonController {
         return ResponseEntity.ok(addonRepository.getById(id));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("{id}")
     public ResponseEntity<Addon> update(@PathVariable int id, @RequestBody Addon addon) {
         addon.setId(id);
         return ResponseEntity.ok(addonRepository.edit(addon));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("{id}")
     public ResponseEntity<?> delete(@PathVariable int id) {
         addonRepository.delete(id);

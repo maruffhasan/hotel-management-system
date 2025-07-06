@@ -5,6 +5,7 @@ import com.marufhasan.hms.model.Hotel;
 import com.marufhasan.hms.service.HotelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +23,7 @@ public class HotelController {
         return ResponseEntity.ok(hotel);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/edit")
     public ResponseEntity<Response> edit(@RequestBody Hotel hotel){
         hotelService.editDetails(hotel);

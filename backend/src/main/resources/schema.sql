@@ -12,7 +12,7 @@ CREATE TABLE hotel (
 );
 
 INSERT INTO hotel(name, address, city, zip, country, phone, email)
-VALUES ('Hotel Sheraton', '1/3 Gulshan', 'Dhaka', '1990', 'Bangladesh', '01888888888', 'hotel@hotel.com')
+VALUES ('Hotel Sheraton', '1/3 Gulshan', 'Dhaka', '1990', 'Bangladesh', '01888888888', 'hotel@hotel.com');
 
 CREATE TABLE users (
    email VARCHAR(255) PRIMARY KEY,
@@ -262,7 +262,7 @@ INSERT INTO addon (name, price) VALUES
 
 
 CREATE TABLE booking (
-     id SERIAL PRIMARY KEY,
+     id TEXT PRIMARY KEY,
      user_email TEXT,
      check_in DATE NOT NULL,
      check_out DATE NOT NULL,
@@ -271,7 +271,7 @@ CREATE TABLE booking (
 );
 
 CREATE TABLE booking_addon (
-       booking_id INTEGER NOT NULL,
+       booking_id TEXT NOT NULL,
        addon_id INTEGER NOT NULL,
        PRIMARY KEY (booking_id, addon_id),
        CONSTRAINT fk_booking FOREIGN KEY (booking_id) REFERENCES booking(id) ON DELETE CASCADE,
@@ -279,7 +279,7 @@ CREATE TABLE booking_addon (
 );
 
 CREATE TABLE booking_room (
-      booking_id INTEGER NOT NULL,
+      booking_id TEXT NOT NULL,
       room_id INTEGER NOT NULL,
       PRIMARY KEY (booking_id, room_id),
       CONSTRAINT fk_booking_room_booking FOREIGN KEY (booking_id) REFERENCES booking(id) ON DELETE CASCADE,

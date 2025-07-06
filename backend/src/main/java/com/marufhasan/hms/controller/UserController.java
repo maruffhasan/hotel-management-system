@@ -10,6 +10,7 @@ import com.marufhasan.hms.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,27 +23,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestBody User user) throws NotFoundException {
-        User found = userService.login(user);
-        if (found == null){
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-        return new ResponseEntity<>(found, HttpStatus.OK);
-    }
-
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/booking")
     public ResponseEntity<List<Booking>> getAllBooking(Authentication auth){
         return new ResponseEntity<>(userService.getBookings(auth.getName()), HttpStatus.OK);
     }
-
-
-    @PostMapping("/sign-up")
-    public ResponseEntity<String> home(@RequestBody User user) {
-        user.setRole("ROLE_USER");
-        userService.signup(user);
-        return new ResponseEntity<>("User signup successfull", HttpStatus.CREATED);
-    }
-
-
 }

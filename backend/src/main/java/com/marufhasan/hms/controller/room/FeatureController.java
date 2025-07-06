@@ -7,6 +7,7 @@ import com.marufhasan.hms.repository.room.RoomClassRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class FeatureController {
     @Autowired
     private FeatureRepository featureRepository;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add")
     public ResponseEntity<?> addFeature(@RequestBody Feature feature){
         featureRepository.add(feature);
@@ -29,12 +31,14 @@ public class FeatureController {
         return new ResponseEntity<>(featureRepository.getAll(), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteFeature(@PathVariable int id){
         featureRepository.delete(id);
         return new ResponseEntity<>("deleted", HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<?> updateFeature(@PathVariable int id, @RequestBody Feature feature){
         feature.setId(id);

@@ -5,6 +5,7 @@ import com.marufhasan.hms.service.imp.UserDetailServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -48,15 +49,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         authorizeRequests ->
                                 authorizeRequests
-//                                        .requestMatchers("/**").permitAll()
-                                        .requestMatchers("/api/auth/**").permitAll()
                                         .anyRequest().permitAll()
-//                                        .anyRequest().authenticated()
-//                                        .requestMatchers("/").hasRole("ADMIN")
-//                                        .requestMatchers("/api/user/signup").permitAll()
-//                                        .requestMatchers("/api/user/booking").authenticated()
-//                                        .anyRequest().permitAll()
-
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

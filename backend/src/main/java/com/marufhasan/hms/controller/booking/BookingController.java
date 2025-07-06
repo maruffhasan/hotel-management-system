@@ -7,6 +7,7 @@ import com.marufhasan.hms.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,12 +20,14 @@ public class BookingController {
     @Autowired
     private BookingService bookingService;
 
+    @PreAuthorize("hasRole('USER')")
     @PostMapping("/add")
     public ResponseEntity<?> addBooking(@RequestBody BookingDTO bookingDTO, Authentication auth){
         bookingDTO.setEmail(auth.getName());
         return new ResponseEntity<>(bookingService.add(bookingDTO), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/logs")
     public ResponseEntity<?> logs(
             @PathVariable(required = false)  LocalDate from,

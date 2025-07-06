@@ -7,6 +7,7 @@ import com.marufhasan.hms.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -19,6 +20,7 @@ public class RoomController {
     @Autowired
     private RoomService roomService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add")
     public ResponseEntity<Integer> addRoom(@RequestBody Room room){
         Integer id = roomService.add(room);
@@ -45,12 +47,14 @@ public class RoomController {
         return ResponseEntity.ok(roomService.getAll(check_in, check_out, room_status_id, bed_type_id, room_class_id, floor, min_price, max_price, person_count));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<RoomDetailsDTO> updateRoom(@PathVariable("id") int id, @RequestBody Room room){
         room.setId(id);
         return new ResponseEntity<>(roomService.edit(room), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteRoom(@PathVariable("id") int id){
         roomService.delete(id);

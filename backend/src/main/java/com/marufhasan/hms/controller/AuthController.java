@@ -5,6 +5,7 @@ import com.marufhasan.hms.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -49,5 +50,17 @@ public class AuthController {
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
+    }
+
+
+    @PostMapping("/user-sign-up")
+    public ResponseEntity<?> signUp(@RequestBody User user) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(user);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/admin-sign-up")
+    public ResponseEntity<?> signUpAdmin(@RequestBody User user) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 }
