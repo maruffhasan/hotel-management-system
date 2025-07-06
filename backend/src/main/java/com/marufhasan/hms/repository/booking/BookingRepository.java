@@ -81,9 +81,10 @@ public class BookingRepository {
     public List<RoomDetailsDTO> getRooms(String id) {
         String sql = """
                 SELECT room_id
-                FROM booking_room JOIN booking ON booking.id = booking_room.booking_id
+                FROM booking_room JOIN booking b ON b.id = booking_room.booking_id
+                WHERE b.id = ? 
                 """;
-        List<Integer> roomIds = jdbcTemplate.queryForList(sql, Integer.class);
+        List<Integer> roomIds = jdbcTemplate.queryForList(sql, new Object[]{id}, Integer.class);
         List<RoomDetailsDTO> rooms = new ArrayList<>();
         for (Integer roomId : roomIds) {
             rooms.add(roomRepository.getRoomDetailsById(roomId).get());
@@ -96,9 +97,10 @@ public class BookingRepository {
     public List<Addon> getAddons(String id) throws NotFoundException {
         String sql = """
                 SELECT addon_id
-                FROM booking_addon JOIN booking ON booking.id = booking_addon.booking_id
+                FROM booking_addon JOIN booking b ON b.id = booking_addon.booking_id
+                WHERE b.id = ?
                 """;
-        List<Integer> addonIds = jdbcTemplate.queryForList(sql, Integer.class);
+        List<Integer> addonIds = jdbcTemplate.queryForList(sql, new Object[] {id}, Integer.class);
         List<Addon> addons = new ArrayList<>();
         for (Integer addonId : addonIds) {
             addons.add(addonRepository.getById(addonId));
