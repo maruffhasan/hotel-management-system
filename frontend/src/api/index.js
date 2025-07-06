@@ -6,7 +6,12 @@ export async function loginUser(email, password) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
   });
-  return res.json();
+   if (!res.ok) {
+    const text = await res.text();  // get plain text response
+    throw new Error(text);
+  }
+
+  return await res.json();
 }
 
 export async function getRooms(filters) {
