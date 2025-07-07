@@ -8,7 +8,9 @@ export async function loginUser(email, password) {
   });
    if (!res.ok) {
     const text = await res.text();  // get plain text response
-    throw new Error(text);
+    const error=new Error(text);
+    error.status=res.status;
+    throw error;
   }
 
   return await res.json();

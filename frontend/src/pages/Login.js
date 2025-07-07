@@ -2,11 +2,14 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../api";
 import styles from "./Login.module.css"
+import {getErrorMessageByStatus} from "./loginUtils"
 
 export default function Login({ setRole }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [showError,setShowError] = useState(false);
+  const [errorMessage,setErrorMessage] = useState("");
   const navigate = useNavigate();
 
   async function handleSubmit(e) {
@@ -23,7 +26,10 @@ export default function Login({ setRole }) {
     }
     catch(err)
     {
-        alert(err.message);
+        const status = err.status || null;
+        const message = getErrorMessageByStatus(status);
+        setErrorMessage(message);
+        setShowError(true);
     }
   }
 
@@ -57,7 +63,28 @@ export default function Login({ setRole }) {
           </button>
         </div>
         <button type="submit" className={styles.loginButton}>Login</button>
+        <div>
+            <h3>Create an account</h3>
+        </div>
       </form>
+
+      {/*modal*/}
+      {showError && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <h3>Login Error</h3>
+            <p>{errorMessage}</p>
+            <div className={styles.modalActions}>
+              <button 
+                className={styles.cancelBtn}
+                onClick={()=> setShowError(!showError)}
+              >
+                Ok
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
