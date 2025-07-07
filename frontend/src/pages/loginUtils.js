@@ -4,7 +4,7 @@ export const getErrorMessageByStatus = (status) => {
 
   const messages = {
     400: "Bad request. Please check your input.",
-    401: "Unauthorized. Please log in again.",
+    401: "Unauthorized. Please sign up.",
     403: "You do not have permission to access this resource.",
     404: "Requested resource not found.",
     500: "Internal server error. Please try again later.",
