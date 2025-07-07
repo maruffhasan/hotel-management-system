@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate ,Link } from "react-router-dom";
 import { signupUser } from "../api";
 import styles from "./Login.module.css"; // Reusing login styles
 import { getErrorMessageByStatus } from "./loginUtils";
@@ -18,7 +18,7 @@ export default function UserSignup() {
     e.preventDefault();
 
     try {
-      const res = await signupUser({ firstName, lastName, email, password });
+      const res = await signupUser( firstName, lastName, email, password );
 
       localStorage.setItem("token", res.token);
       localStorage.setItem("role", res.role);
@@ -85,7 +85,10 @@ export default function UserSignup() {
 
         <button type="submit" className={styles.loginButton}>Sign Up</button>
         <div>
-          <h3>Already have an account? <a href="/login">Login</a></h3>
+           <h3 className={styles.loginPrompt}>
+                Already have an account? 
+                <Link to="/login" className={styles.loginLink}>Login</Link>
+            </h3>
         </div>
       </form>
 

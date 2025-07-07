@@ -160,20 +160,20 @@
   background: #dfe6e9;
 }
 
-.signupPrompt {
+.loginPrompt {
   margin-top: 1rem;
   font-size: 0.95rem;
   text-align: center;
   color: #555; /* subtle gray text */
 }
 
-.signupLink {
+.loginLink {
   color: #007bff; /* blue */
   text-decoration: none;
   font-weight: 500;
 }
 
-.signupLink:hover {
+.loginLink:hover {
   text-decoration: underline;
   color: #0056b3; /* darker blue on hover */
 }

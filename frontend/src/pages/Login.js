@@ -64,9 +64,9 @@ export default function Login({ setRole }) {
         </div>
         <button type="submit" className={styles.loginButton}>Login</button>
         <div>
-            <h3 className={styles.signupPrompt}>
+            <h3 className={styles.loginPrompt}>
               Create an account{" "}
-              <Link to="/usersignup" className={styles.signupLink}>Sign up</Link>
+              <Link to="/usersignup" className={styles.loginLink}>Sign up</Link>
             </h3>
         </div>
       </form>
