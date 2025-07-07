@@ -8,7 +8,7 @@ import Booking from "./pages/Booking";
 import Chatbot from "./pages/Chatbot";
 import Home from "./pages/Home";
 import Cart from "./pages/Cart";
-
+import UserSignup from "./pages/UserSignup";
 
 function App() {
   const [role, setRole] = useState(localStorage.getItem("role"));
@@ -18,7 +18,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login setRole={setRole} />} />
-        <Route path="/usersignup" element={role === "user" ? <UserSignup/> : <Navigate to ="/login"/>}/>
+        <Route path="/usersignup" element={role === "admin" ? <Navigate to ="/login"/>: <UserSignup/> }/>
         <Route path="/rooms" element={role === "user" ? <RoomList /> : <Navigate to="/login" />} />
         <Route path="/booking" element={role === "user" ? <Booking /> : <Navigate to="/login" />} />
         <Route path="/chatbot" element={<Chatbot />} />

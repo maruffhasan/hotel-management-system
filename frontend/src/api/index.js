@@ -16,7 +16,7 @@ export async function loginUser(email, password) {
   return await res.json();
 }
 
-export async function userSignup(first_name,last_name,email,password)
+export async function signupUser(first_name,last_name,email,password)
 {
   const res= await fetch(`${API}/api/auth/user-sign-up`,{
     method: "POST",
