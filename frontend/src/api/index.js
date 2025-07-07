@@ -16,6 +16,24 @@ export async function loginUser(email, password) {
   return await res.json();
 }
 
+export async function userSignup(first_name,last_name,email,password)
+{
+  const res= await fetch(`${API}/api/auth/user-sign-up`,{
+    method: "POST",
+    headers: {"Content-Type":  "application/json"},
+    body: JSON.stringify({first_name,last_name,email,password}),
+  });
+
+  if(!res.ok) {
+    const text = await res.text();
+    const error=new Error(text);
+    error.status=res.status;
+    throw error;
+  }
+
+  return await res.json();
+}
+
 export async function getRooms(filters) {
   const query = new URLSearchParams(filters).toString();
   const res = await fetch(`${API}/api/rooms/all?${query}`);

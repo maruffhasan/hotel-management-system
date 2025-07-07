@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { loginUser } from "../api";
 import styles from "./Login.module.css"
 import {getErrorMessageByStatus} from "./loginUtils"
@@ -64,7 +64,10 @@ export default function Login({ setRole }) {
         </div>
         <button type="submit" className={styles.loginButton}>Login</button>
         <div>
-            <h3>Create an account</h3>
+            <h3 className={styles.signupPrompt}>
+              Create an account{" "}
+              <Link to="/usersignup" className={styles.signupLink}>Sign Up</Link>
+            </h3>
         </div>
       </form>
 

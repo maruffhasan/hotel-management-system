@@ -18,7 +18,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login setRole={setRole} />} />
-        {/* <Route path="/usersignup" element={role === "user" ? <UserSignup/> : <Navigate to ="/login"/>}/> */}
+        <Route path="/usersignup" element={role === "user" ? <UserSignup/> : <Navigate to ="/login"/>}/>
         <Route path="/rooms" element={role === "user" ? <RoomList /> : <Navigate to="/login" />} />
         <Route path="/booking" element={role === "user" ? <Booking /> : <Navigate to="/login" />} />
         <Route path="/chatbot" element={<Chatbot />} />

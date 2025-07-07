@@ -159,3 +159,21 @@
 .cancelBtn:hover {
   background: #dfe6e9;
 }
+
+.signupPrompt {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  text-align: center;
+  color: #555; /* subtle gray text */
+}
+
+.signupLink {
+  color: #007bff; /* blue */
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.signupLink:hover {
+  text-decoration: underline;
+  color: #0056b3; /* darker blue on hover */
+}
