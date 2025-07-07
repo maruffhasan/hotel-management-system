@@ -1,5 +1,6 @@
 package com.marufhasan.hms.controller;
 
+import com.marufhasan.hms.exception.CustomError;
 import com.marufhasan.hms.exception.NotFoundException;
 import com.marufhasan.hms.exception.Response;
 import org.springframework.http.HttpStatus;
@@ -48,5 +49,11 @@ public class CommonExceptions {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<String> handleParsingExceptions(HttpMessageNotReadableException ex) {
         return ResponseEntity.badRequest().body("JSON parsing failed: " + ex.getMessage());
+    }
+
+    @ExceptionHandler(CustomError.class)
+    public ResponseEntity<Response> handleCustomException(CustomError ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new Response(ex.getMessage()));
     }
 }

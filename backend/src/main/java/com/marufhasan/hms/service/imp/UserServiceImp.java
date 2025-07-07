@@ -1,7 +1,9 @@
 package com.marufhasan.hms.service.imp;
 
 import com.marufhasan.hms.DTO.ReviewDTO;
+import com.marufhasan.hms.exception.CustomError;
 import com.marufhasan.hms.exception.NotFoundException;
+import com.marufhasan.hms.exception.Response;
 import com.marufhasan.hms.model.User;
 import com.marufhasan.hms.model.booking.Booking;
 import com.marufhasan.hms.model.booking.Review;
@@ -27,9 +29,9 @@ public class UserServiceImp implements UserService {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
-    public void signup(User user) {
+    public void signup(User user) throws CustomError {
         if (userRepository.getUser(user.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("User already exists with this email address");
+            throw new CustomError("User already exist with this email address...");
         }
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.add(user);

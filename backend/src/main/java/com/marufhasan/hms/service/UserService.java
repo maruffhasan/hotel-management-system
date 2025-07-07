@@ -1,6 +1,7 @@
 package com.marufhasan.hms.service;
 
 import com.marufhasan.hms.DTO.ReviewDTO;
+import com.marufhasan.hms.exception.CustomError;
 import com.marufhasan.hms.exception.NotFoundException;
 import com.marufhasan.hms.model.User;
 import com.marufhasan.hms.model.booking.Booking;
@@ -10,7 +11,7 @@ import org.springframework.http.HttpStatusCode;
 import java.util.List;
 
 public interface UserService {
-    public void signup(User user);
+    public void signup(User user) throws CustomError;
 
     User login(User user) throws NotFoundException;
 

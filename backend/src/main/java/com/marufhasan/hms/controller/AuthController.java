@@ -1,7 +1,9 @@
 package com.marufhasan.hms.controller;
 
+import com.marufhasan.hms.exception.CustomError;
 import com.marufhasan.hms.model.User;
 import com.marufhasan.hms.security.JwtUtil;
+import com.marufhasan.hms.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,9 +55,14 @@ public class AuthController {
     }
 
 
+    @Autowired
+    private UserService userService;
+
     @PostMapping("/user-sign-up")
-    public ResponseEntity<?> signUp(@RequestBody User user) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(user);
+    public ResponseEntity<?> signUp(@RequestBody User user) throws CustomError {
+        user.setRole("ROLE_USER");
+        userService.signup(user);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
