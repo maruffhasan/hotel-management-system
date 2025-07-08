@@ -25,8 +25,6 @@ function App() {
         <Route path="/admin" element={role === "admin" ? <AdminDashboard /> : <Navigate to="/login" />} />
         <Route path="/user" element={role === "user" ? <UserDashboard/> : <Navigate to="/login" />} />
         <Route path="/cart" element={role === "user" ? <Cart /> : <Navigate to="/login" />} />
-
-        {/* <Route path="*" element={<Navigate to="/login" />} /> */}
       </Routes>
     </Router>
   );
