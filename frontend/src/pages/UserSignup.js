@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { useNavigate ,Link } from "react-router-dom";
 import { signupUser } from "../api";
 import styles from "./Login.module.css"; // Reusing login styles
-import { getErrorMessageByStatus } from "./loginUtils";
+import { getErrorMessageByStatus } from "../utils/signupUtils";
 
-export default function UserSignup() {
+export default function UserSignup({setRole}) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -18,14 +18,15 @@ export default function UserSignup() {
     e.preventDefault();
 
     try {
-      const res = await signupUser( firstName, lastName, email, password );
-
+      const res=await signupUser( firstName, lastName, email, password );
       localStorage.setItem("token", res.token);
       localStorage.setItem("role", res.role);
-      navigate("/login");
+      setRole(res.role);
+
+      navigate(res.role === "admin" ? "/admin" : "/user");
     } catch (err) {
-      const status = err.status || null;
-      const message = getErrorMessageByStatus(status) || err.message;
+      const status=err.status;
+      const message =getErrorMessageByStatus(status);
       setErrorMessage(message);
       setShowError(true);
     }

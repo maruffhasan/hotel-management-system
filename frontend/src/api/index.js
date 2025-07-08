@@ -8,7 +8,7 @@ export async function loginUser(email, password) {
   });
    if (!res.ok) {
     const text = await res.text();  // get plain text response
-    const error=new Error(text);
+    const error=new Error(text || 'LOGIN ERROR');
     error.status=res.status;
     throw error;
   }
@@ -18,7 +18,7 @@ export async function loginUser(email, password) {
 
 export async function signupUser(first_name,last_name,email,password)
 {
-  const res= await fetch(`${API}/api/auth/user-sign-up`,{
+    const res= await fetch(`${API}/api/auth/user-sign-up`,{
     method: "POST",
     headers: {"Content-Type":  "application/json"},
     body: JSON.stringify({first_name, last_name, email, password}),
@@ -26,12 +26,12 @@ export async function signupUser(first_name,last_name,email,password)
 
   if(!res.ok) {
     const text = await res.text();
-    const error=new Error(text);
+    const error=new Error(text || 'SIGNUP ERROR');
     error.status=res.status;
     throw error;
   }
 
-  return await res.json();
+  return await loginUser(email,password);
 }
 
 export async function getRooms(filters) {
