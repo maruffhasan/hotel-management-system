@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { loginUser } from "../api";
-import styles from "./Login.module.css"
-import {getErrorMessageByStatus} from "./loginUtils"
+import styles from "../styles/Login.module.css"
+import {getErrorMessageByStatus} from "../utils/loginUtils"
 
 export default function Login({ setRole }) {
   const [email, setEmail] = useState("");

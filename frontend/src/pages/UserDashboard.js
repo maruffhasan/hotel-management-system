@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import styles from "./UserDashboard.module.css";
+import styles from "../styles/UserDashboard.module.css";
 
 export default function UserDashboard() {
   const [userInfo, setUserInfo] = useState({ email: "", role: "" });

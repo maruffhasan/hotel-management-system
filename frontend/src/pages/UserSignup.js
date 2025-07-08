@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate ,Link } from "react-router-dom";
 import { signupUser } from "../api";
-import styles from "./Login.module.css"; // Reusing login styles
+import styles from "../styles/Login.module.css"; // Reusing login styles
 import { getErrorMessageByStatus } from "../utils/signupUtils";
 
 export default function UserSignup({setRole}) {
