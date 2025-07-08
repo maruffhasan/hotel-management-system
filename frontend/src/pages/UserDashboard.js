@@ -98,6 +98,11 @@ export default function UserDashboard() {
         <nav className={styles.navigation}>
           <h2 className={styles.navTitle}>Quick Access</h2>
           <div className={styles.navGrid}>
+            <Link to="/" className={styles.navCard}>
+            <div className={styles.navIcon}>🏠</div>
+            <span className={styles.navText}>Home menu</span>
+            <p className={styles.navSubtext}>View available rooms and offers!</p>
+            </Link>
             <Link to="/rooms" className={styles.navCard}>
               <div className={styles.navIcon}>🏨</div>
               <span className={styles.navText}>Browse Rooms</span>
