@@ -296,3 +296,38 @@ export const scrollToElement = (elementId) => {
     element.scrollIntoView({ behavior: 'smooth' });
   }
 };
+
+export const getStatusColor = (status) => {
+  if (!status) return 'available';
+  
+  const statusLower = status.toLowerCase();
+  
+  if (statusLower.includes('available')) return 'available';
+  if (statusLower.includes('occupied')) return 'occupied';
+  if (statusLower.includes('maintenance')) return 'maintenance';
+  if (statusLower.includes('cleaning')) return 'cleaning';
+  if (statusLower.includes('reserved')) return 'reserved';
+  
+  return 'available';
+};
+
+export const formatCapacity = (capacity) => {
+  if (!capacity) return 'N/A';
+  return `${capacity} guest${capacity !== 1 ? 's' : ''}`;
+};
+
+export const validateDateRange = (checkIn, checkOut) => {
+  if (!checkIn || !checkOut) return false;
+  
+  const startDate = new Date(checkIn);
+  const endDate = new Date(checkOut);
+  const today = new Date();
+  
+  // Check if check-in is in the future
+  if (startDate < today) return false;
+  
+  // Check if check-out is after check-in
+  if (endDate <= startDate) return false;
+  
+  return true;
+};
