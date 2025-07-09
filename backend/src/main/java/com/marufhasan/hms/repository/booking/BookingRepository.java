@@ -65,7 +65,12 @@ public class BookingRepository {
 
     public Optional<BookingDTO> getDetails(String id) {
         try {
-            String sql = "SELECT * FROM booking WHERE id = ?";
+            String sql = """
+                        SELECT  (u.first_name || ' ' || u.last_name) AS booker_name, u.email AS booker_email
+                        FROM booking b 
+                        JOIN users u on u.email = b.user_email 
+                        WHERE b.id = ?
+                        """;
             BookingDTO bookingDTO = jdbcTemplate.queryForObject(sql, new Object[]{
                     id
             }, new BeanPropertyRowMapper<>(BookingDTO.class));

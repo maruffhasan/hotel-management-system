@@ -27,5 +27,8 @@ public class BookingDTO extends Booking {
 
     private List<Addon> addons;
     private List<Integer> addonIds;
+
+    private String booker_name;
+    private String booker_email;
 //    List<Service> services;
 }
