@@ -24,12 +24,12 @@ public class RoomServiceImp implements RoomService {
             LocalDate check_out,
             Integer room_class_id,
             Integer bed_type_id,
-            Integer room_status_id,
+            List<Integer> featureIds,
             Integer floor,
             Double min_price,
             Double max_price,
             Integer person_count) {
-        return roomRepository.getAllRooms(check_in, check_out, room_class_id, bed_type_id, room_status_id, floor, min_price, max_price, person_count);
+        return roomRepository.getAllRooms(check_in, check_out, room_class_id, bed_type_id, featureIds, floor, min_price, max_price, person_count);
     }
 
     @Override

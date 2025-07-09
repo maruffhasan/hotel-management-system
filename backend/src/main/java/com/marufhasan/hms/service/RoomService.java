@@ -13,10 +13,11 @@ public interface RoomService {
             LocalDate check_out,
             Integer room_class_id,
             Integer bed_type_id,
-            Integer room_status_id,
+            List<Integer> featuresId,
             Integer floor,
             Double min_price,
-            Double max_price, Integer person_count);
+            Double max_price,
+            Integer person_count);
 
     RoomDetailsDTO getRoomById(int id) throws NotFoundException;
 

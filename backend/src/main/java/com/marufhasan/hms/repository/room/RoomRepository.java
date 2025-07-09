@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 public class RoomRepository {
@@ -64,7 +65,7 @@ public class RoomRepository {
                         rs.getInt("room_status_id"),
                         rs.getString("room_status_name"),
 
-                        getAllFeatures(rs.getInt("id")),
+                        getAllFeatures(rs.getInt("room_class_id")),
                         null,
                         getAllReviews(rs.getInt("id"))
                 ), id);
@@ -80,7 +81,7 @@ public class RoomRepository {
             LocalDate check_out,
             Integer room_class_id,
             Integer bed_type_id,
-            Integer room_status_id,
+            List<Integer> featureIds,
             Integer floor,
             Double min_price,
             Double max_price,
@@ -120,6 +121,7 @@ public class RoomRepository {
         params.add(check_out);
         params.add(check_in);
 
+
         if (room_class_id != null) {
             sql.append(" AND rc.id = ?");
             params.add(room_class_id);
@@ -130,10 +132,20 @@ public class RoomRepository {
             params.add(bed_type_id);
         }
 
-        if (room_status_id != null) {
-            sql.append(" AND rs.id = ?");
-            params.add(room_status_id);
+        if (featureIds != null && !featureIds.isEmpty()) {
+            String placeholders = featureIds.stream()
+                    .map(id -> "?")
+                    .collect(Collectors.joining(", "));
+            sql.append("""
+                        AND EXISTS (
+                        SELECT 1 FROM room_class_feature rcf
+                        WHERE rcf.room_class_id = rc.id
+                        AND rcf.feature_id IN (""" + placeholders + ")"
+                        + ")"
+            );
+            params.addAll(featureIds);
         }
+
 
         if (floor != null) {
             sql.append(" AND r.floor = ?");
@@ -175,7 +187,7 @@ public class RoomRepository {
                     rs.getInt("room_status_id"),
                     rs.getString("room_status_name"),
 
-                    getAllFeatures(rs.getInt("id")),
+                    getAllFeatures(rs.getInt("room_class_id")),
                     null,
                     getAllReviews(rs.getInt("id"))
             );

@@ -38,13 +38,13 @@ public class RoomController {
             @RequestParam(required = true) LocalDate check_out,
             @RequestParam(required = false) Integer room_class_id,
             @RequestParam(required = false) Integer bed_type_id,
-            @RequestParam(required = false) Integer room_status_id,
+            @RequestParam(required = false) List<Integer> feature_id,
             @RequestParam(required = false) Integer floor,
             @RequestParam(required = false) Double min_price,
             @RequestParam(required = false) Double max_price,
             @RequestParam(required = false) Integer person_count
     ){
-        return ResponseEntity.ok(roomService.getAll(check_in, check_out, room_status_id, bed_type_id, room_class_id, floor, min_price, max_price, person_count));
+        return ResponseEntity.ok(roomService.getAll(check_in, check_out, room_class_id, bed_type_id, feature_id, floor, min_price, max_price, person_count));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
