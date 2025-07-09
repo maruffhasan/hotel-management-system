@@ -297,3 +297,81 @@ CREATE TABLE review (
         FOREIGN KEY (room_id) REFERENCES room(id) ON DELETE SET NULL
 );
 
+
+
+-- trigger for review audit
+CREATE TABLE review_audit (
+      id SERIAL,
+      review_id INT,
+      user_email VARCHAR(255),
+      room_id INT,
+      rating INT,
+      comment TEXT,
+      action VARCHAR(10),
+      action_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE OR REPLACE FUNCTION trg_review_audit_fn()
+RETURNS TRIGGER AS $$
+BEGIN
+   IF TG_OP = 'INSERT' THEN
+      INSERT INTO review_audit (review_id, user_email, room_id, rating, comment, action)
+      VALUES (NEW.id, NEW.user_email, NEW.room_id, NEW.rating, NEW.comment, 'INSERT');
+
+   ELSIF TG_OP = 'DELETE' THEN
+      INSERT INTO review_audit (review_id, user_email, room_id, rating, comment, action)
+      VALUES (OLD.id, OLD.user_email, OLD.room_id, OLD.rating, OLD.comment, 'DELETE');
+
+   ELSIF TG_OP = 'UPDATE' THEN
+      INSERT INTO review_audit (review_id, user_email, room_id, rating, comment, action)
+      VALUES (NEW.id, NEW.user_email, NEW.room_id, NEW.rating, NEW.comment, 'UPDATE');
+END IF;
+
+RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_review_audit
+    AFTER INSERT OR UPDATE OR DELETE ON review
+    FOR EACH ROW
+    EXECUTE FUNCTION trg_review_audit_fn();
+
+
+-- validating checkout date
+CREATE OR REPLACE FUNCTION trg_validate_booking_dates()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.check_out <= NEW.check_in THEN
+        RAISE EXCEPTION 'Check-out date must be after check-in date';
+END IF;
+RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER validate_booking_dates
+    BEFORE INSERT OR UPDATE ON booking
+         FOR EACH ROW
+         EXECUTE FUNCTION trg_validate_booking_dates()
+
+
+
+--  new room always available
+CREATE OR REPLACE FUNCTION trg_default_room_status()
+RETURNS TRIGGER AS $$
+BEGIN
+        IF NEW.room_status_id IS NULL THEN
+    SELECT id INTO NEW.room_status_id
+    FROM room_status WHERE status = 'Available';
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER set_default_room_status
+    BEFORE INSERT ON room
+    FOR EACH ROW
+    EXECUTE FUNCTION trg_default_room_status();
+
+
+
+
