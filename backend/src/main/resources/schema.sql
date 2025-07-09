@@ -351,7 +351,7 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER validate_booking_dates
     BEFORE INSERT OR UPDATE ON booking
          FOR EACH ROW
-         EXECUTE FUNCTION trg_validate_booking_dates()
+         EXECUTE FUNCTION trg_validate_booking_dates();
 
 
 
