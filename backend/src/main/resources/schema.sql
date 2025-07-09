@@ -373,7 +373,18 @@ CREATE TRIGGER set_default_room_status
     EXECUTE FUNCTION trg_default_room_status();
 
 
+-- default image url
+CREATE OR REPLACE FUNCTION trg_default_room_image()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.image_url IS NULL THEN
+        NEW.image_url := 'https://www.usatoday.com/gcdn/-mm-/05b227ad5b8ad4e9dcb53af4f31d7fbdb7fa901b/c=0-64-2119-1259/local/-/media/USATODAY/USATODAY/2014/08/13/1407953244000-177513283.jpg?width=1320&height=746&fit=crop&format=pjpg&auto=webp';
+END IF;
+RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
 
-
-
-
+CREATE TRIGGER default_room_image
+    BEFORE INSERT ON room
+    FOR EACH ROW
+    EXECUTE FUNCTION trg_default_room_image();
