@@ -55,6 +55,11 @@ export async function getFeatures() {
   return res.json();
 }
 
+ export async function getAddon() {
+  const res = await fetch(`${API}/api/addon/all`);
+  return res.json();
+ }
+
 export async function bookRoom(data) {
   const token = localStorage.getItem("token");
   return fetch(`${API}/api/booking/add`, {

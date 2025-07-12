@@ -11,6 +11,7 @@ export default function RoomList() {
     room_class_id: "",
     bed_type_id: "",
     room_status_id: "",
+    //feature_id: "",
     floor: "",
     min_price: "",
     max_price: "",

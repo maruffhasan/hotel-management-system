@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { getRoomById, getFeatures, bookRoom } from "../api";
+import { getRoomById, getAddon, bookRoom } from "../api";
 import { useNavigate } from "react-router-dom";
 
 export default function Cart() {
   const [selectedRoomIds, setSelectedRoomIds] = useState([]);
   const [rooms, setRooms] = useState([]);
-  const [features, setFeatures] = useState([]);
+  const [addons, setAddons] = useState([]);
   const [selectedAddons, setSelectedAddons] = useState([]);
   const [form, setForm] = useState({ check_in: "", check_out: "", price: "" });
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ export default function Cart() {
     const check_out = localStorage.getItem("check_out") || "";
     setForm(prev => ({ ...prev, check_in, check_out }));
 
-    getFeatures().then(setFeatures);
+    getAddon().then(setAddons);
 
     // Fetch room details one by one
     Promise.all(storedRoomIds.map(id => getRoomById(id))).then(fetchedRooms => {
@@ -113,9 +113,9 @@ export default function Cart() {
         />
       </label>
 
-      <h3>Add Features/Addons</h3>
+      <h3>Add Addons</h3>
       <ul>
-        {features.map(f => (
+        {addons.map(f => (
           <li key={f.id}>
             <label>
               <input
@@ -123,7 +123,7 @@ export default function Cart() {
                 checked={selectedAddons.includes(f.id)}
                 onChange={() => toggleAddon(f.id)}
               />{" "}
-              {f.name} (${f.price_per_use})
+              {f.name} (${f.price})
             </label>
           </li>
         ))}
