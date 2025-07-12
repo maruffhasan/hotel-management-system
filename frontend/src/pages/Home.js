@@ -106,10 +106,10 @@ export default function Home() {
                   </div>
                 </div>
                 
-                <button className="btn btn-outline book-btn">
+                {/* <button className="btn btn-outline book-btn">
                   <span className="btn-icon">📅</span>
                   Book Now
-                </button>
+                </button> */}
               </div>
             ))}
           </div>
