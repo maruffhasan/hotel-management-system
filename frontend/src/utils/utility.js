@@ -331,3 +331,32 @@ export const validateDateRange = (checkIn, checkOut) => {
   
   return true;
 };
+
+/**
+ * Get stored data from localStorage with fallback
+ * @param {string} key - localStorage key
+ * @param {any} fallback - Fallback value if key doesn't exist
+ * @returns {any} Stored value or fallback
+ */
+export const getStoredData = (key, fallback = null) => {
+  try {
+    const item = localStorage.getItem(key);
+    return item ? JSON.parse(item) : fallback;
+  } catch (error) {
+    console.error(`Error reading ${key} from localStorage:`, error);
+    return fallback;
+  }
+};
+
+/**
+ * Store data in localStorage
+ * @param {string} key - localStorage key
+ * @param {any} value - Value to store
+ */
+export const setStoredData = (key, value) => {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch (error) {
+    console.error(`Error storing ${key} in localStorage:`, error);
+  }
+};

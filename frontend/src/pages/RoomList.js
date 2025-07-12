@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getRooms, getOptions } from "../api";
 import { useNavigate } from "react-router-dom";
-import { formatPrice, getRoomIcon, formatDate, calculateNights } from "../utils/utility";
+import { formatPrice, getRoomIcon, formatDate, calculateNights, setStoredData } from "../utils/utility";
 import "../styles/RoomList.css";
 
 export default function RoomList() {
@@ -10,8 +10,7 @@ export default function RoomList() {
     check_out: "",
     room_class_id: "",
     bed_type_id: "",
-    room_status_id: "",
-    //feature_id: "",
+    feature_ids: [],
     floor: "",
     min_price: "",
     max_price: "",
@@ -34,8 +33,19 @@ export default function RoomList() {
     getOptions().then(setOptions);
   }, []);
 
-  const handleChange = (e) =>
+  const handleChange = (e) =>{
     setFilters((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    
+  }
+
+  const handleFeatureChange = (featureId) => {
+    setFilters((prev) => ({
+      ...prev,
+      feature_ids: prev.feature_ids.includes(featureId)
+        ? prev.feature_ids.filter(id => id !== featureId)
+        : [...prev.feature_ids, featureId]
+    }));
+  };
 
   const fetchRooms = async () => {
     if (!filters.check_in || !filters.check_out) {
@@ -46,7 +56,12 @@ export default function RoomList() {
     setLoading(true);
     try {
       const data = await getRooms(filters);
-      setRooms(data);
+      // Filter to only show available rooms
+      const availableRooms = data.filter(room => 
+        room.room_status_name?.toLowerCase() === 'available' || 
+        !room.room_status_name // If no status is provided, assume available
+      );
+      setRooms(availableRooms);
     } catch (error) {
       console.error("Error fetching rooms:", error);
     } finally {
@@ -69,8 +84,8 @@ export default function RoomList() {
 
   const goToCart = () => {
     // Save check_in/out for booking too
-    localStorage.setItem("check_in", filters.check_in);
-    localStorage.setItem("check_out", filters.check_out);
+    setStoredData("check_in", filters.check_in);
+    setStoredData("check_out", filters.check_out);
     navigate("/cart");
   };
 
@@ -80,7 +95,7 @@ export default function RoomList() {
       check_out: "",
       room_class_id: "",
       bed_type_id: "",
-      room_status_id: "",
+      feature_ids: [],
       floor: "",
       min_price: "",
       max_price: "",
@@ -210,24 +225,27 @@ export default function RoomList() {
                 </select>
               </div>
 
-              <div className="filter-item">
+              <div className="filter-item features-filter">
                 <label className="filter-label">
-                  <span className="label-icon">📊</span>
-                  Room Status
+                  <span className="label-icon">⭐</span>
+                  Features
                 </label>
-                <select 
-                  name="room_status_id" 
-                  value={filters.room_status_id} 
-                  onChange={handleChange}
-                  className="filter-select"
-                >
-                  <option value="">All Statuses</option>
-                  {options.status.map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.status}
-                    </option>
+                <div className="features-checkboxes">
+                  {options.feature.map((f) => (
+                    <div key={f.id} className="feature-checkbox">
+                      <input
+                        type="checkbox"
+                        id={`feature-${f.id}`}
+                        checked={filters.feature_ids.includes(f.id)}
+                        onChange={() => handleFeatureChange(f.id)}
+                        className="checkbox-input"
+                      />
+                      <label htmlFor={`feature-${f.id}`} className="checkbox-label">
+                        {f.name}
+                      </label>
+                    </div>
                   ))}
-                </select>
+                </div>
               </div>
 
               <div className="filter-item">
@@ -331,16 +349,7 @@ export default function RoomList() {
               Available Rooms
               {rooms.length > 0 && <span className="results-count">({rooms.length} found)</span>}
             </h2>
-            
-            {selected.length > 0 && (
-              <button 
-                className="btn btn-secondary cart-btn"
-                onClick={goToCart}
-              >
-                <span className="btn-icon">🛒</span>
-                Go to Cart ({selected.length})
-              </button>
-            )}
+            {/* REMOVED: Duplicate cart button that was here */}
           </div>
 
           {loading ? (
@@ -375,8 +384,8 @@ export default function RoomList() {
                       </div>
                       <div className="info-item">
                         <span className="info-label">Status:</span>
-                        <span className={`status-badge ${room.room_status_name?.toLowerCase() || 'available'}`}>
-                          {room.room_status_name || 'Available'}
+                        <span className="status-badge available">
+                          Available
                         </span>
                       </div>
                     </div>
@@ -429,7 +438,7 @@ export default function RoomList() {
         </div>
       </section>
 
-      {/* Floating Cart Button */}
+      {/* Floating Cart Button - Keep this one, it's the best UX */}
       {selected.length > 0 && (
         <div className="floating-cart">
           <button 
