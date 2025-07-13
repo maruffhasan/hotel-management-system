@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { bookRoom } from "../api";
 
-export default function Booking() {
+export default function BookingLog() {
   const [form, setForm] = useState({
     check_in: "",
     check_out: "",
