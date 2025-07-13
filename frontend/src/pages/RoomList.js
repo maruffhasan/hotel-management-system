@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { getRooms, getOptions } from "../api";
 import { useNavigate } from "react-router-dom";
-import { formatPrice, getRoomIcon, formatDate, calculateNights, setStoredData } from "../utils/utility";
+import {
+  formatPrice,
+  getRoomIcon,
+  formatDate,
+  calculateNights,
+  setStoredData,
+} from "../utils/utility";
 import "../styles/RoomList.css";
 
 export default function RoomList() {
@@ -17,7 +23,6 @@ export default function RoomList() {
     person_count: "",
   });
 
-  // Initialize selected from localStorage or empty array
   const [selected, setSelected] = useState(() => {
     const saved = localStorage.getItem("selectedRooms");
     return saved ? JSON.parse(saved) : [];
@@ -33,17 +38,17 @@ export default function RoomList() {
     getOptions().then(setOptions);
   }, []);
 
-  const handleChange = (e) =>{
+  const handleChange = (e) => {
     setFilters((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-    
-  }
+  };
 
   const handleFeatureChange = (featureId) => {
+    featureId = Number(featureId);
     setFilters((prev) => ({
       ...prev,
       feature_ids: prev.feature_ids.includes(featureId)
-        ? prev.feature_ids.filter(id => id !== featureId)
-        : [...prev.feature_ids, featureId]
+        ? prev.feature_ids.filter((id) => id !== featureId)
+        : [...prev.feature_ids, featureId],
     }));
   };
 
@@ -52,14 +57,14 @@ export default function RoomList() {
       alert("Check-in and Check-out dates are required");
       return;
     }
-    
+
     setLoading(true);
     try {
       const data = await getRooms(filters);
-      // Filter to only show available rooms
-      const availableRooms = data.filter(room => 
-        room.room_status_name?.toLowerCase() === 'available' || 
-        !room.room_status_name // If no status is provided, assume available
+      const availableRooms = data.filter(
+        (room) =>
+          room.room_status_name?.toLowerCase() === "available" ||
+          !room.room_status_name
       );
       setRooms(availableRooms);
     } catch (error) {
@@ -83,7 +88,6 @@ export default function RoomList() {
   };
 
   const goToCart = () => {
-    // Save check_in/out for booking too
     setStoredData("check_in", filters.check_in);
     setStoredData("check_out", filters.check_out);
     navigate("/cart");
