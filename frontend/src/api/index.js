@@ -35,10 +35,20 @@ export async function signupUser(first_name,last_name,email,password)
 }
 
 export async function getRooms(filters) {
-  const query = new URLSearchParams(filters).toString();
-  const res = await fetch(`${API}/api/rooms/all?${query}`);
+  const params = new URLSearchParams();
+
+  for (const key in filters) {
+    if (key === "feature_ids" && Array.isArray(filters[key])) {
+      filters[key].forEach((id) => params.append("feature_id", id)); // ✅ CORRECT: not "feature_ids"
+    } else if (filters[key] !== "" && filters[key] !== null && filters[key] !== undefined) {
+      params.append(key, filters[key]);
+    }
+  }
+
+  const res = await fetch(`${API}/api/rooms/all?${params.toString()}`);
   return res.json();
 }
+
 
 export async function getOptions() {
   const [bed, feature, roomClass, status] = await Promise.all([
