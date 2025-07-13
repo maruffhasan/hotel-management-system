@@ -21,13 +21,18 @@ export default function Home() {
     const checkOut = checkOutDate.toISOString().split("T")[0];
 
     getRooms({
-      // check_in: "2025-06-05",
-      // check_out: "2025-07-06"
-
       check_in: checkIn,
       check_out: checkOut
     })
-    .then(setRooms)
+    .then(data => {
+      // Apply the same filtering logic as RoomList
+      const availableRooms = data.filter(
+        (room) => 
+          room.room_status_name?.toLowerCase() === "available" ||
+          !room.room_status_name
+      );
+      setRooms(availableRooms);
+    })
     .finally(() => setLoading(false));
   }, []);
 
