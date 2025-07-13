@@ -66,7 +66,7 @@ public class BookingRepository {
     public Optional<BookingDTO> getDetails(String id) {
         try {
             String sql = """
-                        SELECT  (u.first_name || ' ' || u.last_name) AS booker_name, u.email AS booker_email
+                        SELECT  (u.first_name || ' ' || u.last_name) AS booker_name, u.email AS booker_email, b.check_in, b.check_out, b.price
                         FROM booking b 
                         JOIN users u on u.email = b.user_email 
                         WHERE b.id = ?

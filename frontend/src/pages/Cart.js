@@ -24,7 +24,7 @@ export default function Cart() {
   const [form, setForm] = useState({
     check_in: localStorage.getItem("check_in"),
     check_out: localStorage.getItem("check_out"),
-    price: ""
+    price: "" 
   });
   const [loading, setLoading] = useState(true);
   const [bookingLoading, setBookingLoading] = useState(false);
