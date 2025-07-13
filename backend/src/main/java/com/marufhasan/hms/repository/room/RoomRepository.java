@@ -132,18 +132,21 @@ public class RoomRepository {
             params.add(bed_type_id);
         }
 
+
         if (featureIds != null && !featureIds.isEmpty()) {
-            String placeholders = featureIds.stream()
-                    .map(id -> "?")
-                    .collect(Collectors.joining(", "));
+            String placeholders = featureIds.stream().map(id -> "?").collect(Collectors.joining(", "));
             sql.append("""
-                        AND EXISTS (
+                    AND EXISTS (
                         SELECT 1 FROM room_class_feature rcf
-                        WHERE rcf.room_class_id = rc.id
-                        AND rcf.feature_id IN (""" + placeholders + ")"
-                        + ")"
+                            WHERE rcf.room_class_id = rc.id
+                              AND rcf.feature_id IN (""" + placeholders + """
+                            )
+                        GROUP BY rcf.room_class_id
+                        HAVING COUNT(DISTINCT rcf.feature_id) = ?
+                    )"""
             );
             params.addAll(featureIds);
+            params.add(featureIds.size());
         }
 
 
