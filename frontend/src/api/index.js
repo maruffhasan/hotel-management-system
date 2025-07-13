@@ -72,7 +72,8 @@ export async function getFeatures() {
 
 export async function bookRoom(data) {
   const token = localStorage.getItem("token");
-  return fetch(`${API}/api/booking/add`, {
+  
+  const response = await fetch(`${API}/api/booking/add`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -80,6 +81,12 @@ export async function bookRoom(data) {
     },
     body: JSON.stringify(data)
   });
+  
+  if (!response.ok) {
+    throw new Error(`Booking failed: ${response.status} ${response.statusText}`);
+  }
+  
+    return await response.text();
 }
 
 export async function askChatbot(qns) {

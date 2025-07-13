@@ -29,6 +29,11 @@ export default function Cart() {
   const [loading, setLoading] = useState(true);
   const [bookingLoading, setBookingLoading] = useState(false);
   const [errors, setErrors] = useState([]);
+  const [bookingConfirmed, setBookingConfirmed] = useState(false);
+  const [bookingId, setBookingId] = useState(null);
+  const [verificationLoading, setVerificationLoading] = useState(false);
+  const [verificationResult, setVerificationResult] = useState(null);
+  const [verificationBookingId, setVerificationBookingId] = useState("");
   
   const navigate = useNavigate();
 
@@ -136,23 +141,100 @@ export default function Cart() {
     };
 
     try {
-      await bookRoom(payload);
+      const response = await bookRoom(payload);
+      
+      // Handle different response formats
+      let bookingIdValue;
+      
+      if (typeof response === 'string') {
+        // If response is directly a string (booking ID)
+        bookingIdValue = response;
+      } else if (response && typeof response === 'object') {
+        // If response is an object, try to extract booking ID
+        bookingIdValue = response.bookingId || response.id || response.booking_id;
+      } else {
+        // Fallback - try to convert to string
+        bookingIdValue = String(response);
+      }
+      
+      // Validate that we have a valid booking ID
+      if (!bookingIdValue || bookingIdValue === 'undefined' || bookingIdValue === '[object Object]') {
+        throw new Error('Invalid booking ID received from server');
+      }
       
       // Clear stored data
       clearStoredData(["selectedRooms", "check_in", "check_out"]);
       
-      // Show success message and redirect
-      alert("Booking confirmed successfully!");
-      navigate("/user");
+      // Set booking confirmation state
+      setBookingConfirmed(true);
+      setBookingId(bookingIdValue);
+      
     } catch (error) {
       console.error("Booking failed:", error);
-      setErrors(["Booking failed. Please try again."]);
+      setErrors([error.message || "Booking failed. Please try again."]);
     } finally {
       setBookingLoading(false);
     }
   };
 
+  const verifyBooking = async () => {
+    if (!verificationBookingId.trim()) {
+      setVerificationResult({
+        success: false,
+        error: "Please enter a booking ID to verify"
+      });
+      return;
+    }
+    
+    setVerificationLoading(true);
+    setVerificationResult(null);
+    
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`http://localhost:8080/api/booking/details/${verificationBookingId.trim()}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        }
+      });
+      
+      if (response.ok) {
+        const bookingDetails = await response.json();
+        setVerificationResult({
+          success: true,
+          data: bookingDetails
+        });
+      } else {
+        setVerificationResult({
+          success: false,
+          error: "Booking not found or verification failed"
+        });
+      }
+    } catch (error) {
+      console.error("Verification failed:", error);
+      setVerificationResult({
+        success: false,
+        error: "Failed to verify booking. Please try again."
+      });
+    } finally {
+      setVerificationLoading(false);
+    }
+  };
+
   const goBackToRooms = () => {
+    navigate("/rooms");
+  };
+
+  const goToDashboard = () => {
+    navigate("/user");
+  };
+
+  const startNewBooking = () => {
+    setBookingConfirmed(false);
+    setBookingId(null);
+    setVerificationResult(null);
+    setVerificationBookingId("");
     navigate("/rooms");
   };
 
@@ -162,6 +244,117 @@ export default function Cart() {
         <div className="loading">
           <div className="loading-spinner"></div>
           <p>Loading your cart...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Booking Confirmation View
+  if (bookingConfirmed) {
+    return (
+      <div className="cart-container">
+        <div className="booking-confirmation">
+          <div className="confirmation-header">
+            <div className="confirmation-icon">✅</div>
+            <h1 className="confirmation-title">Booking Confirmed!</h1>
+            <p className="confirmation-subtitle">Your reservation has been successfully created</p>
+          </div>
+
+          <div className="confirmation-details">
+            <div className="booking-id-section">
+              <h2>Your Booking ID</h2>
+              <div className="booking-id-display">
+                <span className="booking-id">{bookingId}</span>
+                <button
+                  className="copy-btn"
+                  onClick={() => navigator.clipboard.writeText(bookingId)}
+                  title="Copy booking ID"
+                >
+                  📋
+                </button>
+              </div>
+              <p className="booking-id-note">
+                Please save this booking ID for your records
+              </p>
+            </div>
+
+            <div className="verification-section">
+              <h3>Verify Any Booking</h3>
+              <div className="verification-form">
+                <div className="form-group">
+                  <label htmlFor="verification-booking-id" className="form-label">
+                    Enter Booking ID
+                  </label>
+                  <input
+                    id="verification-booking-id"
+                    type="text"
+                    className="form-input"
+                    value={verificationBookingId}
+                    onChange={(e) => setVerificationBookingId(e.target.value)}
+                    placeholder="Enter booking ID to verify"
+                  />
+                </div>
+                <button
+                  className="btn btn-secondary btn-block"
+                  onClick={verifyBooking}
+                  disabled={verificationLoading}
+                >
+                  {verificationLoading ? (
+                    <>
+                      <span className="loading-spinner-small"></span>
+                      Verifying...
+                    </>
+                  ) : (
+                    <>
+                      <span className="btn-icon">🔍</span>
+                      Verify Booking
+                    </>
+                  )}
+                </button>
+              </div>
+
+              {verificationResult && (
+                <div className={`verification-result ${verificationResult.success ? 'success' : 'error'}`}>
+                  {verificationResult.success ? (
+                    <div className="verification-success">
+                      <div className="verification-icon">✅</div>
+                      <h4>Booking Verified Successfully!</h4>
+                      <div className="booking-summary">
+                        <p><strong>Booking ID:</strong> {verificationBookingId}</p>
+                        <p><strong>Check-in:</strong> {formatDate(verificationResult.data.check_in)}</p>
+                        <p><strong>Check-out:</strong> {formatDate(verificationResult.data.check_out)}</p>
+                        <p><strong>Total Amount:</strong> {formatPrice(verificationResult.data.price)}</p>
+                        <p><strong>Status:</strong> {verificationResult.data.status || 'Confirmed'}</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="verification-error">
+                      <div className="verification-icon">❌</div>
+                      <h4>Verification Failed</h4>
+                      <p>{verificationResult.error}</p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="confirmation-actions">
+            <button
+              className="btn btn-primary"
+              onClick={goToDashboard}
+            >
+              <span className="btn-icon">🏠</span>
+              Go to Dashboard
+            </button>
+            <button
+              className="btn btn-secondary"
+              onClick={startNewBooking}
+            >
+              <span className="btn-icon">🔄</span>
+              Make Another Booking
+            </button>
+          </div>
         </div>
       </div>
     );
