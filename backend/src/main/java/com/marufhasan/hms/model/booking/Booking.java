@@ -15,6 +15,7 @@ public class Booking {
 
     private String id;
     private String email;
+    private LocalDate booking_date;
     private LocalDate check_in;
     private LocalDate check_out;
     private Double price;
