@@ -30,5 +30,8 @@ public class BookingDTO extends Booking {
 
     private String booker_name;
     private String booker_email;
-//    List<Service> services;
+
+    LocalDate check_in;
+    LocalDate check_out;
+    Double price;
 }
