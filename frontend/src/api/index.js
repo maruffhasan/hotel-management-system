@@ -96,6 +96,22 @@ export async function askChatbot(qns) {
 }
 
 export async function getRoomById(id) {
-  const res = await fetch(`http://localhost:8080/api/rooms/${id}`);
+  const res = await fetch(`${API}/api/rooms/${id}`);
   return res.json();
+}
+
+export async function getBookingDetailsUser() {
+  const token=localStorage.getItem("token");
+  const res = await fetch(`${API}/api/user/booking`, {
+    method : "GET",
+    headers : {
+      "Authorization": `Bearer ${token}`,
+      "Content-type": "application/json"
+    },
+ })
+
+ if(!res.ok) 
+    throw new Error(`Couldnt fetch details booking for the user: ${response.status} `);
+  
+ return await res.json();
 }

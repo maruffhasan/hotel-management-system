@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { bookRoom } from "../api";
+import { bookRoom, getBookingDetailsUser } from "../api";
 
 export default function BookingLog() {
   const [form, setForm] = useState({
@@ -22,6 +22,10 @@ export default function BookingLog() {
       check_in: checkIn || "",
       check_out: checkOut || ""
     }));
+
+    getBookingDetailsUser().then((data) => {
+      console.log(data);
+    });
   }, []);
 
   function handleChange(e) {
