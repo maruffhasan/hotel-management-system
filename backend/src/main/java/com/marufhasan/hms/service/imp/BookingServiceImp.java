@@ -22,6 +22,8 @@ public class BookingServiceImp implements BookingService {
 
     @Override
     public String add(BookingDTO bookingDTO) {
+        bookingDTO.setBooking_date(LocalDate.now());
+
         String randomNumber = String.format("%05d", new Random().nextInt(100000));
         String bookingId = "BKG-" + LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE) + "-" + randomNumber;
         bookingDTO.setId(bookingId);

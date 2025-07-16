@@ -23,20 +23,21 @@ public class BookingRepository {
     private JdbcTemplate jdbcTemplate;
 
     public void save(BookingDTO bookingDTO) {
-        String sql = "INSERT INTO booking (id, user_email, check_in, check_out, price) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO booking (id, user_email, check_in, check_out, booking_date, price) VALUES (?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql,
                 bookingDTO.getId(),
                 bookingDTO.getEmail(),
                 bookingDTO.getCheck_in(),
                 bookingDTO.getCheck_out(),
+                bookingDTO.getBooking_date(),
                 bookingDTO.getPrice());
     }
 
     public List<Booking> getLogs(LocalDate from, LocalDate to) {
         String sql = """
                         SELECT * FROM 
-                        booking JOIN users ON booking.user_email = users.email
-                        WHERE check_in >= ? AND check_out <= ?
+                        booking b JOIN users u ON b.user_email = u.email
+                        WHERE b.booking_date >= ? AND b.booking_date <= ?
                       """;
         return jdbcTemplate.query(sql, new Object[]{
                 from,
@@ -66,7 +67,7 @@ public class BookingRepository {
     public Optional<BookingDTO> getDetails(String id) {
         try {
             String sql = """
-                        SELECT  (u.first_name || ' ' || u.last_name) AS booker_name, u.email AS booker_email, b.check_in, b.check_out, b.price
+                        SELECT  (u.first_name || ' ' || u.last_name) AS booker_name, u.email AS booker_email, b.check_in, b.check_out, b.price, b.booking_date
                         FROM booking b 
                         JOIN users u on u.email = b.user_email 
                         WHERE b.id = ?

@@ -30,8 +30,8 @@ public class BookingController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/logs")
     public ResponseEntity<?> logs(
-            @PathVariable(required = false)  LocalDate from,
-            @PathVariable(required = false) LocalDate to){
+            @RequestParam(required = false)  LocalDate from,
+            @RequestParam(required = false) LocalDate to){
         if (from == null) {
             from = LocalDate.MIN;
         }
