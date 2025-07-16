@@ -43,6 +43,7 @@ public class RoomController {
             @RequestParam(required = false) Double min_price,
             @RequestParam(required = false) Double max_price,
             @RequestParam(required = false) Integer person_count
+
     ){
         return ResponseEntity.ok(roomService.getAll(check_in, check_out, room_class_id, bed_type_id, feature_id, floor, min_price, max_price, person_count));
     }

@@ -360,3 +360,26 @@ export const setStoredData = (key, value) => {
     console.error(`Error storing ${key} in localStorage:`, error);
   }
 };
+
+export function getBookingStatus(checkIn, checkOut) {
+  if (!checkIn || !checkOut) return 'pending';
+  
+  const today = new Date();
+  const checkInDate = new Date(checkIn);
+  const checkOutDate = new Date(checkOut);
+  
+  // Reset time to compare dates only
+  today.setHours(0, 0, 0, 0);
+  checkInDate.setHours(0, 0, 0, 0);
+  checkOutDate.setHours(0, 0, 0, 0);
+  
+  if (today < checkInDate) {
+    return 'upcoming';
+  } else if (today >= checkInDate && today <= checkOutDate) {
+    return 'active';
+  } else if (today > checkOutDate) {
+    return 'completed';
+  }
+  
+  return 'pending';
+};

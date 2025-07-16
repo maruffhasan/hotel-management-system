@@ -114,4 +114,30 @@ export async function getBookingDetailsUser() {
     throw new Error(`Couldnt fetch details booking for the user: ${response.status} `);
   
  return await res.json();
-}
+};
+
+export async function verifyBooking(bookingId) {
+  const token=localStorage.getItem("token");
+  try {
+    const response = await fetch(`${API}/api/booking/details/${bookingId.trim()}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+         'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        throw new Error('Booking not found');
+      }
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error verifying booking:', error);
+    throw error;
+  }
+};
