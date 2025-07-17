@@ -26,4 +26,6 @@ public interface RoomService {
     RoomDetailsDTO edit(Room room);
 
     void delete(int id);
+
+    List<Room> getRooms();
 }

@@ -285,4 +285,9 @@ public class RoomRepository {
         String sql = "DELETE FROM room WHERE id = ?";
         jdbcTemplate.update(sql, id);
     }
+
+    public List<Room> getRooms() {
+        String sql = "SELECT * FROM room";
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Room.class));
+    }
 }

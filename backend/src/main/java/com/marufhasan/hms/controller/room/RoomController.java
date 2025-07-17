@@ -61,4 +61,10 @@ public class RoomController {
         roomService.delete(id);
         return new ResponseEntity<>("deleted", HttpStatus.OK);
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/getall")
+    public ResponseEntity<?> getAll(){
+        return new ResponseEntity<>(roomService.getRooms(), HttpStatus.OK);
+    }
 }

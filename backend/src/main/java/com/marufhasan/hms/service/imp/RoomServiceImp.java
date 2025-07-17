@@ -57,4 +57,9 @@ public class RoomServiceImp implements RoomService {
     public void delete(int id) {
         roomRepository.delete(id);
     }
+
+    @Override
+    public List<Room> getRooms() {
+        return roomRepository.getRooms();
+    }
 }
