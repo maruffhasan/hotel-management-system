@@ -111,7 +111,7 @@ export const getNavigationItems = (role) => {
       description: 'View available accommodations'
     },
     {
-      to: '/booking',
+      to: '/bookingLog',
       icon: '📅',
       title: 'Make a Booking',
       description: 'Reserve your stay'

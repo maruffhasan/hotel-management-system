@@ -20,7 +20,7 @@ function App() {
         <Route path="/login" element={<Login setRole={setRole} />} />
         <Route path="/usersignup" element={role === "admin" ? <Navigate to ="/login"/>: <UserSignup setRole={setRole}/> }/>
         <Route path="/rooms" element={role === "user" ? <RoomList /> : <Navigate to="/login" />} />
-        <Route path="/booking" element={role === "user" ? <BookingLog /> : <Navigate to="/login" />} />
+        <Route path="/bookingLog" element={role === "user" ? <BookingLog /> : <Navigate to="/login" />} />
         <Route path="/chatbot" element={<Chatbot />} />
         <Route path="/admin" element={role === "admin" ? <AdminDashboard /> : <Navigate to="/login" />} />
         <Route path="/user" element={role === "user" ? <UserDashboard/> : <Navigate to="/login" />} />

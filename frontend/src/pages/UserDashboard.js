@@ -109,10 +109,10 @@ export default function UserDashboard() {
               <p className={styles.navSubtext}>View available accommodations</p>
             </Link>
             
-            <Link to="/booking" className={styles.navCard}>
+            <Link to="/bookingLog" className={styles.navCard}>
               <div className={styles.navIcon}>📅</div>
-              <span className={styles.navText}>Make a Booking</span>
-              <p className={styles.navSubtext}>Reserve your stay</p>
+              <span className={styles.navText}>Booking Logs</span>
+              <p className={styles.navSubtext}>Your previous bookings</p>
             </Link>
             
             <Link to="/chatbot" className={styles.navCard}>
