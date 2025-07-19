@@ -160,7 +160,9 @@ export default function AdminDashboard() {
             <div className="table-cell">{user.firstName}</div>
             <div className="table-cell">{user.lastName}</div>
             <div className="table-cell">
-              <span className="role-badge">Admin</span>
+             <span className="role-badge">
+              {user.role === 'ROLE_ADMIN' ? 'Admin' : 'User'}
+              </span>
             </div>
             <div className="table-cell">
               <button className="btn btn-edit">Edit</button>
