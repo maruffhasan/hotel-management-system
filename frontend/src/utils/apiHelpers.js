@@ -54,12 +54,12 @@ export const getCurrentAdmin = async () => {
 };
 
 // Get all admin users
-// export const getAllAdmins = async () => {
-//   const url = `${BASE_URL}/admin/users`; // Adjust endpoint as needed
-//   return makeRequest(url, {
-//     method: 'GET',
-//   });
-// };
+export const getAllAdmins = async () => {
+  const url = `${BASE_URL}/user/all`; // Adjust endpoint as needed
+  return makeRequest(url, {
+    method: 'GET',
+  });
+};
 
 // Update admin user
 export const updateAdmin = async (userId, userData) => {

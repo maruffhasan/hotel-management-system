@@ -36,12 +36,12 @@ export default function AdminDashboard() {
   };
 
   const fetchUsers = async () => {
-    // try {
-    //   const adminUsers = await getAllAdmins();
-    //   setUsers(adminUsers);
-    // } catch (error) {
-    //   console.error('Error fetching users:', error);
-    // }
+    try {
+      const adminUsers = await getAllAdmins();
+      setUsers(adminUsers);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
   };
 
   const handleLogout = () => {
