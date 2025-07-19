@@ -95,4 +95,9 @@ public class UserServiceImp implements UserService {
         user.setPassword(null);
         return user;
     }
+
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.getAllUsers();
+    }
 }
