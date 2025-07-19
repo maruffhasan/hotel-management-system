@@ -32,10 +32,13 @@ public class UserController {
         return new ResponseEntity<>(userService.getUser(email), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping("/booking")
-    public ResponseEntity<List<Booking>> getAllBooking(Authentication auth){
-        return new ResponseEntity<>(userService.getBookings(auth.getName()), HttpStatus.OK);
+    public ResponseEntity<List<Booking>> getAllBooking(Authentication auth, @RequestParam(required = false) String email){
+        if (auth.getAuthorities().stream().findFirst().get().toString().equals("ROLE_USER")) {
+            email = auth.getName();
+        }
+        return new ResponseEntity<>(userService.getBookings(email), HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
