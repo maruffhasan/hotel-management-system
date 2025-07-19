@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -61,5 +62,10 @@ public class UserRepository {
     public void deleteReview(String email, Integer id) {
         String sql = "DELETE FROM review WHERE user_email = ? AND id = ?";
         jdbcTemplate.update(sql, email, id);
+    }
+
+    public List<User> getAllUsers() {
+        String sql = "SELECT email, first_name, last_name, role FROM users";
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
     }
 }

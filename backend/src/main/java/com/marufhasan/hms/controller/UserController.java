@@ -37,4 +37,10 @@ public class UserController {
     public ResponseEntity<List<Booking>> getAllBooking(Authentication auth){
         return new ResponseEntity<>(userService.getBookings(auth.getName()), HttpStatus.OK);
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/all")
+    public ResponseEntity<List<User>> getAllUsers(){
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
 }
