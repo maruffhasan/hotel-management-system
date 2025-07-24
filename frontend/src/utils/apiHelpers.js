@@ -110,10 +110,23 @@ export const createHotel = async (hotelData) => {
 };
 
 // Bookings
-export const getAllBookings = async () => {
-  const url = `${BASE_URL}/booking/logs`;
-  const token = localStorage.getItem('token'); 
+export const getAllBookings = async (checkInDate = null, checkOutDate = null) => {
+  let url = `${BASE_URL}/booking/logs`;
   
+  // Add query parameters if dates are provided
+  const params = new URLSearchParams();
+  if (checkInDate) {
+    params.append('from', checkInDate);
+  }
+  if (checkOutDate) {
+    params.append('to', checkOutDate);
+  }
+  
+  if (params.toString()) {
+    url += `?${params.toString()}`;
+  }
+  
+  const token = localStorage.getItem('token');
   return makeRequest(url, {
     method: 'GET',
     headers: {
