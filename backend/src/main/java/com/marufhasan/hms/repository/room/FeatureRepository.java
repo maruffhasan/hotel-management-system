@@ -19,7 +19,7 @@ public class FeatureRepository {
     }
 
     public List<Feature> getAll() {
-        String sql = "SELECT * FROM feature";
+        String sql = "SELECT * FROM feature ORDER BY id";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Feature.class));
     }
 
