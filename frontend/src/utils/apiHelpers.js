@@ -111,8 +111,16 @@ export const createHotel = async (hotelData) => {
 
 // Bookings
 export const getAllBookings = async () => {
-  const url = `${BASE_URL}/admin/bookings`;
-  return makeRequest(url, { method: 'GET' });
+  const url = `${BASE_URL}/booking/logs`;
+  const token = localStorage.getItem('token'); 
+  
+  return makeRequest(url, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+  });
 };
 
 // Reviews

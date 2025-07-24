@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { adminSignUp, getCurrentAdmin, getAllAdmins } from '../utils/apiHelpers.js';
 import UsersSection from './UsersSection.js';
+import BookingsSection from './BookingsSection.js';
 import '../styles/AdminDashboard.css';
 
 export default function AdminDashboard() {
@@ -163,7 +164,7 @@ export default function AdminDashboard() {
       case 'hotels':
         return renderPlaceholderSection('Hotels');
       case 'bookings':
-        return renderPlaceholderSection('Bookings');
+        return <BookingsSection />;
       case 'reviews':
         return renderPlaceholderSection('Reviews');
       case 'rooms':
