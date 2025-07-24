@@ -65,7 +65,7 @@ public class RoomServiceImp implements RoomService {
     }
 
     @Override
-    public List<ReviewDTO> getAllReviews(Integer roomID, Integer roomClassID) {
-        return roomRepository.getReviews(roomID, roomClassID);
+    public List<ReviewDTO> getAllReviews(LocalDate from, LocalDate to, Integer roomID, Integer roomClassID) {
+        return roomRepository.getReviews(from, to, roomID, roomClassID);
     }
 }

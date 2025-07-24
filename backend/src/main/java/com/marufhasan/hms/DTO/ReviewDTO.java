@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 public class ReviewDTO {
     private int id;
     private String name;
+    private String email;
     private Integer rating;
     private String comment;
     private LocalDateTime created_at;

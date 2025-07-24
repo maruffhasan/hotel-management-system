@@ -292,11 +292,12 @@ public class RoomRepository {
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Room.class));
     }
 
-    public List<ReviewDTO> getReviews(Integer roomID, Integer roomClassID) {
+    public List<ReviewDTO> getReviews(LocalDate from, LocalDate to, Integer roomID, Integer roomClassID) {
         StringBuilder sql = new StringBuilder("""
                 SELECT
                   r.id,
                   (u.first_name || ' ' || u.last_name) AS name,
+                  u.email,
                   r.rating,
                   r.comment,
                   rm.id AS room_id,
@@ -310,6 +311,16 @@ public class RoomRepository {
                 """);
 
         List<Object> params = new ArrayList<>();
+
+        if (from != null) {
+            if (to == null) {
+                to = LocalDate.now();
+            }
+            to = to.plusDays(1);
+            sql.append(" AND r.created_at BETWEEN ? AND ? ");
+            params.add(from);
+            params.add(to);
+        }
 
         if (roomID != null) {
             sql.append(" AND rm.id = ?");

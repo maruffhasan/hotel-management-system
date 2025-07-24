@@ -30,5 +30,5 @@ public interface RoomService {
 
     List<Room> getRooms();
 
-    List<ReviewDTO> getAllReviews(Integer roomID, Integer roomClassID);
+    List<ReviewDTO> getAllReviews(LocalDate from, LocalDate to, Integer roomID, Integer roomClassID);
 }

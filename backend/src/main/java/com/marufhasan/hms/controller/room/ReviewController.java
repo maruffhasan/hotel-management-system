@@ -61,8 +61,10 @@ public class ReviewController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/all")
-    public ResponseEntity<?> getAllReview(@RequestParam(required = false) Integer roomID,
+    public ResponseEntity<?> getAllReview(@RequestParam(required = false) LocalDate from,
+                                          @RequestParam(required = false) LocalDate to,
+                                          @RequestParam(required = false) Integer roomID,
                                           @RequestParam(required = false) Integer roomClassID){
-        return ResponseEntity.ok(roomService.getAllReviews(roomID, roomClassID));
+        return ResponseEntity.ok(roomService.getAllReviews(from, to, roomID, roomClassID));
     }
 }
