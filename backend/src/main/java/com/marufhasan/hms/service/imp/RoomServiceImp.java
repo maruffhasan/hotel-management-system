@@ -1,5 +1,6 @@
 package com.marufhasan.hms.service.imp;
 
+import com.marufhasan.hms.DTO.ReviewDTO;
 import com.marufhasan.hms.DTO.RoomDetailsDTO;
 import com.marufhasan.hms.exception.NotFoundException;
 import com.marufhasan.hms.model.room.Room;
@@ -61,5 +62,10 @@ public class RoomServiceImp implements RoomService {
     @Override
     public List<Room> getRooms() {
         return roomRepository.getRooms();
+    }
+
+    @Override
+    public List<ReviewDTO> getAllReviews(Integer roomID, Integer roomClassID) {
+        return roomRepository.getReviews(roomID, roomClassID);
     }
 }

@@ -8,6 +8,7 @@ import com.marufhasan.hms.model.room.Room;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.SqlOutParameter;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -289,5 +290,38 @@ public class RoomRepository {
     public List<Room> getRooms() {
         String sql = "SELECT * FROM room";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Room.class));
+    }
+
+    public List<ReviewDTO> getReviews(Integer roomID, Integer roomClassID) {
+        StringBuilder sql = new StringBuilder("""
+                SELECT
+                  r.id,
+                  (u.first_name || ' ' || u.last_name) AS name,
+                  r.rating,
+                  r.comment,
+                  rm.id AS room_id,
+                  rc.id AS room_class_id,
+                  r.created_at
+                FROM review r
+                JOIN users u ON r.user_email = u.email
+                JOIN room rm ON rm.id = r.room_id
+                JOIN room_class rc ON rc.id = rm.room_class_id
+                WHERE 1 = 1
+                """);
+
+        List<Object> params = new ArrayList<>();
+
+        if (roomID != null) {
+            sql.append(" AND rm.id = ?");
+            params.add(roomID);
+        }
+        if (roomClassID != null) {
+            sql.append(" AND rc.id = ?");
+            params.add(roomClassID);
+        }
+
+        sql.append(" ORDER BY r.created_at DESC");
+
+        return jdbcTemplate.query(sql.toString(), params.toArray(), new BeanPropertyRowMapper<>(ReviewDTO.class));
     }
 }

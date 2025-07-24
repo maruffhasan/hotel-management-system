@@ -2,6 +2,7 @@ package com.marufhasan.hms.controller.room;
 
 import com.marufhasan.hms.DTO.ReviewDTO;
 import com.marufhasan.hms.model.booking.Review;
+import com.marufhasan.hms.service.RoomService;
 import com.marufhasan.hms.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,8 @@ public class ReviewController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private RoomService roomService;
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/eligible")
@@ -56,13 +59,10 @@ public class ReviewController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-//    @PreAuthorize("hasRole('ADMIN')")
-//    @GetMapping("/all")
-//    public ResponseEntity<?> getAllReview(@RequestParam(required = false) LocalDate from,
-//                                          @RequestParam(required = false) LocalDate to,
-//                                          @RequestParam(required = false) Integer){
-//
-//
-//    }
-
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllReview(@RequestParam(required = false) Integer roomID,
+                                          @RequestParam(required = false) Integer roomClassID){
+        return ResponseEntity.ok(roomService.getAllReviews(roomID, roomClassID));
+    }
 }

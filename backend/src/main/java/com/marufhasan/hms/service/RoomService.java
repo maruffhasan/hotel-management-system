@@ -1,5 +1,6 @@
 package com.marufhasan.hms.service;
 
+import com.marufhasan.hms.DTO.ReviewDTO;
 import com.marufhasan.hms.DTO.RoomDetailsDTO;
 import com.marufhasan.hms.exception.NotFoundException;
 import com.marufhasan.hms.model.room.Room;
@@ -28,4 +29,6 @@ public interface RoomService {
     void delete(int id);
 
     List<Room> getRooms();
+
+    List<ReviewDTO> getAllReviews(Integer roomID, Integer roomClassID);
 }
