@@ -102,12 +102,12 @@
   text-align: center;
 }
 
-.btn-primary {
-  background-color: #3498db;
+.btn-primaryy {
+  background-color: #105481;
   color: white;
 }
 
-.btn-primary:hover {
+.btn-primaryy:hover {
   background-color: #2980b9;
 }
 
@@ -197,7 +197,7 @@
 }
 
 .role-badge {
-  background-color: #e74c3c;
+  background-color: #3181ea;
   color: white;
   padding: 4px 8px;
   border-radius: 12px;

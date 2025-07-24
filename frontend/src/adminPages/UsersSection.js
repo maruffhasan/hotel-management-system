@@ -1,4 +1,5 @@
 import React from 'react';
+import '../styles/AdminDashboard.css';
 
 const UsersSection = ({ 
   users, 
@@ -14,7 +15,7 @@ const UsersSection = ({
       <div className="section-header">
         <h1>Users</h1>
         <button
-          className="btn btn-primary"
+          className="btn btn-primaryy"
           onClick={() => setShowAddUserModal(true)}
         >
           Add New
@@ -104,7 +105,7 @@ const UsersSection = ({
                 </button>
                 <button
                   type="submit"
-                  className="btn btn-primary"
+                  className="btn btn-primaryy"
                   disabled={loading}
                 >
                   {loading ? 'Adding...' : 'Add User'}
