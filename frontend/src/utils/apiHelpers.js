@@ -8,7 +8,6 @@ const getAuthToken = () => {
 // Helper function to make authenticated requests
 const makeRequest = async (url, options = {}) => {
   const token = getAuthToken();
-  
   const config = {
     headers: {
       'Content-Type': 'application/json',
@@ -24,8 +23,19 @@ const makeRequest = async (url, options = {}) => {
     const errorData = await response.json().catch(() => ({}));
     throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
   }
+
+  // Handle empty response body
+  const text = await response.text();
+  if (!text) {
+    return { success: true, message: 'Operation completed successfully' };
+  }
   
-  return response.json();
+  try {
+    return JSON.parse(text);
+  } catch {
+    // If not JSON, return the text wrapped in an object
+    return { success: true, message: text };
+  }
 };
 
 // Admin signup function
