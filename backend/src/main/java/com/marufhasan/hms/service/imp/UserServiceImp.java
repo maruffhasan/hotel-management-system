@@ -100,4 +100,13 @@ public class UserServiceImp implements UserService {
     public List<User> getAllUsers() {
         return userRepository.getAllUsers();
     }
+
+    @Override
+    public void adminSignup(User user) throws CustomError {
+        if (userRepository.getUser(user.getEmail()).isPresent()) {
+            throw new CustomError("admin already exist with this email address...");
+        }
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        userRepository.addADmin(user);
+    }
 }

@@ -67,7 +67,9 @@ public class AuthController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/admin-sign-up")
-    public ResponseEntity<?> signUpAdmin(@RequestBody User user) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(user);
+    public ResponseEntity<?> signUpAdmin(@RequestBody User user) throws CustomError {
+        user.setRole("ROLE_ADMIN");
+        userService.adminSignup(user);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

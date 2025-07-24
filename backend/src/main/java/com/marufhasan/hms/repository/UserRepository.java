@@ -68,4 +68,13 @@ public class UserRepository {
         String sql = "SELECT email, first_name, last_name, role FROM users";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
     }
+
+    public void addADmin(User user) {
+        String sql = """
+                INSERT INTO users
+                (email, first_name, last_name, password, role)
+                VALUES (?, ?, ?, ?, ?)
+                """;
+        jdbcTemplate.update(sql, user.getEmail(), user.getFirst_name(), user.getLast_name(), user.getPassword(), user.getRole());
+    }
 }

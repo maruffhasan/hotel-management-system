@@ -28,4 +28,6 @@ public interface UserService {
     User getUser(String email);
 
     List<User> getAllUsers();
+
+    void adminSignup(User user) throws CustomError;
 }
