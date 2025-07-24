@@ -50,7 +50,7 @@ export default function RoomClassesSection() {
 
   const calculateTotalPrice = (basePrice, features) => {
     const featuresTotal = features.reduce((sum, feature) => sum + feature.price_per_use, 0);
-    return basePrice + featuresTotal;
+    return Number((basePrice + featuresTotal).toFixed(2));
   };
 
   const handleEditClick = (roomClass) => {
