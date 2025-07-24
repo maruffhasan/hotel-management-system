@@ -55,8 +55,7 @@ export default function AdminDashboard() {
     setLoading(true);
     
     try {
-      const response = await adminSignUp(newUser);
-      console.log('Admin signup response:', response);
+      response = await adminSignUp(newUser);
       
       setShowAddUserModal(false);
       setNewUser({ email: '', firstName: '', lastName: '', password: '' });
