@@ -55,7 +55,7 @@ export default function AdminDashboard() {
     setLoading(true);
     
     try {
-      await adminSignUp(newUser);
+      const res=await adminSignUp(newUser);
       setShowAddUserModal(false);
       setNewUser({ email: '', firstName: '', lastName: '', password: '' });
       fetchUsers(); // Refresh the user list

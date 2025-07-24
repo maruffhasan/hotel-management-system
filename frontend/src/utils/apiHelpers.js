@@ -30,17 +30,22 @@ const makeRequest = async (url, options = {}) => {
 
 // Admin signup function
 export const adminSignUp = async (userData) => {
+  const token = localStorage.getItem('token'); 
   const url = `${BASE_URL}/auth/admin-sign-up`;
   
   const requestData = {
+    first_name: userData.firstName,
+    last_name: userData.lastName,
     email: userData.email,
-    firstName: userData.firstName,
-    lastName: userData.lastName,
     password: userData.password,
   };
-
+  
   return makeRequest(url, {
     method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
     body: JSON.stringify(requestData),
   });
 };
