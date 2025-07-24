@@ -1,0 +1,179 @@
+.room-classes-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+          gap: 24px;
+          margin-top: 24px;
+        }
+
+        .room-class-card {
+          background: white;
+          border-radius: 8px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+          overflow: hidden;
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .room-class-card:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 20px;
+          background-color: #f8f9fa;
+          border-bottom: 1px solid #e1e8ed;
+        }
+
+        .card-header h3 {
+          margin: 0;
+          font-size: 20px;
+          font-weight: 600;
+          color: #2c3e50;
+        }
+
+        .card-content {
+          padding: 20px;
+        }
+
+        .price-info {
+          margin-bottom: 20px;
+        }
+
+        .base-price, .total-price {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 8px;
+          font-size: 14px;
+        }
+
+        .total-price {
+          font-weight: 600;
+          font-size: 16px;
+          padding-top: 8px;
+          border-top: 1px solid #e1e8ed;
+        }
+
+        .price {
+          font-weight: 600;
+          color: #27ae60;
+        }
+
+        .price.total {
+          font-size: 18px;
+          color: #2c3e50;
+        }
+
+        .features-section h4 {
+          margin: 0 0 12px 0;
+          font-size: 16px;
+          color: #2c3e50;
+        }
+
+        .features-list {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .feature-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 8px 12px;
+          background-color: #f8f9fa;
+          border-radius: 4px;
+          font-size: 14px;
+        }
+
+        .feature-name {
+          color: #2c3e50;
+        }
+
+        .feature-price {
+          font-weight: 500;
+          color: #27ae60;
+        }
+
+        .no-features {
+          color: #7f8c8d;
+          font-style: italic;
+          margin: 0;
+          font-size: 14px;
+        }
+
+        .room-class-modal {
+          max-width: 600px;
+        }
+
+        .features-selector {
+          max-height: 200px;
+          overflow-y: auto;
+          border: 1px solid #ddd;
+          border-radius: 6px;
+          padding: 12px;
+        }
+
+        .feature-checkbox {
+          margin-bottom: 8px;
+        }
+
+        .checkbox-label {
+          display: flex;
+          align-items: center;
+          cursor: pointer;
+          font-size: 14px;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+          margin-right: 8px;
+          width: auto;
+        }
+
+        .checkbox-text {
+          display: flex;
+          align-items: center;
+          flex-wrap: wrap;
+        }
+
+        .feature-price-small {
+          color: #7f8c8d;
+          font-size: 12px;
+        }
+
+        .price-preview {
+          margin-top: 20px;
+          padding: 16px;
+          background-color: #f8f9fa;
+          border-radius: 6px;
+          border: 1px solid #e1e8ed;
+        }
+
+        .preview-item {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 8px;
+          font-size: 14px;
+        }
+
+        .total-preview {
+          margin-top: 8px;
+          padding-top: 8px;
+          border-top: 1px solid #ddd;
+          font-weight: 600;
+          font-size: 16px;
+        }
+
+        @media (max-width: 768px) {
+          .room-classes-grid {
+            grid-template-columns: 1fr;
+          }
+          
+          .card-header {
+            flex-direction: column;
+            gap: 12px;
+            text-align: center;
+          }
+        }
