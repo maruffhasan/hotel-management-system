@@ -1,179 +1,354 @@
+/* Add this to your existing RoomClassesSection.css */
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.section-header h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn-primaryy {
+  background-color: #3498db;
+  color: white;
+}
+
+.btn-primaryy:hover {
+  background-color: #2980b9;
+}
+
+.btn-edit {
+  background-color: #327ecf;
+  color: white;
+  padding: 8px 12px;
+  font-size: 12px;
+}
+
+.btn-edit:hover {
+  background-color: #3c99c7;
+}
+
+.btn-secondaryy {
+  background-color: #95a5a6;
+  color: white;
+}
+
+.btn-secondaryy:hover {
+  background-color: #7f8c8d;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn:disabled:hover {
+  transform: none;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #e1e8ed;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 20px;
+  color: #2c3e50;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #7f8c8d;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close:hover {
+  color: #2c3e50;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 20px;
+  border-top: 1px solid #e1e8ed;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+/* Existing styles continue... */
 .room-classes-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-          gap: 24px;
-          margin-top: 24px;
-        }
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 24px;
+  margin-top: 24px;
+}
 
-        .room-class-card {
-          background: white;
-          border-radius: 8px;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-          overflow: hidden;
-          transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
+.room-class-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
 
-        .room-class-card:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-        }
+.room-class-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
 
-        .card-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 20px;
-          background-color: #f8f9fa;
-          border-bottom: 1px solid #e1e8ed;
-        }
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e1e8ed;
+}
 
-        .card-header h3 {
-          margin: 0;
-          font-size: 20px;
-          font-weight: 600;
-          color: #2c3e50;
-        }
+.card-header h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #2c3e50;
+}
 
-        .card-content {
-          padding: 20px;
-        }
+.card-content {
+  padding: 20px;
+}
 
-        .price-info {
-          margin-bottom: 20px;
-        }
+.price-info {
+  margin-bottom: 20px;
+}
 
-        .base-price, .total-price {
-          display: flex;
-          justify-content: space-between;
-          margin-bottom: 8px;
-          font-size: 14px;
-        }
+.base-price, .total-price {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
 
-        .total-price {
-          font-weight: 600;
-          font-size: 16px;
-          padding-top: 8px;
-          border-top: 1px solid #e1e8ed;
-        }
+.total-price {
+  font-weight: 600;
+  font-size: 16px;
+  padding-top: 8px;
+  border-top: 1px solid #e1e8ed;
+}
 
-        .price {
-          font-weight: 600;
-          color: #27ae60;
-        }
+.price {
+  font-weight: 600;
+  color: #27ae60;
+}
 
-        .price.total {
-          font-size: 18px;
-          color: #2c3e50;
-        }
+.price.total {
+  font-size: 18px;
+  color: #2c3e50;
+}
 
-        .features-section h4 {
-          margin: 0 0 12px 0;
-          font-size: 16px;
-          color: #2c3e50;
-        }
+.features-section h4 {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  color: #2c3e50;
+}
 
-        .features-list {
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
-        }
+.features-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 
-        .feature-item {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 8px 12px;
-          background-color: #f8f9fa;
-          border-radius: 4px;
-          font-size: 14px;
-        }
+.feature-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  font-size: 14px;
+}
 
-        .feature-name {
-          color: #2c3e50;
-        }
+.feature-name {
+  color: #2c3e50;
+}
 
-        .feature-price {
-          font-weight: 500;
-          color: #27ae60;
-        }
+.feature-price {
+  font-weight: 500;
+  color: #27ae60;
+}
 
-        .no-features {
-          color: #7f8c8d;
-          font-style: italic;
-          margin: 0;
-          font-size: 14px;
-        }
+.no-features {
+  color: #7f8c8d;
+  font-style: italic;
+  margin: 0;
+  font-size: 14px;
+}
 
-        .room-class-modal {
-          max-width: 600px;
-        }
+.room-class-modal {
+  max-width: 600px;
+}
 
-        .features-selector {
-          max-height: 200px;
-          overflow-y: auto;
-          border: 1px solid #ddd;
-          border-radius: 6px;
-          padding: 12px;
-        }
+.features-selector {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 12px;
+}
 
-        .feature-checkbox {
-          margin-bottom: 8px;
-        }
+.feature-checkbox {
+  margin-bottom: 8px;
+}
 
-        .checkbox-label {
-          display: flex;
-          align-items: center;
-          cursor: pointer;
-          font-size: 14px;
-        }
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 14px;
+}
 
-        .checkbox-label input[type="checkbox"] {
-          margin-right: 8px;
-          width: auto;
-        }
+.checkbox-label input[type="checkbox"] {
+  margin-right: 8px;
+  width: auto;
+}
 
-        .checkbox-text {
-          display: flex;
-          align-items: center;
-          flex-wrap: wrap;
-        }
+.checkbox-text {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
 
-        .feature-price-small {
-          color: #7f8c8d;
-          font-size: 12px;
-        }
+.feature-price-small {
+  color: #7f8c8d;
+  font-size: 12px;
+}
 
-        .price-preview {
-          margin-top: 20px;
-          padding: 16px;
-          background-color: #f8f9fa;
-          border-radius: 6px;
-          border: 1px solid #e1e8ed;
-        }
+.price-preview {
+  margin-top: 20px;
+  padding: 16px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #e1e8ed;
+}
 
-        .preview-item {
-          display: flex;
-          justify-content: space-between;
-          margin-bottom: 8px;
-          font-size: 14px;
-        }
+.preview-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
 
-        .total-preview {
-          margin-top: 8px;
-          padding-top: 8px;
-          border-top: 1px solid #ddd;
-          font-weight: 600;
-          font-size: 16px;
-        }
+.total-preview {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #ddd;
+  font-weight: 600;
+  font-size: 16px;
+}
 
-        @media (max-width: 768px) {
-          .room-classes-grid {
-            grid-template-columns: 1fr;
-          }
-          
-          .card-header {
-            flex-direction: column;
-            gap: 12px;
-            text-align: center;
-          }
-        }
+@media (max-width: 768px) {
+  .room-classes-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+  
+  .section-header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  
+  .modal {
+    width: 95%;
+    margin: 10px;
+  }
+}
