@@ -34,7 +34,7 @@ public class RoomClassRepository {
     }
 
     public List<RoomClassDTO> getAll() {
-        String sql = "SELECT * FROM room_class";
+        String sql = "SELECT * FROM room_class ORDER BY  id ASC";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(RoomClassDTO.class));
     }
 
@@ -68,6 +68,7 @@ public class RoomClassRepository {
                 JOIN room_class_feature rcf ON rcf.feature_id = f.id
                 JOIN room_class rc ON rc.id = rcf.room_class_id
                 WHERE rc.id = ?
+                ORDER BY rc.id ASC
                 """;
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Feature.class), id);
     }

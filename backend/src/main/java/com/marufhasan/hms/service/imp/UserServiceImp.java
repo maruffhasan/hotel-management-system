@@ -90,6 +90,11 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
+    public void deleteReview(Integer id) {
+        userRepository.deleteReview(id);
+    }
+
+    @Override
     public User getUser(String email) {
         User user = userRepository.getUser(email).get();
         user.setPassword(null);

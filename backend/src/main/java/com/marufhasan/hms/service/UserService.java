@@ -25,6 +25,8 @@ public interface UserService {
 
     void deleteReview(String name, Integer id);
 
+    void deleteReview(Integer id);
+
     User getUser(String email);
 
     List<User> getAllUsers();

@@ -64,6 +64,11 @@ public class UserRepository {
         jdbcTemplate.update(sql, email, id);
     }
 
+    public void deleteReview(Integer id) {
+        String sql = "DELETE FROM review WHERE id = ?";
+        jdbcTemplate.update(sql, id);
+    }
+
     public List<User> getAllUsers() {
         String sql = "SELECT email, first_name, last_name, role FROM users";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));

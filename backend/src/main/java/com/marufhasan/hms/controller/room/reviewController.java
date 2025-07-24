@@ -10,6 +10,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @RestController
 @RequestMapping("/api/review")
 public class reviewController {
@@ -43,10 +46,23 @@ public class reviewController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteReview(@PathVariable Integer id, Authentication auth){
+        if (auth.getAuthorities().stream().findFirst().get().toString().equals("ROLE_ADMIN")) {
+            userService.deleteReview(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
         userService.deleteReview(auth.getName(), id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+//    @PreAuthorize("hasRole('ADMIN')")
+//    @GetMapping("/all")
+//    public ResponseEntity<?> getAllReview(@RequestParam LocalDate from,
+//                                          @RequestParam LocalDate to,
+//                                          @RequestParam(required = false) Integer){
+//
+//    }
+
 }
