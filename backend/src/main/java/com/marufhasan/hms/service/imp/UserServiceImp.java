@@ -103,7 +103,18 @@ public class UserServiceImp implements UserService {
 
     @Override
     public List<User> getAllUsers() {
-        return userRepository.getAllUsers();
+        List<User> users = userRepository.getAllUsers();
+
+        users.sort((u1, u2) -> {
+            boolean isAdmin1 = "ROLE_ADMIN".equals(u1.getRole());
+            boolean isAdmin2 = "ROLE_ADMIN".equals(u2.getRole());
+            // If both are same (both admin or both not), keep order unchanged
+            if (isAdmin1 == isAdmin2) return 0;
+            // Admin should come first
+            return isAdmin1 ? -1 : 1;
+        });
+
+        return users;
     }
 
     @Override
