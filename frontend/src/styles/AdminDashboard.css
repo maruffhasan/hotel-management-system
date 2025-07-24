@@ -140,6 +140,14 @@
   background-color: #c0392b;
 }
 
+.btn-delete {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.btn-delete:hover {
+  background-color: #c0392b;
+}
 /* Content Section Styles */
 .content-section {
   flex: 1;

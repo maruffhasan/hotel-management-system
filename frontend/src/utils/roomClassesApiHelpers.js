@@ -74,7 +74,7 @@ export const updateRoomClass = async (id, roomClassData) => {
         });
 
         if (!response.ok)
-            throw new ERROR('Room class update failed!');
+            throw new Error('Room class update failed!');
     } catch (error) {
         console.error(`Error updating room class ${id}:`, error);
         throw error;
@@ -129,36 +129,19 @@ export const getAllFeatures = async () => {
 };
 
 /**
- * Get a specific feature by ID
- * GET /api/feature/{id}
- */
-export const getFeatureById = async (id) => {
-    try {
-        const response = await fetch(`${API_BASE_URL}/feature/${id}`, {
-            method: 'GET',
-            headers: getAuthHeaders()
-        });
-
-        return await handleResponse(response);
-    } catch (error) {
-        console.error(`Error fetching feature ${id}:`, error);
-        throw error;
-    }
-};
-
-/**
  * Create a new feature
  * POST /api/feature
  */
 export const createFeature = async (featureData) => {
     try {
-        const response = await fetch(`${API_BASE_URL}/feature`, {
+        const response = await fetch(`${API_BASE_URL}/feature/add`, {
             method: 'POST',
             headers: getAuthHeaders(),
             body: JSON.stringify(featureData)
         });
 
-        return await handleResponse(response);
+        if (!response.ok)
+            throw new Error('Error adding new feature , duplicate key value!');
     } catch (error) {
         console.error('Error creating feature:', error);
         throw error;
