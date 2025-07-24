@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import RoomList from "./pages/RoomList";
-import AdminDashboard from "./pages/AdminDashboard";
+import AdminDashboard from "./adminPages/AdminDashboard";
 import UserDashboard from "./pages/UserDashboard";
 import BookingLog from "./pages/BookingLog";
 import Chatbot from "./pages/Chatbot";
