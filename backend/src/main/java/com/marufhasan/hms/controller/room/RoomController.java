@@ -1,5 +1,6 @@
 package com.marufhasan.hms.controller.room;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marufhasan.hms.DTO.RoomDetailsDTO;
 import com.marufhasan.hms.exception.NotFoundException;
 import com.marufhasan.hms.model.room.Room;
@@ -9,7 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -22,7 +25,13 @@ public class RoomController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add")
-    public ResponseEntity<Integer> addRoom(@RequestBody Room room){
+    public ResponseEntity<Integer> addRoom(@RequestParam("room") String roomJson,
+                                           @RequestParam("image") MultipartFile image) throws IOException {
+
+        ObjectMapper mapper = new ObjectMapper();
+        Room room = mapper.readValue(roomJson, Room.class);
+
+        room.setImage(image.getBytes());
         Integer id = roomService.add(room);
         return new ResponseEntity<>(id, HttpStatus.CREATED);
     }

@@ -16,7 +16,7 @@ public class RoomDetailsDTO {
     private Integer id;
     private Integer floor;
     private Integer bed_count;
-    private String image_url;
+    private byte[] image;
 
     private Integer room_class_id;
     private String room_class_name;
