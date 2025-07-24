@@ -4,6 +4,7 @@ import { adminSignUp, getCurrentAdmin, getAllAdmins } from '../utils/apiHelpers.
 import UsersSection from './UsersSection.js';
 import BookingsSection from './BookingsSection.js';
 import '../styles/AdminDashboard.css';
+import RoomClassesSection from './RoomClassesSection.js';
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -172,7 +173,7 @@ export default function AdminDashboard() {
       case 'roomStatuses':
         return renderPlaceholderSection('Room Statuses');
       case 'roomClasses':
-        return renderPlaceholderSection('Room Classes');
+        return <RoomClassesSection />;
       case 'roomFeatures':
         return renderPlaceholderSection('Room Features');
       default:
