@@ -160,7 +160,8 @@ export const updateFeature = async (id, featureData) => {
             body: JSON.stringify(featureData)
         });
 
-        return await handleResponse(response);
+        if(!response.ok)
+            throw new Error(' ');
     } catch (error) {
         console.error(`Error updating feature ${id}:`, error);
         throw error;
