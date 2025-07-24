@@ -27,21 +27,17 @@ const UsersSection = ({
           <div className="table-cell">First Name</div>
           <div className="table-cell">Last Name</div>
           <div className="table-cell">Role</div>
-          <div className="table-cell">Actions</div>
         </div>
 
         {users.map((user, index) => (
           <div key={user.id || index} className="table-row">
             <div className="table-cell">{user.email}</div>
-            <div className="table-cell">{user.firstName}</div>
-            <div className="table-cell">{user.lastName}</div>
+            <div className="table-cell">{user.first_name}</div>
+            <div className="table-cell">{user.last_name}</div>
             <div className="table-cell">
              <span className="role-badge">
               {user.role === 'ROLE_ADMIN' ? 'Admin' : 'User'}
               </span>
-            </div>
-            <div className="table-cell">
-              <button className="btn btn-edit">Edit</button>
             </div>
           </div>
         ))}

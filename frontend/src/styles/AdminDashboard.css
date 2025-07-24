@@ -161,7 +161,7 @@
   color: #2c3e50;
 }
 
-/* Table Styles */
+/* Table Styles - Updated for 4 columns */
 .users-table {
   background: white;
   border-radius: 8px;
@@ -171,7 +171,7 @@
 
 .table-header {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 2fr 1.2fr 1.2fr 1fr;
   background-color: #f8f9fa;
   border-bottom: 1px solid #e1e8ed;
   font-weight: 600;
@@ -180,7 +180,7 @@
 
 .table-row {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 2fr 1.2fr 1.2fr 1fr;
   border-bottom: 1px solid #e1e8ed;
   transition: background-color 0.2s ease;
 }
@@ -311,7 +311,7 @@
   margin: 0;
 }
 
-/* Responsive Design */
+/* Responsive Design - Updated for 4 columns */
 @media (max-width: 768px) {
   .admin-dashboard {
     flex-direction: column;
