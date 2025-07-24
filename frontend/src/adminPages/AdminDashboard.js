@@ -55,12 +55,12 @@ export default function AdminDashboard() {
     setLoading(true);
     
     try {
-      response = await adminSignUp(newUser);
+      await adminSignUp(newUser);
       
       setShowAddUserModal(false);
       setNewUser({ email: '', firstName: '', lastName: '', password: '' });
       fetchUsers(); // Refresh the user list
-      alert(response.message || 'Admin user added successfully!');
+      alert('Admin user added successfully!');
     } catch (error) {
       console.error('Error adding user:', error);
       alert(`Error adding user: ${error.message}`);
