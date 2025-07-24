@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getAllRoomClasses, updateRoomClass, getAllFeatures } from '../utils/roomClassesApiHelpers.js';
+import { getAllRoomClasses, updateRoomClass, getAllFeatures, addRoomClass } from '../utils/roomClassesApiHelpers.js';
 import "../styles/RoomClassesSection.css"
 
 export default function RoomClassesSection() {
@@ -45,31 +45,6 @@ export default function RoomClassesSection() {
       setAllFeatures(features);
     } catch (error) {
       console.error('Error fetching features:', error);
-    }
-  };
-
-  const addRoomClass = async (roomClassData) => {
-    try {
-      const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
-      
-      const response = await fetch('http://localhost:8080/api/room-class/add', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(roomClassData)
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to add room class');
-      }
-
-      return await response.json();
-    } catch (error) {
-      console.error('Error adding room class:', error);
-      throw error;
     }
   };
 
