@@ -11,11 +11,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/review")
-public class reviewController {
+public class ReviewController {
 
     @Autowired
     private UserService userService;
@@ -59,9 +58,10 @@ public class reviewController {
 
 //    @PreAuthorize("hasRole('ADMIN')")
 //    @GetMapping("/all")
-//    public ResponseEntity<?> getAllReview(@RequestParam LocalDate from,
-//                                          @RequestParam LocalDate to,
+//    public ResponseEntity<?> getAllReview(@RequestParam(required = false) LocalDate from,
+//                                          @RequestParam(required = false) LocalDate to,
 //                                          @RequestParam(required = false) Integer){
+//
 //
 //    }
 

@@ -11,17 +11,33 @@ import {
 import "../styles/RoomList.css";
 
 export default function RoomList() {
-  const [filters, setFilters] = useState({
-    check_in: "",
-    check_out: "",
-    room_class_id: "",
-    bed_type_id: "",
-    feature_ids: [],
-    floor: "",
-    min_price: "",
-    max_price: "",
-    person_count: "",
+  const formatDate = (date) => {
+    if (!(date instanceof Date)) return ""; // fallback in case of error
+    return date.toISOString().split("T")[0]; // format as 'YYYY-MM-DD'
+  };
+
+  const [filters, setFilters] = useState(() => {
+    const now = new Date();
+    const in3Days = new Date();
+    in3Days.setDate(now.getDate() + 3);
+
+    return {
+      check_in: formatDate(now),
+      check_out: formatDate(in3Days),
+      room_class_id: "",
+      bed_type_id: "",
+      feature_ids: [],
+      floor: "",
+      min_price: "",
+      max_price: "",
+      person_count: "",
+    };
   });
+
+  useEffect(() => {
+  fetchRooms();
+  }, []);
+
 
   const [selected, setSelected] = useState(() => {
     const saved = localStorage.getItem("selectedRooms");
