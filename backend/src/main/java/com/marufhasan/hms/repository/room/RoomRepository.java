@@ -28,7 +28,7 @@ public class RoomRepository {
                     r.id,
                     r.floor,
                     r.bed_count,
-                    r.image_url,
+                    r.image,
                 
                     r.room_class_id,
                     rc.name AS room_class_name,
@@ -52,7 +52,7 @@ public class RoomRepository {
                         rs.getInt("id"),
                         rs.getInt("floor"),
                         rs.getInt("bed_count"),
-                        rs.getString("image_url"),
+                        rs.getString("image"),
 
                         rs.getInt("room_class_id"),
                         rs.getString("room_class_name"),
@@ -92,7 +92,7 @@ public class RoomRepository {
                 r.id,
                 r.floor,
                 r.bed_count,
-                r.image_url,
+                r.image,
 
                 rc.id AS room_class_id,
                 rc.name AS room_class_name,
@@ -177,7 +177,7 @@ public class RoomRepository {
                     rs.getInt("id"),
                     rs.getInt("floor"),
                     rs.getInt("bed_count"),
-                    rs.getString("image_url"),
+                    rs.getString("image"),
 
                     rs.getInt("room_class_id"),
                     rs.getString("room_class_name"),
@@ -228,7 +228,7 @@ public class RoomRepository {
         String sql =
                 """
                 INSERT INTO room 
-                (room_class_id, bed_type_id, room_status_id, image_url, floor, bed_count)
+                (room_class_id, bed_type_id, room_status_id, image, floor, bed_count)
                 VALUES (?, ?, ?, ?, ?, ?) RETURNING id
                  """;
         return jdbcTemplate.queryForObject(
@@ -237,7 +237,7 @@ public class RoomRepository {
                         room.getRoom_class_id(),
                         room.getBed_type_id(),
                         room.getRoom_status_id(),
-                        room.getImage_url(),
+                        room.getImage(),
                         room.getFloor(),
                         room.getBed_count()
                 },
@@ -257,9 +257,9 @@ public class RoomRepository {
                 sql.append("room_status_id = ?, ");
                 params.add(room.getRoom_status_id());
             }
-            if (room.getImage_url() != null) {
-                sql.append("image_url = ?, ");
-                params.add(room.getImage_url());
+            if (room.getImage() != null) {
+                sql.append("image = ?, ");
+                params.add(room.getImage());
             }
             if (room.getFloor() != null) {
                 sql.append("floor = ?, ");

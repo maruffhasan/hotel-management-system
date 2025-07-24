@@ -15,7 +15,7 @@ public class Room {
     private Integer room_class_id;
     private Integer bed_type_id;
     private Integer room_status_id;
-    private String image_url;
+    private String image;
     private Integer floor;
     private Integer bed_count;
 }

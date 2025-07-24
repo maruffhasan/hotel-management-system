@@ -298,3 +298,10 @@ CREATE TABLE review (
 );
 
 ALTER TABLE booking ADD COLUMN booking_date DATE;
+
+
+ALTER TABLE room
+DROP COLUMN image_url;
+
+ALTER TABLE room
+ADD COLUMN image BYTEA;
