@@ -162,12 +162,6 @@ export const getAllRoomStatuses = async () => {
   return makeRequest(url, { method: 'GET' });
 };
 
-// Room Classes
-export const getAllRoomClasses = async () => {
-  const url = `${BASE_URL}/admin/room-classes`;
-  return makeRequest(url, { method: 'GET' });
-};
-
 // Room Features
 export const getAllRoomFeatures = async () => {
   const url = `${BASE_URL}/admin/room-features`;
