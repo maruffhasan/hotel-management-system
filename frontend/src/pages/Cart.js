@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getRoomById, getAddon, bookRoom } from "../api";
+import { getRoomById, getAddon, bookRoom, getRoomClass } from "../api";
 import { useNavigate } from "react-router-dom";
 import {
   calculateNights,
@@ -19,12 +19,13 @@ import "../styles/Cart.css";
 export default function Cart() {
   const [selectedRoomIds, setSelectedRoomIds] = useState([]);
   const [rooms, setRooms] = useState([]);
+  const [roomClasses, setRoomClasses] = useState([]);
   const [addons, setAddons] = useState([]);
   const [selectedAddons, setSelectedAddons] = useState([]);
   const [form, setForm] = useState({
     check_in: localStorage.getItem("check_in"),
     check_out: localStorage.getItem("check_out"),
-    price: "" 
+    price: ""
   });
   const [loading, setLoading] = useState(true);
   const [bookingLoading, setBookingLoading] = useState(false);
@@ -34,44 +35,41 @@ export default function Cart() {
   const [verificationLoading, setVerificationLoading] = useState(false);
   const [verificationResult, setVerificationResult] = useState(null);
   const [verificationBookingId, setVerificationBookingId] = useState("");
-  
+  const [calculatedValues, setCalculatedValues] = useState({
+    nights: 0,
+    roomTotal: 0,
+    addonTotal: 0,
+    grandTotal: 0
+  });
+
   const navigate = useNavigate();
 
-  // Load data on component mount
+  //Load data on component mount
   useEffect(() => {
     loadCartData();
   }, []);
 
-  // Recalculate price when dependencies change
-  useEffect(() => {
-    if (rooms.length > 0) {
-      const nights = calculateNights(form.check_in, form.check_out);
-      const roomTotal = calculateRoomTotal(rooms, nights);
-      const addonTotal = calculateAddonTotal(addons, selectedAddons);
-      const grandTotal = calculateGrandTotal(roomTotal, addonTotal);
-      
-      setForm(prev => ({
-        ...prev,
-        price: grandTotal.toFixed(2)
-      }));
-    }
-  }, [rooms, addons, selectedAddons, form.check_in, form.check_out]);
-
   const loadCartData = async () => {
     try {
       setLoading(true);
-      
+
       // Get stored data
       const storedRoomIds = getStoredData("selectedRooms", []);
       const storedCheckIn = getStoredData("check_in", "");
       const storedCheckOut = getStoredData("check_out", "");
-      
+
       setSelectedRoomIds(storedRoomIds);
       setForm(prev => ({
         ...prev,
         check_in: storedCheckIn,
         check_out: storedCheckOut
       }));
+
+      // Load room classes data - FIXED: await the promise
+      const roomClassesData = await getRoomClass();
+      setRoomClasses(roomClassesData);
+
+      console.log("Loaded room classes:", roomClassesData);
 
       // Load addons
       const addonsData = await getAddon();
@@ -91,10 +89,50 @@ export default function Cart() {
     }
   };
 
+  useEffect(() => {
+    if (rooms.length > 0 && roomClasses.length > 0) {
+      const nights = calculateNights(form.check_in, form.check_out);
+      const roomTotal = calculateRoomTotal(rooms, roomClasses, nights);
+      const addonTotal = calculateAddonTotal(addons, selectedAddons, rooms.length);
+      const grandTotal = calculateGrandTotal(roomTotal, addonTotal);
+
+      console.log("Calculation Debug:", {
+        nights,
+        roomTotal,
+        addonTotal,
+        grandTotal,
+        rooms: rooms.length,
+        roomClasses: roomClasses.length
+      });
+
+      // Update calculated values state
+      setCalculatedValues({
+        nights,
+        roomTotal,
+        addonTotal,
+        grandTotal
+      });
+
+      // Update form price
+      setForm(prev => ({
+        ...prev,
+        price: grandTotal.toFixed(2)
+      }));
+    } else {
+      // Reset calculations if data is not ready
+      setCalculatedValues({
+        nights: 0,
+        roomTotal: 0,
+        addonTotal: 0,
+        grandTotal: 0
+      });
+    }
+  }, [rooms, roomClasses, addons, selectedAddons, form.check_in, form.check_out]);
+
   const removeRoom = (roomId) => {
     const updatedRoomIds = selectedRoomIds.filter(id => id !== roomId);
     const updatedRooms = rooms.filter(room => room.id !== roomId);
-    
+
     setSelectedRoomIds(updatedRoomIds);
     setRooms(updatedRooms);
     setStoredData("selectedRooms", updatedRoomIds);
@@ -142,10 +180,10 @@ export default function Cart() {
 
     try {
       const response = await bookRoom(payload);
-      
+
       // Handle different response formats
       let bookingIdValue;
-      
+
       if (typeof response === 'string') {
         // If response is directly a string (booking ID)
         bookingIdValue = response;
@@ -156,19 +194,19 @@ export default function Cart() {
         // Fallback - try to convert to string
         bookingIdValue = String(response);
       }
-      
+
       // Validate that we have a valid booking ID
       if (!bookingIdValue || bookingIdValue === 'undefined' || bookingIdValue === '[object Object]') {
         throw new Error('Invalid booking ID received from server');
       }
-      
+
       // Clear stored data
       clearStoredData(["selectedRooms", "check_in", "check_out"]);
-      
+
       // Set booking confirmation state
       setBookingConfirmed(true);
       setBookingId(bookingIdValue);
-      
+
     } catch (error) {
       console.error("Booking failed:", error);
       setErrors([error.message || "Booking failed. Please try again."]);
@@ -185,10 +223,10 @@ export default function Cart() {
       });
       return;
     }
-    
+
     setVerificationLoading(true);
     setVerificationResult(null);
-    
+
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(`http://localhost:8080/api/booking/details/${verificationBookingId.trim()}`, {
@@ -198,7 +236,7 @@ export default function Cart() {
           "Authorization": `Bearer ${token}`
         }
       });
-      
+
       if (response.ok) {
         const bookingDetails = await response.json();
         setVerificationResult({
@@ -236,6 +274,28 @@ export default function Cart() {
     setVerificationResult(null);
     setVerificationBookingId("");
     navigate("/rooms");
+  };
+
+  // Helper function to get room class data
+  const getRoomClassData = (roomClassName) => {
+    return roomClasses.find(rc => rc.name === roomClassName);
+  };
+
+  // Helper function to calculate room price with features
+  const calculateRoomPriceWithFeatures = (room) => {
+    const roomClass = getRoomClassData(room.room_class_name);
+    if (!roomClass) {
+      console.warn(`Room class ${room.room_class_name} not found, using room base price`);
+      return room.base_price;
+    }
+
+    // FIXED: Use room class base price instead of room base price
+    const basePrice = roomClass.base_price;
+    const featuresPrice = roomClass.features?.reduce((featureTotal, feature) => {
+      return featureTotal + (feature.price_per_use || 0);
+    }, 0) || 0;
+
+    return basePrice + featuresPrice;
   };
 
   if (loading) {
@@ -361,8 +421,9 @@ export default function Cart() {
   }
 
   const nights = calculateNights(form.check_in, form.check_out);
-  const roomTotal = calculateRoomTotal(rooms, nights);
-  const addonTotal = calculateAddonTotal(addons, selectedAddons);
+  const roomTotal = calculateRoomTotal(rooms, roomClasses, nights);
+  // FIXED: Pass rooms.length as roomCount parameter
+  const addonTotal = calculateAddonTotal(addons, selectedAddons, rooms.length);
   const grandTotal = calculateGrandTotal(roomTotal, addonTotal);
 
   return (
@@ -410,44 +471,54 @@ export default function Cart() {
                   <span className="section-icon">🏨</span>
                   Selected Rooms ({rooms.length})
                 </h2>
-                
-                {rooms.map(room => (
-                  <div key={room.id} className="room-item">
-                    <div className="room-icon">
-                      {getRoomIcon(room.room_class_name)}
-                    </div>
-                    <div className="room-details">
-                      <h3 className="room-number">Room #{room.id}</h3>
-                      <div className="room-info">
-                        <div className="room-info-item">
-                          <span>🏨</span>
-                          <span>{room.room_class_name}</span>
-                        </div>
-                        <div className="room-info-item">
-                          <span>🛏️</span>
-                          <span>{room.bed_type_name}</span>
-                        </div>
-                        <div className="room-info-item">
-                          <span>🏢</span>
-                          <span>Floor {room.floor || 'N/A'}</span>
-                        </div>
+
+                {rooms.map(room => {
+                  const roomPriceWithFeatures = calculateRoomPriceWithFeatures(room);
+                  const roomClass = getRoomClassData(room.room_class_name);
+
+                  return (
+                    <div key={room.id} className="room-item">
+                      <div className="room-icon">
+                        {getRoomIcon(room.room_class_name)}
                       </div>
-                      <div className="room-price">
-                        {formatPrice(room.base_price)} per night
-                        {nights > 0 && (
-                          <span> • {formatPrice(room.base_price * nights)} total</span>
+                      <div className="room-details">
+                        <h3 className="room-number">Room #{room.id}</h3>
+                        <div className="room-info">
+                          <div className="room-info-item">
+                            <span>🏨</span>
+                            <span>{room.room_class_name}</span>
+                          </div>
+                          <div className="room-info-item">
+                            <span>🛏️</span>
+                            <span>{room.bed_type_name}</span>
+                          </div>
+                          <div className="room-info-item">
+                            <span>🏢</span>
+                            <span>Floor {room.floor || 'N/A'}</span>
+                          </div>
+                        </div>
+                        <div className="room-price">
+                          {formatPrice(roomPriceWithFeatures)} per night
+                          {nights > 0 && (
+                            <span> • {formatPrice(roomPriceWithFeatures * nights)} total</span>
+                          )}
+                        </div>
+                        {roomClass && roomClass.features && roomClass.features.length > 0 && (
+                          <div className="room-features">
+                            <small>Includes: {roomClass.features.map(f => f.name).join(', ')}</small>
+                          </div>
                         )}
                       </div>
+                      <button
+                        className="remove-room"
+                        onClick={() => removeRoom(room.id)}
+                        title="Remove room"
+                      >
+                        <span className="btn-icon">🗑️</span>
+                      </button>
                     </div>
-                    <button
-                      className="remove-room"
-                      onClick={() => removeRoom(room.id)}
-                      title="Remove room"
-                    >
-                      <span className="btn-icon">🗑️</span>
-                    </button>
-                  </div>
-                ))}
+                  );
+                })}
               </section>
 
               {/* Add-ons Section */}
@@ -456,15 +527,15 @@ export default function Cart() {
                   <span className="section-icon">⭐</span>
                   Available Add-ons
                 </h2>
-                
+
                 {addons.length === 0 ? (
                   <p style={{ color: '#6c757d', textAlign: 'center', padding: '20px' }}>
                     No add-ons available
                   </p>
                 ) : (
                   addons.map(addon => (
-                    <div 
-                      key={addon.id} 
+                    <div
+                      key={addon.id}
                       className={`addon-item ${selectedAddons.includes(addon.id) ? 'selected' : ''}`}
                     >
                       <input
@@ -530,25 +601,33 @@ export default function Cart() {
               {/* Price Breakdown */}
               <div className="price-breakdown">
                 <h3 className="breakdown-title">Price Breakdown</h3>
-                
-                <div className="breakdown-item">
-                  <span>Room{rooms.length > 1 ? 's' : ''} ({nights} night{nights !== 1 ? 's' : ''})</span>
-                  <span>{formatPrice(roomTotal)}</span>
-                </div>
-                
-                {selectedAddons.length > 0 && (
-                  <div className="breakdown-item">
-                    <span>Add-ons ({selectedAddons.length})</span>
-                    <span>{formatPrice(addonTotal)}</span>
+
+                {calculatedValues.nights > 0 ? (
+                  <>
+                    <div className="breakdown-item">
+                      <span>Room{rooms.length > 1 ? 's' : ''} ({calculatedValues.nights} night{calculatedValues.nights !== 1 ? 's' : ''})</span>
+                      <span>{formatPrice(calculatedValues.roomTotal)}</span>
+                    </div>
+
+                    {selectedAddons.length > 0 && (
+                      <div className="breakdown-item">
+                        <span>Add-ons ({selectedAddons.length} × {rooms.length} room{rooms.length > 1 ? 's' : ''})</span>
+                        <span>{formatPrice(calculatedValues.addonTotal)}</span>
+                      </div>
+                    )}
+
+                    <div className="breakdown-divider"></div>
+
+                    <div className="breakdown-item total">
+                      <span>Total</span>
+                      <span>{formatPrice(calculatedValues.grandTotal)}</span>
+                    </div>
+                  </>
+                ) : (
+                  <div className="calculating-prices">
+                    <span>📊 Calculating prices...</span>
                   </div>
                 )}
-                
-                <div className="breakdown-divider"></div>
-                
-                <div className="breakdown-item total">
-                  <span>Total</span>
-                  <span>{formatPrice(grandTotal)}</span>
-                </div>
               </div>
 
               {/* Action Buttons */}
@@ -561,7 +640,7 @@ export default function Cart() {
                   <span className="btn-icon">🔙</span>
                   Back to Rooms
                 </button>
-                
+
                 <button
                   type="button"
                   className="btn btn-primary"

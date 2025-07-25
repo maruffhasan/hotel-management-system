@@ -141,3 +141,8 @@ export async function verifyBooking(bookingId) {
     throw error;
   }
 };
+
+export const getRoomClass= async() =>{
+    const roomClassesResponse = await fetch(`${API}/api/room-class/all`);
+    return await roomClassesResponse.json();
+};

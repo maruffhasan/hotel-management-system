@@ -18,42 +18,115 @@ export const calculateNights = (checkIn, checkOut) => {
 };
 
 /**
- * Calculate total room price including number of nights
+ * Calculate total room price including number of nights and features
+ * Formula: Sum of all rooms: (room_class_base_price + features_prices) * nights
  * @param {Array} rooms - Array of room objects
+ * @param {Array} roomClasses - Array of room class objects with features
  * @param {number} nights - Number of nights
  * @returns {number} Total room price
  */
-export const calculateRoomTotal = (rooms, nights) => {
-  if (!rooms.length || nights <= 0) return 0;
+export const calculateRoomTotal = (rooms, roomClasses, nights) => {
+  if (!rooms.length || nights <= 0 || !roomClasses.length) return 0;
   
   return rooms.reduce((total, room) => {
-    return total + (room.base_price * nights);
+    // Find the corresponding room class
+    const roomClass = roomClasses.find(rc => rc.name === room.room_class_name);
+    
+    if (!roomClass) {
+      // Fallback to room's base_price if room class not found
+      console.warn(`Room class ${room.room_class_name} not found, using room base price`);
+      return total + (room.base_price * nights);
+    }
+    
+    // Use room class base price (this is the correct price source)
+    const basePrice = roomClass.base_price;
+    
+    // Calculate features price from room class features
+    const featuresPrice = roomClass.features?.reduce((featureTotal, feature) => {
+      return featureTotal + (feature.price_per_use || 0);
+    }, 0) || 0;
+    
+    // Calculate room price: (base_price + features_prices) * nights
+    const roomPrice = (basePrice + featuresPrice) * nights;
+    
+    console.log(`Room ${room.id}: base=${basePrice}, features=${featuresPrice}, nights=${nights}, total=${roomPrice}`);
+    
+    return total + roomPrice;
   }, 0);
 };
 
 /**
- * Calculate total addon price
+ * Calculate total addon price (multiplied by number of rooms)
  * @param {Array} addons - Array of all available addons
  * @param {Array} selectedAddonIds - Array of selected addon IDs
+ * @param {number} roomCount - Number of rooms (addons apply per room)
  * @returns {number} Total addon price
  */
-export const calculateAddonTotal = (addons, selectedAddonIds) => {
+export const calculateAddonTotal = (addons, selectedAddonIds, roomCount = 1) => {
   if (!addons.length || !selectedAddonIds.length) return 0;
   
-  return selectedAddonIds.reduce((total, addonId) => {
+  const addonSubtotal = selectedAddonIds.reduce((total, addonId) => {
     const addon = addons.find(a => a.id === addonId);
     return total + (addon ? addon.price : 0);
   }, 0);
+  
+  // Multiply by room count since addons apply to each room
+  return addonSubtotal * roomCount;
 };
 
 /**
  * Calculate grand total (rooms + addons)
  * @param {number} roomTotal - Total room price
- * @param {number} addonTotal - Total addon price
+ * @param {number} addonTotal - Total addon price (already multiplied by room count)
  * @returns {number} Grand total
  */
 export const calculateGrandTotal = (roomTotal, addonTotal) => {
   return roomTotal + addonTotal;
+};
+
+/**
+ * Get room class data by name
+ * @param {Array} roomClasses - Array of room class objects
+ * @param {string} roomClassName - Name of the room class
+ * @returns {Object|null} Room class object or null if not found
+ */
+export const getRoomClassByName = (roomClasses, roomClassName) => {
+  return roomClasses.find(rc => rc.name === roomClassName) || null;
+};
+
+/**
+ * Calculate individual room price with features (per night)
+ * @param {Object} room - Room object
+ * @param {Array} roomClasses - Array of room class objects
+ * @returns {number} Room price per night including features
+ */
+export const calculateRoomPriceWithFeatures = (room, roomClasses) => {
+  const roomClass = getRoomClassByName(roomClasses, room.room_class_name);
+  
+  if (!roomClass) {
+    // Fallback to room's base_price if room class not found
+    console.warn(`Room class ${room.room_class_name} not found, using room base price`);
+    return room.base_price;
+  }
+  
+  // Use room class base price (this is the correct price source)
+  const basePrice = roomClass.base_price;
+  const featuresPrice = roomClass.features_id?.reduce((total, feature) => {
+    return total + (feature.price_per_use || 0);
+  }, 0) || 0;
+  
+  return basePrice + featuresPrice;
+};
+
+/**
+ * Get room features list
+ * @param {Object} room - Room object
+ * @param {Array} roomClasses - Array of room class objects
+ * @returns {Array} Array of feature objects
+ */
+export const getRoomFeatures = (room, roomClasses) => {
+  const roomClass = getRoomClassByName(roomClasses, room.room_class_name);
+  return roomClass?.features_id || [];
 };
 
 /**
@@ -176,14 +249,160 @@ export const setStoredData = (key, value) => {
 
 /**
  * Clear specific keys from localStorage
- * @param {Array} keys - Array of keys to remove
+ * @param {Array} keys - Array of localStorage keys to clear
  */
 export const clearStoredData = (keys) => {
-  keys.forEach(key => {
-    try {
+  try {
+    keys.forEach(key => {
       localStorage.removeItem(key);
-    } catch (error) {
-      console.error(`Error removing ${key} from localStorage:`, error);
+    });
+  } catch (error) {
+    console.error('Error clearing localStorage keys:', error);
+  }
+};
+
+/**
+ * Clear all cart-related data from localStorage
+ */
+export const clearAllCartData = () => {
+  const cartKeys = ['selectedRooms', 'check_in', 'check_out', 'selectedAddons'];
+  clearStoredData(cartKeys);
+};
+
+/**
+ * Get booking summary data
+ * @param {Array} rooms - Array of room objects
+ * @param {Array} roomClasses - Array of room class objects
+ * @param {Array} selectedAddons - Array of selected addon IDs
+ * @param {Array} addons - Array of all available addons
+ * @param {string} checkIn - Check-in date
+ * @param {string} checkOut - Check-out date
+ * @returns {Object} Booking summary object
+ */
+export const getBookingSummary = (rooms, roomClasses, selectedAddons, addons, checkIn, checkOut) => {
+  const nights = calculateNights(checkIn, checkOut);
+  const roomTotal = calculateRoomTotal(rooms, roomClasses, nights);
+  const addonTotal = calculateAddonTotal(addons, selectedAddons, rooms.length);
+  const grandTotal = calculateGrandTotal(roomTotal, addonTotal);
+  
+  return {
+    nights,
+    roomCount: rooms.length,
+    addonCount: selectedAddons.length,
+    roomTotal,
+    addonTotal,
+    grandTotal,
+    checkIn,
+    checkOut
+  };
+};
+
+/**
+ * Validate date range
+ * @param {string} checkIn - Check-in date (YYYY-MM-DD)
+ * @param {string} checkOut - Check-out date (YYYY-MM-DD)
+ * @returns {Object} Validation result with isValid boolean and error message
+ */
+export const validateDateRange = (checkIn, checkOut) => {
+  if (!checkIn || !checkOut) {
+    return {
+      isValid: false,
+      error: 'Both check-in and check-out dates are required'
+    };
+  }
+  
+  const checkInDate = new Date(checkIn);
+  const checkOutDate = new Date(checkOut);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  if (checkInDate < today) {
+    return {
+      isValid: false,
+      error: 'Check-in date cannot be in the past'
+    };
+  }
+  
+  if (checkOutDate <= checkInDate) {
+    return {
+      isValid: false,
+      error: 'Check-out date must be after check-in date'
+    };
+  }
+  
+  return {
+    isValid: true,
+    error: null
+  };
+};
+
+/**
+ * Calculate tax amount (if applicable)
+ * @param {number} subtotal - Subtotal amount
+ * @param {number} taxRate - Tax rate (default 0.1 for 10%)
+ * @returns {number} Tax amount
+ */
+export const calculateTax = (subtotal, taxRate = 0.1) => {
+  return subtotal * taxRate;
+};
+
+/**
+ * Calculate total with tax
+ * @param {number} subtotal - Subtotal amount
+ * @param {number} taxRate - Tax rate (default 0.1 for 10%)
+ * @returns {number} Total amount including tax
+ */
+export const calculateTotalWithTax = (subtotal, taxRate = 0.1) => {
+  const tax = calculateTax(subtotal, taxRate);
+  return subtotal + tax;
+};
+
+/**
+ * Format duration in a human-readable way
+ * @param {number} nights - Number of nights
+ * @returns {string} Formatted duration string
+ */
+export const formatDuration = (nights) => {
+  if (nights === 0) return '0 nights';
+  if (nights === 1) return '1 night';
+  return `${nights} nights`;
+};
+
+/**
+ * Get minimum stay duration (can be configured per room class)
+ * @param {string} roomClass - Room class name
+ * @returns {number} Minimum nights required
+ */
+export const getMinimumStay = (roomClass) => {
+  const minimumStays = {
+    'presidential': 2,
+    'suite': 1,
+    'deluxe': 1,
+    'standard': 1,
+    'economy': 1
+  };
+  
+  return minimumStays[roomClass?.toLowerCase()] || 1;
+};
+
+/**
+ * Check if booking meets minimum stay requirements
+ * @param {Array} rooms - Array of room objects
+ * @param {number} nights - Number of nights
+ * @returns {Object} Validation result
+ */
+export const validateMinimumStay = (rooms, nights) => {
+  const errors = [];
+  
+  rooms.forEach(room => {
+    const minStay = getMinimumStay(room.room_class_name);
+    if (nights < minStay) {
+      errors.push(`${room.room_class_name} rooms require a minimum stay of ${minStay} night${minStay > 1 ? 's' : ''}`);
     }
   });
+  
+  return {
+    isValid: errors.length === 0,
+    errors
+  };
 };
