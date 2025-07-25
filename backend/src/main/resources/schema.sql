@@ -308,3 +308,24 @@ ADD COLUMN image BYTEA;
 
 ADD COLUMN created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP;
 
+ALTER TABLE room_class_feature
+DROP CONSTRAINT room_class_feature_feature_id_fkey;
+
+ALTER TABLE room_class_feature
+DROP CONSTRAINT room_class_feature_room_class_id_fkey;
+SELECT conname
+FROM pg_constraint
+WHERE conrelid = 'room_class_feature'::regclass;
+ALTER TABLE room_class_feature
+    ADD CONSTRAINT room_class_feature_feature_id_fkey
+        FOREIGN KEY (feature_id)
+            REFERENCES feature(id)
+            ON DELETE CASCADE;
+
+ALTER TABLE room_class_feature
+    ADD CONSTRAINT room_class_feature_room_class_id_fkey
+        FOREIGN KEY (room_class_id)
+            REFERENCES room_class(id)
+            ON DELETE CASCADE;
+
+
