@@ -7,6 +7,7 @@ import {
   formatDate,
   calculateNights,
   setStoredData,
+  calculateTotalPrice
 } from "../utils/utility";
 import "../styles/RoomList.css";
 
@@ -35,7 +36,7 @@ export default function RoomList() {
   });
 
   useEffect(() => {
-  fetchRooms();
+    fetchRooms();
   }, []);
 
 
@@ -144,7 +145,7 @@ export default function RoomList() {
         <div className="container">
           <div className="filters-header">
             <h2 className="filters-title">Search Filters</h2>
-            <button 
+            <button
               className="filters-toggle"
               onClick={() => setFiltersExpanded(!filtersExpanded)}
             >
@@ -210,9 +211,9 @@ export default function RoomList() {
                   <span className="label-icon">🏨</span>
                   Room Class
                 </label>
-                <select 
-                  name="room_class_id" 
-                  value={filters.room_class_id} 
+                <select
+                  name="room_class_id"
+                  value={filters.room_class_id}
                   onChange={handleChange}
                   className="filter-select"
                 >
@@ -230,9 +231,9 @@ export default function RoomList() {
                   <span className="label-icon">🛏️</span>
                   Bed Type
                 </label>
-                <select 
-                  name="bed_type_id" 
-                  value={filters.bed_type_id} 
+                <select
+                  name="bed_type_id"
+                  value={filters.bed_type_id}
                   onChange={handleChange}
                   className="filter-select"
                 >
@@ -273,9 +274,9 @@ export default function RoomList() {
                   <span className="label-icon">🏢</span>
                   Floor
                 </label>
-                <select 
-                  name="floor" 
-                  value={filters.floor} 
+                <select
+                  name="floor"
+                  value={filters.floor}
                   onChange={handleChange}
                   className="filter-select"
                 >
@@ -324,7 +325,7 @@ export default function RoomList() {
 
           {/* Action Buttons */}
           <div className="filter-actions">
-            <button 
+            <button
               className="btn btn-primary search-btn"
               onClick={fetchRooms}
               disabled={loading}
@@ -332,7 +333,7 @@ export default function RoomList() {
               <span className="btn-icon">🔍</span>
               {loading ? 'Searching...' : 'Search Rooms'}
             </button>
-            <button 
+            <button
               className="btn btn-outline clear-btn"
               onClick={clearFilters}
             >
@@ -388,7 +389,7 @@ export default function RoomList() {
                     </div>
                     <div className="room-floor">Floor {room.floor || 'N/A'}</div>
                   </div>
-                  
+
                   <div className="room-details">
                     <div className="room-info">
                       <div className="info-item">
@@ -409,23 +410,33 @@ export default function RoomList() {
                         </span>
                       </div>
                     </div>
-                    
+
                     <div className="room-pricing">
                       <div className="price-per-night">
                         <span className="price-label">Per night</span>
-                        <span className="price-amount">{formatPrice(room.base_price)}</span>
+                        <span className="price-amount">
+                          {formatPrice(room.base_price + room.features.reduce((sum, f) => sum + f.price_per_use, 0))}
+                        </span>
                       </div>
                       {nights > 0 && (
                         <div className="total-price">
                           <span className="total-label">Total ({nights} night{nights !== 1 ? 's' : ''})</span>
-                          <span className="total-amount">{formatPrice(room.base_price * nights)}</span>
+                          <span className="total-amount">
+                            {formatPrice(
+                              calculateTotalPrice(
+                                room.base_price,
+                                room.features,
+                                nights
+                              ).subtotal
+                            )}
+                          </span>
                         </div>
                       )}
                     </div>
                   </div>
-                  
+
                   <div className="room-actions">
-                    <button 
+                    <button
                       className={`btn ${selected.includes(room.id) ? 'btn-danger' : 'btn-primary'} select-btn`}
                       onClick={() => toggleSelect(room.id)}
                     >
@@ -461,7 +472,7 @@ export default function RoomList() {
       {/* Floating Cart Button - Keep this one, it's the best UX */}
       {selected.length > 0 && (
         <div className="floating-cart">
-          <button 
+          <button
             className="btn btn-primary floating-cart-btn"
             onClick={goToCart}
           >

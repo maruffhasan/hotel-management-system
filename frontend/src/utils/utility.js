@@ -143,25 +143,34 @@ export const calculateNights = (checkIn, checkOut) => {
 };
 
 /**
- * Calculate total price for a stay
- * @param {number} basePrice - Base price per night
+ * Calculate total price including features and nights
+ * @param {number} basePrice - Base price of the room
+ * @param {Array} features - Array of feature objects with price_per_use
  * @param {number} nights - Number of nights
- * @param {number} taxRate - Tax rate (default 0.1 for 10%)
  * @returns {object} - Object with subtotal, tax, and total
  */
-export const calculateTotalPrice = (basePrice, nights, taxRate = 0.1) => {
+export const calculateTotalPrice = (basePrice, features = [], nights = 1, taxRate = 0.1) => {
   if (!basePrice || !nights) {
     return { subtotal: 0, tax: 0, total: 0 };
   }
+
+  // Calculate features total
+  const featuresTotal = features.reduce((sum, feature) => {
+    return sum + (Number(feature.price_per_use) || 0);
+  }, 0);
+
+  // Calculate price per night (base + features)
+  const pricePerNight = Number(basePrice) + featuresTotal;
   
-  const subtotal = basePrice * nights;
+  // Calculate totals
+  const subtotal = pricePerNight * nights;
   const tax = subtotal * taxRate;
   const total = subtotal + tax;
   
   return {
-    subtotal: Math.round(subtotal * 100) / 100,
-    tax: Math.round(tax * 100) / 100,
-    total: Math.round(total * 100) / 100
+    subtotal: Number(subtotal.toFixed(2)),
+    tax: Number(tax.toFixed(2)),
+    total: Number(total.toFixed(2))
   };
 };
 
