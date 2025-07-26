@@ -295,7 +295,7 @@ export default function RoomDetails() {
                 {room.reviews.map((review, index) => (
                   <div key={index} className="review-card">
                     <div className="review-header">
-                      <span className="reviewer-name">{review.guest_name}</span>
+                      <span className="reviewer-name">{review.name}</span>
                       <span className="review-rating">⭐ {review.rating}/5</span>
                     </div>
                     <p className="review-comment">{review.comment}</p>
