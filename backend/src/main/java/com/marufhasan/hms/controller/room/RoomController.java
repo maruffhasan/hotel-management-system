@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Base64;
 import java.util.List;
 
 @RestController
@@ -31,7 +32,7 @@ public class RoomController {
         ObjectMapper mapper = new ObjectMapper();
         Room room = mapper.readValue(roomJson, Room.class);
 
-        room.setImage(image.getBytes());
+        room.setImage(Base64.getEncoder().encodeToString(image.getBytes()).getBytes());
         Integer id = roomService.add(room);
         return new ResponseEntity<>(id, HttpStatus.CREATED);
     }
@@ -63,6 +64,7 @@ public class RoomController {
         room.setId(id);
         return new ResponseEntity<>(roomService.edit(room), HttpStatus.OK);
     }
+
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
