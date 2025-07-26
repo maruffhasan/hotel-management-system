@@ -63,7 +63,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     public Boolean canIgiveReview(String email, Integer id) {
-        if(bookingRepository.bookingCount(email, id) > 0) {
+        if(bookingRepository.canReviewUpTo(email, id) > 0) {
             return true;
         } else {
             return false;

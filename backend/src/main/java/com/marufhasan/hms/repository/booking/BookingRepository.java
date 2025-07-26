@@ -116,7 +116,7 @@ public class BookingRepository {
 
     public int bookingCount(String email, Integer id) {
         String sql = """
-                SELECT COUNT(*)
+                SELECT COUNT(DISTINCT b.id)
                 FROM users u
                 JOIN booking b ON u.email = b.user_email
                 JOIN booking_room br ON b.id = br.booking_id
@@ -124,5 +124,22 @@ public class BookingRepository {
                 WHERE u.email = ? AND r.id = ?
                 """;
         return jdbcTemplate.queryForObject(sql, new Object[]{email, id}, Integer.class);
+    }
+
+    public int reviewCount(String email, Integer id) {
+        String sql = """
+                SELECT COUNT(DISTINCT re.id)
+                FROM review re
+                JOIN users u ON  re.user_email = u.email
+                JOIN booking b ON u.email = b.user_email
+                JOIN booking_room br ON b.id = br.booking_id
+                JOIN room r ON br.room_id = r.id
+                WHERE u.email = ? AND r.id = ?
+                """;
+        return jdbcTemplate.queryForObject(sql, new Object[]{email, id}, Integer.class);
+    }
+
+    public int canReviewUpTo(String email, Integer id) {
+        return bookingCount(email, id) - reviewCount(email, id);
     }
 }
