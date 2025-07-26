@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getRoomById } from "../api";
-import { formatPrice, getRoomIcon } from "../utils/utility";
+import { formatPrice, getRoomIcon, setStoredData } from "../utils/utility";
 import "../styles/RoomDetails.css";
 
 export default function RoomDetails() {
@@ -11,10 +11,24 @@ export default function RoomDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Add selected state management similar to RoomList
+  const [selected, setSelected] = useState(() => {
+    const saved = localStorage.getItem("selectedRooms");
+    const savedRooms = saved ? JSON.parse(saved) : [];
+    return savedRooms.includes(parseInt(id)) || false;
+  });
+
   useEffect(() => {
     if (id) {
       fetchRoomDetails();
     }
+  }, [id]);
+
+  // Update selected state when room ID changes
+  useEffect(() => {
+    const saved = localStorage.getItem("selectedRooms");
+    const savedRooms = saved ? JSON.parse(saved) : [];
+    setSelected(savedRooms.includes(parseInt(id)));
   }, [id]);
 
   const fetchRoomDetails = async () => {
@@ -47,6 +61,36 @@ export default function RoomDetails() {
 
   const calculateTotalFeaturePrice = (features) => {
     return features.reduce((sum, feature) => sum + feature.price_per_use, 0);
+  };
+
+  // Add toggle select function similar to RoomList
+  const toggleSelect = (roomId) => {
+    const saved = localStorage.getItem("selectedRooms");
+    const savedRooms = saved ? JSON.parse(saved) : [];
+    
+    let updated;
+    if (savedRooms.includes(roomId)) {
+      updated = savedRooms.filter((id) => id !== roomId);
+      setSelected(false);
+    } else {
+      updated = [...savedRooms, roomId];
+      setSelected(true);
+    }
+    
+    localStorage.setItem("selectedRooms", JSON.stringify(updated));
+  };
+
+  // Add go to cart function similar to RoomList
+  const goToCart = () => {
+    // You might want to get these dates from URL params or state
+    // For now, using placeholder logic - you can modify as needed
+    const checkIn = new URLSearchParams(window.location.search).get('check_in');
+    const checkOut = new URLSearchParams(window.location.search).get('check_out');
+    
+    if (checkIn) setStoredData("check_in", checkIn);
+    if (checkOut) setStoredData("check_out", checkOut);
+    
+    navigate("/cart");
   };
 
   if (loading) {
@@ -89,6 +133,8 @@ export default function RoomDetails() {
       </div>
     );
   }
+
+  const isAvailable = room.room_status_name?.toLowerCase() === "available" || !room.room_status_name;
 
   return (
     <div className="room-details-container">
@@ -268,14 +314,28 @@ export default function RoomDetails() {
 
           {/* Action Buttons */}
           <div className="room-actions">
-            {room.room_status_name?.toLowerCase() === "available" || !room.room_status_name ? (
-              <button 
-                className="btn btn-primary book-btn"
-                onClick={() => navigate(`/rooms?room=${room.id}`)}
-              >
-                <span className="btn-icon">📅</span>
-                Book This Room
-              </button>
+            {isAvailable ? (
+              <>
+                <button 
+                  className={`btn ${selected ? 'btn-danger' : 'btn-primary'} book-btn`}
+                  onClick={() => toggleSelect(parseInt(room.id))}
+                >
+                  <span className="btn-icon">
+                    {selected ? '✖️' : '🛒'}
+                  </span>
+                  {selected ? 'Remove from Cart' : 'Add to Cart'}
+                </button>
+                
+                {selected && (
+                  <button 
+                    className="btn btn-primary view-cart-btn"
+                    onClick={goToCart}
+                  >
+                    <span className="btn-icon">🛒</span>
+                    View Cart
+                  </button>
+                )}
+              </>
             ) : (
               <button className="btn btn-disabled" disabled>
                 <span className="btn-icon">❌</span>
