@@ -62,7 +62,7 @@ export default function RoomDetails() {
         setCanReview(false);
         return;
       }
-      
+
       const eligible = await checkReviewEligibility(id);
       setCanReview(eligible);
     } catch (error) {
@@ -73,23 +73,23 @@ export default function RoomDetails() {
 
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!reviewData.comment.trim()) {
       alert("Please write a comment for your review.");
       return;
     }
 
     setReviewSubmitting(true);
-    
+
     try {
       await postReview(parseInt(id), reviewData.rating, reviewData.comment.trim());
       setReviewSubmitted(true);
       setShowReviewForm(false);
       setCanReview(false);
-      
+
       // Optionally refresh room details to show the new review
       // await fetchRoomDetails();
-      
+
       alert("Review submitted successfully!");
     } catch (error) {
       console.error("Error submitting review:", error);
@@ -105,7 +105,7 @@ export default function RoomDetails() {
 
   const getStatusBadgeClass = (status) => {
     if (!status) return "status-available";
-    
+
     switch (status.toLowerCase()) {
       case "available":
         return "status-available";
@@ -126,7 +126,7 @@ export default function RoomDetails() {
   const toggleSelect = (roomId) => {
     const saved = localStorage.getItem("selectedRooms");
     const savedRooms = saved ? JSON.parse(saved) : [];
-    
+
     let updated;
     if (savedRooms.includes(roomId)) {
       updated = savedRooms.filter((id) => id !== roomId);
@@ -135,7 +135,7 @@ export default function RoomDetails() {
       updated = [...savedRooms, roomId];
       setSelected(true);
     }
-    
+
     localStorage.setItem("selectedRooms", JSON.stringify(updated));
   };
 
@@ -145,10 +145,10 @@ export default function RoomDetails() {
     // For now, using placeholder logic - you can modify as needed
     const checkIn = new URLSearchParams(window.location.search).get('check_in');
     const checkOut = new URLSearchParams(window.location.search).get('check_out');
-    
+
     if (checkIn) setStoredData("check_in", checkIn);
     if (checkOut) setStoredData("check_out", checkOut);
-    
+
     navigate("/cart");
   };
 
@@ -221,12 +221,16 @@ export default function RoomDetails() {
       <main className="room-details-main">
         <div className="container">
           <div className="room-details-grid">
-            
+
             {/* Room Image Section */}
             <div className="room-image-section">
               <div className="room-image-placeholder">
                 {room.image ? (
-                  <img src={room.image} alt={`Room ${room.id}`} className="room-image" />
+                  <img
+                    src={`data:image/jpeg;base64,${room.image}`}
+                    alt={`Room ${room.id}`}
+                    className="room-image"
+                  />
                 ) : (
                   <div className="no-image">
                     <span className="no-image-icon">🏨</span>
@@ -240,7 +244,7 @@ export default function RoomDetails() {
             <div className="room-info-section">
               <div className="info-card">
                 <h2 className="info-title">Room Information</h2>
-                
+
                 <div className="info-grid">
                   <div className="info-item">
                     <span className="info-label">
@@ -289,7 +293,7 @@ export default function RoomDetails() {
               {/* Pricing Section */}
               <div className="pricing-card">
                 <h2 className="pricing-title">Pricing</h2>
-                
+
                 <div className="pricing-details">
                   <div className="price-item">
                     <span className="price-label">Base Price</span>
@@ -312,7 +316,7 @@ export default function RoomDetails() {
                     <span className="price-label">Total per Night</span>
                     <span className="price-value">
                       {formatPrice(
-                        room.base_price + 
+                        room.base_price +
                         (room.features ? calculateTotalFeaturePrice(room.features) : 0)
                       )}
                     </span>
@@ -351,7 +355,7 @@ export default function RoomDetails() {
             <div className="reviews-header">
               <h2 className="reviews-title">Guest Reviews</h2>
               {canReview && !reviewSubmitted && (
-                <button 
+                <button
                   className="btn btn-primary write-review-btn"
                   onClick={() => setShowReviewForm(!showReviewForm)}
                 >
@@ -366,7 +370,7 @@ export default function RoomDetails() {
               <div className="review-form-container">
                 <form onSubmit={handleReviewSubmit} className="review-form">
                   <h3 className="review-form-title">Write Your Review</h3>
-                  
+
                   <div className="rating-section">
                     <label className="rating-label">Rating:</label>
                     <div className="star-rating">
@@ -398,8 +402,8 @@ export default function RoomDetails() {
                   </div>
 
                   <div className="review-form-actions">
-                    <button 
-                      type="submit" 
+                    <button
+                      type="submit"
                       className="btn btn-primary"
                       disabled={reviewSubmitting || !reviewData.comment.trim()}
                     >
@@ -408,8 +412,8 @@ export default function RoomDetails() {
                       </span>
                       {reviewSubmitting ? 'Submitting...' : 'Submit Review'}
                     </button>
-                    <button 
-                      type="button" 
+                    <button
+                      type="button"
                       className="btn btn-outline"
                       onClick={() => setShowReviewForm(false)}
                       disabled={reviewSubmitting}
@@ -448,7 +452,7 @@ export default function RoomDetails() {
           <div className="room-actions">
             {isAvailable ? (
               <>
-                <button 
+                <button
                   className={`btn ${selected ? 'btn-danger' : 'btn-primary'} book-btn`}
                   onClick={() => toggleSelect(parseInt(room.id))}
                 >
@@ -457,9 +461,9 @@ export default function RoomDetails() {
                   </span>
                   {selected ? 'Remove from Cart' : 'Add to Cart'}
                 </button>
-                
+
                 {selected && (
-                  <button 
+                  <button
                     className="btn btn-primary view-cart-btn"
                     onClick={goToCart}
                   >
@@ -474,8 +478,8 @@ export default function RoomDetails() {
                 Room Not Available
               </button>
             )}
-            
-            <button 
+
+            <button
               className="btn btn-outline"
               onClick={() => navigate(-1)}
             >
