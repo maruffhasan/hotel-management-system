@@ -24,16 +24,16 @@ export default function Home() {
       check_in: checkIn,
       check_out: checkOut
     })
-    .then(data => {
-      // Apply the same filtering logic as RoomList
-      const availableRooms = data.filter(
-        (room) => 
-          room.room_status_name?.toLowerCase() === "available" ||
-          !room.room_status_name
-      );
-      setRooms(availableRooms);
-    })
-    .finally(() => setLoading(false));
+      .then(data => {
+        // Apply the same filtering logic as RoomList
+        const availableRooms = data.filter(
+          (room) =>
+            room.room_status_name?.toLowerCase() === "available" ||
+            !room.room_status_name
+        );
+        setRooms(availableRooms);
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   const handleDashboardClick = () => {
@@ -59,10 +59,10 @@ export default function Home() {
             Welcome to Hotel Yammi
           </h1>
           <p className="hero-subtitle">Experience luxury and comfort in the heart of the city</p>
-          
+
           <div className="auth-section">
             {role ? (
-              <button 
+              <button
                 className="btn btn-primary dashboard-btn"
                 onClick={handleDashboardClick}
               >
@@ -86,7 +86,7 @@ export default function Home() {
         <div className="container">
           <h2 className="section-title">Available Rooms</h2>
           <p className="section-subtitle">Choose from our selection of premium accommodations</p>
-          
+
           <div className="rooms-grid">
             {rooms.map(room => (
               <div key={room.id} className="room-card">
@@ -94,7 +94,7 @@ export default function Home() {
                   <span className="room-icon">{getRoomIcon(room.room_class_name)}</span>
                   <h3 className="room-number">Room #{room.id}</h3>
                 </div>
-                
+
                 <div className="room-details">
                   <div className="room-info">
                     <span className="room-class">{room.room_class_name}</span>
@@ -103,22 +103,26 @@ export default function Home() {
                       {room.bed_type_name}
                     </span>
                   </div>
-                  
+
                   <div className="room-price">
                     <span className="price-label">Starting from</span>
                     <span className="price-amount">{formatPrice(room.base_price)}</span>
                     <span className="price-period">per night</span>
                   </div>
                 </div>
-                
-                {/* <button className="btn btn-outline book-btn">
-                  <span className="btn-icon">📅</span>
-                  Book Now
-                </button> */}
+
+                <div className="room-card-actions">
+                  <Link to={`/room/${room.id}`} className="btn-link">
+                    <button className="btn btn-outline view-details-btn">
+                      <span className="btn-icon">🔍</span>
+                      View Details
+                    </button>
+                  </Link>
+                </div>
               </div>
             ))}
           </div>
-          
+
           {rooms.length === 0 && (
             <div className="no-rooms">
               <span className="no-rooms-icon">🏨</span>

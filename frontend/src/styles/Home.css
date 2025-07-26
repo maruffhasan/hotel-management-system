@@ -122,9 +122,12 @@ body {
   to { transform: translateY(0); opacity: 1; }
 }
 
-/* Auth Section */
+/* Auth Section - Fixed for proper button placement */
 .auth-section {
   animation: fadeIn 0.8s ease-out 0.4s both;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 @keyframes fadeIn {
@@ -132,10 +135,26 @@ body {
   to { opacity: 1; }
 }
 
+/* Dashboard Button Specific Styling */
+.dashboard-btn {
+  min-width: 200px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-btn {
+  min-width: 150px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
 /* Buttons */
 .btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   padding: 12px 30px;
   border: none;
   border-radius: 50px;
@@ -206,6 +225,7 @@ body {
 
 .btn-link {
   text-decoration: none;
+  display: inline-block;
 }
 
 /* Rooms Section */
@@ -337,6 +357,15 @@ body {
   color: #7f8c8d;
 }
 
+.room-card-actions {
+  margin-top: 1rem;
+}
+
+.view-details-btn {
+  width: 100%;
+  justify-content: center;
+}
+
 .book-btn {
   width: 100%;
   justify-content: center;
@@ -406,6 +435,12 @@ body {
   .rooms-section {
     padding: 60px 0;
   }
+
+  .dashboard-btn,
+  .login-btn {
+    min-width: 180px;
+    padding: 10px 25px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -428,5 +463,12 @@ body {
   
   .rooms-grid {
     grid-template-columns: 1fr;
+  }
+
+  .dashboard-btn,
+  .login-btn {
+    min-width: 150px;
+    padding: 10px 20px;
+    font-size: 0.9rem;
   }
 }

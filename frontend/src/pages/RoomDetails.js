@@ -1,0 +1,298 @@
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { getRoomById } from "../api";
+import { formatPrice, getRoomIcon } from "../utils/utility";
+import "../styles/RoomDetails.css";
+
+export default function RoomDetails() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [room, setRoom] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (id) {
+      fetchRoomDetails();
+    }
+  }, [id]);
+
+  const fetchRoomDetails = async () => {
+    try {
+      setLoading(true);
+      const data = await getRoomById(id);
+      setRoom(data);
+    } catch (error) {
+      console.error("Error fetching room details:", error);
+      setError("Failed to load room details");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getStatusBadgeClass = (status) => {
+    if (!status) return "status-available";
+    
+    switch (status.toLowerCase()) {
+      case "available":
+        return "status-available";
+      case "booked":
+        return "status-booked";
+      case "out of service":
+        return "status-out-of-service";
+      default:
+        return "status-unknown";
+    }
+  };
+
+  const calculateTotalFeaturePrice = (features) => {
+    return features.reduce((sum, feature) => sum + feature.price_per_use, 0);
+  };
+
+  if (loading) {
+    return (
+      <div className="room-details-container">
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Loading room details...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="room-details-container">
+        <div className="error-container">
+          <span className="error-icon">❌</span>
+          <h3>Error</h3>
+          <p>{error}</p>
+          <button className="btn btn-primary" onClick={() => navigate(-1)}>
+            Go Back
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!room) {
+    return (
+      <div className="room-details-container">
+        <div className="error-container">
+          <span className="error-icon">🔍</span>
+          <h3>Room Not Found</h3>
+          <p>The room you're looking for doesn't exist.</p>
+          <button className="btn btn-primary" onClick={() => navigate(-1)}>
+            Go Back
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="room-details-container">
+      {/* Header */}
+      <header className="room-details-header">
+        <div className="container">
+          <button className="back-btn" onClick={() => navigate(-1)}>
+            <span className="back-icon">←</span>
+            Back
+          </button>
+          <div className="room-title-section">
+            <h1 className="room-title">
+              <span className="room-icon">{getRoomIcon(room.room_class_name)}</span>
+              Room #{room.id}
+            </h1>
+            <div className="room-subtitle">
+              <span className="room-class">{room.room_class_name}</span>
+              <span className="room-floor">Floor {room.floor}</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="room-details-main">
+        <div className="container">
+          <div className="room-details-grid">
+            
+            {/* Room Image Section */}
+            <div className="room-image-section">
+              <div className="room-image-placeholder">
+                {room.image ? (
+                  <img src={room.image} alt={`Room ${room.id}`} className="room-image" />
+                ) : (
+                  <div className="no-image">
+                    <span className="no-image-icon">🏨</span>
+                    <p>No image available</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Room Information */}
+            <div className="room-info-section">
+              <div className="info-card">
+                <h2 className="info-title">Room Information</h2>
+                
+                <div className="info-grid">
+                  <div className="info-item">
+                    <span className="info-label">
+                      <span className="info-icon">🏨</span>
+                      Room Class
+                    </span>
+                    <span className="info-value">{room.room_class_name}</span>
+                  </div>
+
+                  <div className="info-item">
+                    <span className="info-label">
+                      <span className="info-icon">🛏️</span>
+                      Bed Type
+                    </span>
+                    <span className="info-value">{room.bed_type_name}</span>
+                  </div>
+
+                  <div className="info-item">
+                    <span className="info-label">
+                      <span className="info-icon">🔢</span>
+                      Bed Count
+                    </span>
+                    <span className="info-value">{room.bed_count}</span>
+                  </div>
+
+                  <div className="info-item">
+                    <span className="info-label">
+                      <span className="info-icon">🏢</span>
+                      Floor
+                    </span>
+                    <span className="info-value">{room.floor}</span>
+                  </div>
+
+                  <div className="info-item">
+                    <span className="info-label">
+                      <span className="info-icon">📊</span>
+                      Status
+                    </span>
+                    <span className={`status-badge ${getStatusBadgeClass(room.room_status_name)}`}>
+                      {room.room_status_name || "Available"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Pricing Section */}
+              <div className="pricing-card">
+                <h2 className="pricing-title">Pricing</h2>
+                
+                <div className="pricing-details">
+                  <div className="price-item">
+                    <span className="price-label">Base Price</span>
+                    <span className="price-value">{formatPrice(room.base_price)}</span>
+                  </div>
+
+                  <div className="price-item">
+                    <span className="price-label">Price per Bed</span>
+                    <span className="price-value">{formatPrice(room.price_per_bed)}</span>
+                  </div>
+
+                  {room.features && room.features.length > 0 && (
+                    <div className="price-item">
+                      <span className="price-label">Features Total</span>
+                      <span className="price-value">{formatPrice(calculateTotalFeaturePrice(room.features))}</span>
+                    </div>
+                  )}
+
+                  <div className="price-item total-price">
+                    <span className="price-label">Total per Night</span>
+                    <span className="price-value">
+                      {formatPrice(
+                        room.base_price + 
+                        (room.features ? calculateTotalFeaturePrice(room.features) : 0)
+                      )}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Features Section */}
+          {room.features && room.features.length > 0 && (
+            <div className="features-section">
+              <h2 className="features-title">Room Features</h2>
+              <div className="features-grid">
+                {room.features.map((feature) => (
+                  <div key={feature.id} className="feature-card">
+                    <div className="feature-header">
+                      <span className="feature-icon">⭐</span>
+                      <h3 className="feature-name">{feature.name}</h3>
+                    </div>
+                    <div className="feature-price">
+                      {feature.price_per_use === 0 ? (
+                        <span className="free-badge">Free</span>
+                      ) : (
+                        <span className="price-badge">{formatPrice(feature.price_per_use)}</span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Reviews Section */}
+          {room.reviews && room.reviews.length > 0 ? (
+            <div className="reviews-section">
+              <h2 className="reviews-title">Guest Reviews</h2>
+              <div className="reviews-grid">
+                {room.reviews.map((review, index) => (
+                  <div key={index} className="review-card">
+                    <div className="review-header">
+                      <span className="reviewer-name">{review.guest_name}</span>
+                      <span className="review-rating">⭐ {review.rating}/5</span>
+                    </div>
+                    <p className="review-comment">{review.comment}</p>
+                    <span className="review-date">{review.date}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="no-reviews">
+              <span className="no-reviews-icon">💬</span>
+              <h3>No Reviews Yet</h3>
+              <p>Be the first to review this room!</p>
+            </div>
+          )}
+
+          {/* Action Buttons */}
+          <div className="room-actions">
+            {room.room_status_name?.toLowerCase() === "available" || !room.room_status_name ? (
+              <button 
+                className="btn btn-primary book-btn"
+                onClick={() => navigate(`/rooms?room=${room.id}`)}
+              >
+                <span className="btn-icon">📅</span>
+                Book This Room
+              </button>
+            ) : (
+              <button className="btn btn-disabled" disabled>
+                <span className="btn-icon">❌</span>
+                Room Not Available
+              </button>
+            )}
+            
+            <button 
+              className="btn btn-outline"
+              onClick={() => navigate(-1)}
+            >
+              <span className="btn-icon">🔙</span>
+              Back to Rooms
+            </button>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}

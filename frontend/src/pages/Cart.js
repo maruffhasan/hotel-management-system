@@ -69,8 +69,6 @@ export default function Cart() {
       const roomClassesData = await getRoomClass();
       setRoomClasses(roomClassesData);
 
-      console.log("Loaded room classes:", roomClassesData);
-
       // Load addons
       const addonsData = await getAddon();
       setAddons(addonsData);
@@ -95,15 +93,6 @@ export default function Cart() {
       const roomTotal = calculateRoomTotal(rooms, roomClasses, nights);
       const addonTotal = calculateAddonTotal(addons, selectedAddons, rooms.length);
       const grandTotal = calculateGrandTotal(roomTotal, addonTotal);
-
-      console.log("Calculation Debug:", {
-        nights,
-        roomTotal,
-        addonTotal,
-        grandTotal,
-        rooms: rooms.length,
-        roomClasses: roomClasses.length
-      });
 
       // Update calculated values state
       setCalculatedValues({

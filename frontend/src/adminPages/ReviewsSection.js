@@ -13,10 +13,7 @@ const ReviewsSection = () => {
     from: '',
     to: ''
   });
-
-  // Mock API functions - replace with your actual API calls
   
-
   const styles = {
     container: {
       height: '100vh',

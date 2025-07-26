@@ -49,8 +49,6 @@ export const calculateRoomTotal = (rooms, roomClasses, nights) => {
     // Calculate room price: (base_price + features_prices) * nights
     const roomPrice = (basePrice + featuresPrice) * nights;
     
-    console.log(`Room ${room.id}: base=${basePrice}, features=${featuresPrice}, nights=${nights}, total=${roomPrice}`);
-    
     return total + roomPrice;
   }, 0);
 };

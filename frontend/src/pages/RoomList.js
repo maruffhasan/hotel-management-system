@@ -10,6 +10,7 @@ import {
   calculateTotalPrice
 } from "../utils/utility";
 import "../styles/RoomList.css";
+import { Link } from "react-router-dom";
 
 export default function RoomList() {
   const formatDate = (date) => {
@@ -370,7 +371,6 @@ export default function RoomList() {
               Available Rooms
               {rooms.length > 0 && <span className="results-count">({rooms.length} found)</span>}
             </h2>
-            {/* REMOVED: Duplicate cart button that was here */}
           </div>
 
           {loading ? (
@@ -436,6 +436,13 @@ export default function RoomList() {
                   </div>
 
                   <div className="room-actions">
+                    <Link to={`/room/${room.id}`} className="btn-link">
+                      <button className="btn btn-outline view-details-btn">
+                        <span className="btn-icon">🔍</span>
+                        View Details
+                      </button>
+                    </Link>
+
                     <button
                       className={`btn ${selected.includes(room.id) ? 'btn-danger' : 'btn-primary'} select-btn`}
                       onClick={() => toggleSelect(room.id)}
@@ -469,7 +476,6 @@ export default function RoomList() {
         </div>
       </section>
 
-      {/* Floating Cart Button - Keep this one, it's the best UX */}
       {selected.length > 0 && (
         <div className="floating-cart">
           <button
