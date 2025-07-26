@@ -18,7 +18,7 @@ const makeRequest = async (url, options = {}) => {
   };
 
   const response = await fetch(url, config);
-  
+
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
     throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
@@ -29,7 +29,7 @@ const makeRequest = async (url, options = {}) => {
   if (!text) {
     return { success: true, message: 'Operation completed successfully' };
   }
-  
+
   try {
     return JSON.parse(text);
   } catch {
@@ -40,16 +40,16 @@ const makeRequest = async (url, options = {}) => {
 
 // Admin signup function
 export const adminSignUp = async (userData) => {
-  const token = localStorage.getItem('token'); 
+  const token = localStorage.getItem('token');
   const url = `${BASE_URL}/auth/admin-sign-up`;
-  
+
   const requestData = {
     first_name: userData.firstName,
     last_name: userData.lastName,
     email: userData.email,
     password: userData.password,
   };
-  
+
   return makeRequest(url, {
     method: 'POST',
     headers: {
@@ -112,7 +112,7 @@ export const createHotel = async (hotelData) => {
 // Bookings
 export const getAllBookings = async (checkInDate = null, checkOutDate = null) => {
   let url = `${BASE_URL}/booking/logs`;
-  
+
   // Add query parameters if dates are provided
   const params = new URLSearchParams();
   if (checkInDate) {
@@ -121,11 +121,11 @@ export const getAllBookings = async (checkInDate = null, checkOutDate = null) =>
   if (checkOutDate) {
     params.append('to', checkOutDate);
   }
-  
+
   if (params.toString()) {
     url += `?${params.toString()}`;
   }
-  
+
   const token = localStorage.getItem('token');
   return makeRequest(url, {
     method: 'GET',
@@ -137,15 +137,28 @@ export const getAllBookings = async (checkInDate = null, checkOutDate = null) =>
 };
 
 // Reviews
-export const getAllReviews = async () => {
-  const url = `${BASE_URL}/admin/reviews`;
+export const getAllReviews = async (roomID = null, roomClassID = null, from = null, to = null) => {
+  const params = new URLSearchParams();
+  if (roomID) params.append('roomID', roomID);
+  if (roomClassID) params.append('roomClassID', roomClassID);
+  if (from) params.append('from', from);
+  if (to) params.append('to', to);
+
+  const url = `${BASE_URL}/review/all${params.toString() ? '?' + params.toString() : ''}`;
   return makeRequest(url, { method: 'GET' });
 };
 
 // Rooms
 export const getAllRooms = async () => {
-  const url = `${BASE_URL}/admin/rooms`;
-  return makeRequest(url, { method: 'GET' });
+  const token= localStorage.getItem('token');
+  const url = `${BASE_URL}/rooms/getall`;
+  return makeRequest(url, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+  });
 };
 
 export const createRoom = async (roomData) => {
@@ -154,6 +167,12 @@ export const createRoom = async (roomData) => {
     method: 'POST',
     body: JSON.stringify(roomData),
   });
+};
+
+// Room Classes
+export const getAllRoomClasses = async () => {
+  const url = `${BASE_URL}/room-class/all`;
+  return makeRequest(url, { method: 'GET' });
 };
 
 // Room Statuses
