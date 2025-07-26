@@ -13,7 +13,6 @@ export default function BookingLog() {
   const [roomIds, setRoomIds] = useState([]);
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showBookingForm, setShowBookingForm] = useState(false);
   
   // Verification panel state
   const [verificationBookingId, setVerificationBookingId] = useState("");
@@ -29,7 +28,6 @@ export default function BookingLog() {
     
     if (storedRooms) {
       setRoomIds(JSON.parse(storedRooms));
-      setShowBookingForm(true);
     }
     
     setForm(prev => ({
@@ -57,34 +55,6 @@ export default function BookingLog() {
   function handleChange(e) {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
-  }
-
-  async function handleBook() {
-    try {
-      const body = {
-        ...form,
-        price: parseFloat(form.price),
-        roomIds,
-        addonIds: form.addonIds.split(',').map(Number).filter(id => !isNaN(id))
-      };
-      
-      const res = await bookRoom(body);
-      alert("Booking success");
-      
-      // Clear localStorage
-      localStorage.removeItem("selectedRooms");
-      localStorage.removeItem("check_in");
-      localStorage.removeItem("check_out");
-      
-      // Reset form and reload bookings
-      setForm({ check_in: "", check_out: "", price: 0, addonIds: "" });
-      setRoomIds([]);
-      setShowBookingForm(false);
-      loadBookings();
-    } catch (error) {
-      console.error("Booking error:", error);
-      alert("Booking failed. Please try again.");
-    }
   }
 
   async function handleVerifyBooking() {
@@ -129,63 +99,6 @@ export default function BookingLog() {
             {showVerificationPanel ? "Hide Verification" : "Verify Booking"}
           </button>
         </div>
-        
-        {showBookingForm && (
-          <div className="booking-form-section">
-            <h3>Complete Your Booking</h3>
-            <div className="booking-form">
-              <p className="selected-rooms">Selected Rooms: {roomIds.join(", ")}</p>
-              
-              <div className="form-group">
-                <label>Check-in Date</label>
-                <input 
-                  type="date" 
-                  name="check_in" 
-                  value={form.check_in} 
-                  onChange={handleChange} 
-                  required
-                />
-              </div>
-              
-              <div className="form-group">
-                <label>Check-out Date</label>
-                <input 
-                  type="date" 
-                  name="check_out" 
-                  value={form.check_out} 
-                  onChange={handleChange} 
-                  required
-                />
-              </div>
-              
-              <div className="form-group">
-                <label>Total Price</label>
-                <input 
-                  type="number" 
-                  name="price" 
-                  placeholder="Total Price" 
-                  value={form.price}
-                  onChange={handleChange} 
-                  required
-                />
-              </div>
-              
-              <div className="form-group">
-                <label>Addon IDs (optional)</label>
-                <input 
-                  name="addonIds" 
-                  placeholder="Addon IDs (comma-separated)" 
-                  value={form.addonIds}
-                  onChange={handleChange} 
-                />
-              </div>
-              
-              <button className="book-button" onClick={handleBook}>
-                Complete Booking
-              </button>
-            </div>
-          </div>
-        )}
 
         <div className="bookings-section">
           {bookings.length === 0 ? (

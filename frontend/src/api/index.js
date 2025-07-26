@@ -146,3 +146,42 @@ export const getRoomClass= async() =>{
     const roomClassesResponse = await fetch(`${API}/api/room-class/all`);
     return await roomClassesResponse.json();
 };
+
+// New review-related API functions
+export async function checkReviewEligibility(roomId) {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${API}/api/review/eligible?id=${roomId}`, {
+    method: "GET",
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json"
+    }
+  });
+  
+  return res.ok;
+}
+
+export async function postReview(roomId, rating, comment) {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${API}/api/review/post`, {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      room_id: roomId,
+      rating: rating,
+      comment: comment
+    })
+  });
+  
+  if (!res.ok) {
+    const text = await res.text();
+    const error = new Error(text || 'Failed to post review');
+    error.status = res.status;
+    throw error;
+  }
+  
+  return await res.text();
+}

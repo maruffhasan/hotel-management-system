@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getRoomById } from "../api";
+import { getRoomById, checkReviewEligibility, postReview } from "../api";
 import { formatPrice, getRoomIcon, setStoredData } from "../utils/utility";
 import "../styles/RoomDetails.css";
 
@@ -10,6 +10,16 @@ export default function RoomDetails() {
   const [room, setRoom] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Review-related state
+  const [canReview, setCanReview] = useState(false);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [reviewData, setReviewData] = useState({
+    rating: 5,
+    comment: ""
+  });
+  const [reviewSubmitting, setReviewSubmitting] = useState(false);
+  const [reviewSubmitted, setReviewSubmitted] = useState(false);
 
   // Add selected state management similar to RoomList
   const [selected, setSelected] = useState(() => {
@@ -21,6 +31,7 @@ export default function RoomDetails() {
   useEffect(() => {
     if (id) {
       fetchRoomDetails();
+      checkUserReviewEligibility();
     }
   }, [id]);
 
@@ -42,6 +53,54 @@ export default function RoomDetails() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const checkUserReviewEligibility = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setCanReview(false);
+        return;
+      }
+      
+      const eligible = await checkReviewEligibility(id);
+      setCanReview(eligible);
+    } catch (error) {
+      console.error("Error checking review eligibility:", error);
+      setCanReview(false);
+    }
+  };
+
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!reviewData.comment.trim()) {
+      alert("Please write a comment for your review.");
+      return;
+    }
+
+    setReviewSubmitting(true);
+    
+    try {
+      await postReview(parseInt(id), reviewData.rating, reviewData.comment.trim());
+      setReviewSubmitted(true);
+      setShowReviewForm(false);
+      setCanReview(false);
+      
+      // Optionally refresh room details to show the new review
+      // await fetchRoomDetails();
+      
+      alert("Review submitted successfully!");
+    } catch (error) {
+      console.error("Error submitting review:", error);
+      alert("Failed to submit review. Please try again.");
+    } finally {
+      setReviewSubmitting(false);
+    }
+  };
+
+  const handleRatingChange = (rating) => {
+    setReviewData(prev => ({ ...prev, rating }));
   };
 
   const getStatusBadgeClass = (status) => {
@@ -288,9 +347,82 @@ export default function RoomDetails() {
           )}
 
           {/* Reviews Section */}
-          {room.reviews && room.reviews.length > 0 ? (
-            <div className="reviews-section">
+          <div className="reviews-section">
+            <div className="reviews-header">
               <h2 className="reviews-title">Guest Reviews</h2>
+              {canReview && !reviewSubmitted && (
+                <button 
+                  className="btn btn-primary write-review-btn"
+                  onClick={() => setShowReviewForm(!showReviewForm)}
+                >
+                  <span className="btn-icon">✍️</span>
+                  {showReviewForm ? 'Cancel Review' : 'Write a Review'}
+                </button>
+              )}
+            </div>
+
+            {/* Review Form */}
+            {showReviewForm && (
+              <div className="review-form-container">
+                <form onSubmit={handleReviewSubmit} className="review-form">
+                  <h3 className="review-form-title">Write Your Review</h3>
+                  
+                  <div className="rating-section">
+                    <label className="rating-label">Rating:</label>
+                    <div className="star-rating">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <button
+                          key={star}
+                          type="button"
+                          className={`star-btn ${star <= reviewData.rating ? 'active' : ''}`}
+                          onClick={() => handleRatingChange(star)}
+                        >
+                          ⭐
+                        </button>
+                      ))}
+                      <span className="rating-text">({reviewData.rating}/5)</span>
+                    </div>
+                  </div>
+
+                  <div className="comment-section">
+                    <label htmlFor="comment" className="comment-label">Your Review:</label>
+                    <textarea
+                      id="comment"
+                      className="comment-textarea"
+                      placeholder="Share your experience with this room..."
+                      value={reviewData.comment}
+                      onChange={(e) => setReviewData(prev => ({ ...prev, comment: e.target.value }))}
+                      rows={4}
+                      required
+                    />
+                  </div>
+
+                  <div className="review-form-actions">
+                    <button 
+                      type="submit" 
+                      className="btn btn-primary"
+                      disabled={reviewSubmitting || !reviewData.comment.trim()}
+                    >
+                      <span className="btn-icon">
+                        {reviewSubmitting ? '⏳' : '📝'}
+                      </span>
+                      {reviewSubmitting ? 'Submitting...' : 'Submit Review'}
+                    </button>
+                    <button 
+                      type="button" 
+                      className="btn btn-outline"
+                      onClick={() => setShowReviewForm(false)}
+                      disabled={reviewSubmitting}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
+
+            {/* Existing Reviews */}
+            {room.reviews && room.reviews.length > 0 ? (
               <div className="reviews-grid">
                 {room.reviews.map((review, index) => (
                   <div key={index} className="review-card">
@@ -303,14 +435,14 @@ export default function RoomDetails() {
                   </div>
                 ))}
               </div>
-            </div>
-          ) : (
-            <div className="no-reviews">
-              <span className="no-reviews-icon">💬</span>
-              <h3>No Reviews Yet</h3>
-              <p>Be the first to review this room!</p>
-            </div>
-          )}
+            ) : (
+              <div className="no-reviews">
+                <span className="no-reviews-icon">💬</span>
+                <h3>No Reviews Yet</h3>
+                <p>Be the first to review this room!</p>
+              </div>
+            )}
+          </div>
 
           {/* Action Buttons */}
           <div className="room-actions">
