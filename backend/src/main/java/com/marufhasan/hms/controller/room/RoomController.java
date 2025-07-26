@@ -15,7 +15,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/rooms")
@@ -36,6 +38,24 @@ public class RoomController {
         Integer id = roomService.add(room);
         return new ResponseEntity<>(id, HttpStatus.CREATED);
     }
+
+    byte[] x;
+
+    @PostMapping("/addd")
+    public ResponseEntity<Integer> addRoom(@RequestParam("image") MultipartFile image) throws IOException {
+
+        x = Base64.getEncoder().encodeToString(image.getBytes()).getBytes();
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @GetMapping("/gett")
+    public Map<String, String> getRooms(@RequestParam("email") String email) {
+        Map<String, String> res = new HashMap<>();
+        String y = "x";
+        res.put("image", y);
+        return res;
+    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<RoomDetailsDTO> getRoomById(@PathVariable("id") int id) throws NotFoundException {

@@ -53,7 +53,7 @@ public class RoomRepository {
                         rs.getInt("id"),
                         rs.getInt("floor"),
                         rs.getInt("bed_count"),
-                        rs.getBytes("image"),
+                        rs.getString("image"),
 
                         rs.getInt("room_class_id"),
                         rs.getString("room_class_name"),
@@ -178,7 +178,7 @@ public class RoomRepository {
                     rs.getInt("id"),
                     rs.getInt("floor"),
                     rs.getInt("bed_count"),
-                    rs.getBytes("image"),
+                    rs.getString("image"),
 
                     rs.getInt("room_class_id"),
                     rs.getString("room_class_name"),
