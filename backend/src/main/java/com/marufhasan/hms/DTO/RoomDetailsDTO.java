@@ -12,10 +12,12 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RoomDetailsDTO {
     private Integer id;
     private Integer floor;
     private Integer bed_count;
+    private byte[] image_byte;
     private String image;
 
     private Integer room_class_id;
@@ -29,9 +31,7 @@ public class RoomDetailsDTO {
     private Integer room_status_id;
     private String room_status_name;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     List<Feature> features;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     List<Integer> features_ids;
 
     List<ReviewDTO> reviews;

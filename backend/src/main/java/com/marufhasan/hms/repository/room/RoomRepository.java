@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -49,27 +50,35 @@ public class RoomRepository {
                 WHERE r.id = ?
                 """;
         try {
-            RoomDetailsDTO roomDetailsDTO = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> new RoomDetailsDTO(
-                        rs.getInt("id"),
-                        rs.getInt("floor"),
-                        rs.getInt("bed_count"),
-                        rs.getString("image"),
+            RoomDetailsDTO roomDetailsDTO = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
+                    byte[] imageBytes = rs.getBytes("image");
+                    String base64Image = null;
+                    if (imageBytes != null) {
+                        base64Image = Base64.getEncoder().encodeToString(imageBytes);
+                    }
+                    return new RoomDetailsDTO(
+                            rs.getInt("id"),
+                            rs.getInt("floor"),
+                            rs.getInt("bed_count"),
+                            null,
+                            base64Image,
 
-                        rs.getInt("room_class_id"),
-                        rs.getString("room_class_name"),
-                        rs.getDouble("base_price"),
+                            rs.getInt("room_class_id"),
+                            rs.getString("room_class_name"),
+                            rs.getDouble("base_price"),
 
-                        rs.getInt("bed_type_id"),
-                        rs.getString("bed_type_name"),
-                        rs.getDouble("price_per_bed"),
+                            rs.getInt("bed_type_id"),
+                            rs.getString("bed_type_name"),
+                            rs.getDouble("price_per_bed"),
 
-                        rs.getInt("room_status_id"),
-                        rs.getString("room_status_name"),
+                            rs.getInt("room_status_id"),
+                            rs.getString("room_status_name"),
 
-                        getAllFeatures(rs.getInt("room_class_id")),
-                        null,
-                        getAllReviews(rs.getInt("id"))
-                ), id);
+                            getAllFeatures(rs.getInt("room_class_id")),
+                            null,
+                            getAllReviews(rs.getInt("id"))
+                    );
+                }, id);
             return  Optional.of(roomDetailsDTO);
 
         } catch (Exception e) {
@@ -174,11 +183,17 @@ public class RoomRepository {
         sql.append(" ORDER BY r.id");
 
         return jdbcTemplate.query(sql.toString(), params.toArray(), (rs, rowNum) -> {
-            RoomDetailsDTO dto = new RoomDetailsDTO(
+            byte[] imageBytes = rs.getBytes("image");
+            String base64Image = null;
+            if (imageBytes != null) {
+                base64Image = Base64.getEncoder().encodeToString(imageBytes);
+            }
+            return new RoomDetailsDTO(
                     rs.getInt("id"),
                     rs.getInt("floor"),
                     rs.getInt("bed_count"),
-                    rs.getString("image"),
+                    null,
+                    base64Image,
 
                     rs.getInt("room_class_id"),
                     rs.getString("room_class_name"),
@@ -195,8 +210,6 @@ public class RoomRepository {
                     null,
                     getAllReviews(rs.getInt("id"))
             );
-
-            return dto;
         });
     }
 
@@ -238,7 +251,7 @@ public class RoomRepository {
                         room.getRoom_class_id(),
                         room.getBed_type_id(),
                         room.getRoom_status_id(),
-                        room.getImage(),
+                        room.getImage_byte(),
                         room.getFloor(),
                         room.getBed_count()
                 },
@@ -258,9 +271,9 @@ public class RoomRepository {
                 sql.append("room_status_id = ?, ");
                 params.add(room.getRoom_status_id());
             }
-            if (room.getImage() != null) {
+            if (room.getImage_byte() != null) {
                 sql.append("image = ?, ");
-                params.add(room.getImage());
+                params.add(room.getImage_byte());
             }
             if (room.getFloor() != null) {
                 sql.append("floor = ?, ");
@@ -287,9 +300,59 @@ public class RoomRepository {
         jdbcTemplate.update(sql, id);
     }
 
-    public List<Room> getRooms() {
-        String sql = "SELECT * FROM room";
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Room.class));
+    public List<RoomDetailsDTO> getRooms() {
+        String sql = """
+                SELECT
+                    r.id,
+                    r.floor,
+                    r.bed_count,
+                    r.image,
+                
+                    r.room_class_id,
+                    rc.name AS room_class_name,
+                    rc.base_price,
+                
+                    r.bed_type_id,
+                    bt.name AS bed_type_name,
+                    bt.price_per_bed,
+                
+                    r.room_status_id,
+                    rs.status AS room_status_name
+                
+                FROM room r
+                JOIN room_class rc ON r.room_class_id = rc.id
+                JOIN bed_type bt ON r.bed_type_id = bt.id
+                JOIN room_status rs ON r.room_status_id = rs.id
+                """;
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            byte[] imageBytes = rs.getBytes("image");
+            String base64Image = null;
+            if (imageBytes != null) {
+                base64Image = Base64.getEncoder().encodeToString(imageBytes);
+            }
+            return new RoomDetailsDTO(
+                    rs.getInt("id"),
+                    rs.getInt("floor"),
+                    rs.getInt("bed_count"),
+                    null,
+                    base64Image,
+
+                    rs.getInt("room_class_id"),
+                    rs.getString("room_class_name"),
+                    rs.getDouble("base_price"),
+
+                    rs.getInt("bed_type_id"),
+                    rs.getString("bed_type_name"),
+                    rs.getDouble("price_per_bed"),
+
+                    rs.getInt("room_status_id"),
+                    rs.getString("room_status_name"),
+
+                    getAllFeatures(rs.getInt("room_class_id")),
+                    null,
+                    getAllReviews(rs.getInt("id"))
+            );
+        });
     }
 
     public List<ReviewDTO> getReviews(LocalDate from, LocalDate to, Integer roomID, Integer roomClassID) {

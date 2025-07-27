@@ -28,7 +28,7 @@ public interface RoomService {
 
     void delete(int id);
 
-    List<Room> getRooms();
+    List<RoomDetailsDTO> getRooms();
 
     List<ReviewDTO> getAllReviews(LocalDate from, LocalDate to, Integer roomID, Integer roomClassID);
 }

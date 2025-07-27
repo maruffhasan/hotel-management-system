@@ -1,5 +1,6 @@
 package com.marufhasan.hms.controller.room;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marufhasan.hms.DTO.RoomDetailsDTO;
 import com.marufhasan.hms.exception.NotFoundException;
@@ -29,31 +30,35 @@ public class RoomController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add")
     public ResponseEntity<Integer> addRoom(@RequestParam("room") String roomJson,
-                                           @RequestParam("image") MultipartFile image) throws IOException {
+                                           @RequestParam(value = "image", required = false) MultipartFile image) throws IOException {
 
         ObjectMapper mapper = new ObjectMapper();
         Room room = mapper.readValue(roomJson, Room.class);
 
-        room.setImage(Base64.getEncoder().encodeToString(image.getBytes()).getBytes());
+        if (image != null && !image.isEmpty()) {
+            room.setImage_byte(image.getBytes());
+        }
+
         Integer id = roomService.add(room);
         return new ResponseEntity<>(id, HttpStatus.CREATED);
     }
 
-    byte[] x;
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{id}")
+    public ResponseEntity<RoomDetailsDTO> updateRoom(@PathVariable("id") int id,
+                                                     @RequestParam(value = "room", required = false) String roomJson,
+                                                     @RequestParam(value = "image", required = false) MultipartFile image) throws IOException {
 
-    @PostMapping("/addd")
-    public ResponseEntity<Integer> addRoom(@RequestParam("image") MultipartFile image) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        Room room = mapper.readValue(roomJson, Room.class);
 
-        x = Base64.getEncoder().encodeToString(image.getBytes()).getBytes();
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
+        room.setId(id);
 
-    @GetMapping("/gett")
-    public Map<String, String> getRooms(@RequestParam("email") String email) {
-        Map<String, String> res = new HashMap<>();
-        String y = "x";
-        res.put("image", y);
-        return res;
+        if (image != null && !image.isEmpty()) {
+            room.setImage_byte(image.getBytes());
+        }
+
+        return new ResponseEntity<>(roomService.edit(room), HttpStatus.OK);
     }
 
 
@@ -76,13 +81,6 @@ public class RoomController {
 
     ){
         return ResponseEntity.ok(roomService.getAll(check_in, check_out, room_class_id, bed_type_id, feature_id, floor, min_price, max_price, person_count));
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/{id}")
-    public ResponseEntity<RoomDetailsDTO> updateRoom(@PathVariable("id") int id, @RequestBody Room room){
-        room.setId(id);
-        return new ResponseEntity<>(roomService.edit(room), HttpStatus.OK);
     }
 
 

@@ -60,7 +60,7 @@ public class RoomServiceImp implements RoomService {
     }
 
     @Override
-    public List<Room> getRooms() {
+    public List<RoomDetailsDTO> getRooms() {
         return roomRepository.getRooms();
     }
 
