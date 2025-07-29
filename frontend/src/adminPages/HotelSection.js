@@ -66,14 +66,7 @@ export default function HotelSection() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const formData = new FormData();
-      Object.keys(hotelData).forEach(key => {
-        if (hotelData[key]) {
-          formData.append(key, hotelData[key]);
-        }
-      });
-
-      const result = await editHotelInfo(formData);
+      const result = await editHotelInfo(hotelData);
       if (result) {
         setOriginalData(hotelData);
         setIsEditing(false);
