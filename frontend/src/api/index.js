@@ -281,3 +281,16 @@ export const editHotelInfo = async(formData) => {
     throw err;
   }
 };
+
+export const deleteReview = async (reviewId) => {
+  const response = fetch(`${API}/api/review/delete/${reviewId}`);
+
+  try{
+    if(!response.ok)
+        throw new Error("Review deletion failed");
+  }
+  catch(err)
+  {
+    console.log(err);
+  }
+};

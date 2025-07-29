@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
-import { getAllReviews, getAllRooms, getAllRoomClasses } from '../utils/apiHelpers';
+import { deleteReview } from '../api/index';
+import {getAllRooms,  getAllReviews, getAllRoomClasses,} from '../utils/apiHelpers';
 
 const ReviewsSection = () => {
   const [reviews, setReviews] = useState([]);
   const [rooms, setRooms] = useState([]);
   const [roomClasses, setRoomClasses] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [deleteConfirmation, setDeleteConfirmation] = useState({ show: false, reviewId: null, reviewerName: '' });
   const [filters, setFilters] = useState({
     roomID: '',
     roomClassID: '',
@@ -98,6 +100,17 @@ const ReviewsSection = () => {
       fontSize: '14px',
       fontWeight: '500'
     },
+    deleteButton: {
+      padding: '6px 12px',
+      backgroundColor: '#dc3545',
+      color: '#fff',
+      border: 'none',
+      borderRadius: '4px',
+      cursor: 'pointer',
+      fontSize: '12px',
+      fontWeight: '500',
+      transition: 'background-color 0.2s ease'
+    },
     statsContainer: {
       display: 'grid',
       gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
@@ -169,6 +182,13 @@ const ReviewsSection = () => {
     reviewContent: {
       flex: 1
     },
+    reviewActions: {
+      marginLeft: '15px',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'flex-end',
+      gap: '5px'
+    },
     reviewHeader: {
       display: 'flex',
       justifyContent: 'space-between',
@@ -235,6 +255,65 @@ const ReviewsSection = () => {
       padding: '40px',
       color: '#666',
       fontSize: '16px'
+    },
+    // Modal styles for confirmation dialog
+    modalOverlay: {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      zIndex: 1000
+    },
+    modal: {
+      backgroundColor: '#fff',
+      padding: '30px',
+      borderRadius: '8px',
+      boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
+      maxWidth: '400px',
+      width: '90%',
+      textAlign: 'center'
+    },
+    modalTitle: {
+      fontSize: '20px',
+      fontWeight: 'bold',
+      color: '#333',
+      marginBottom: '15px'
+    },
+    modalText: {
+      fontSize: '16px',
+      color: '#666',
+      marginBottom: '25px',
+      lineHeight: '1.5'
+    },
+    modalButtons: {
+      display: 'flex',
+      gap: '15px',
+      justifyContent: 'center'
+    },
+    confirmButton: {
+      padding: '10px 20px',
+      backgroundColor: '#dc3545',
+      color: '#fff',
+      border: 'none',
+      borderRadius: '4px',
+      cursor: 'pointer',
+      fontSize: '14px',
+      fontWeight: '500'
+    },
+    cancelButton: {
+      padding: '10px 20px',
+      backgroundColor: '#6c757d',
+      color: '#fff',
+      border: 'none',
+      borderRadius: '4px',
+      cursor: 'pointer',
+      fontSize: '14px',
+      fontWeight: '500'
     }
   };
 
@@ -324,6 +403,39 @@ const ReviewsSection = () => {
       .finally(() => {
         setLoading(false);
       });
+  };
+
+  const handleDeleteClick = (reviewId, reviewerName) => {
+    setDeleteConfirmation({
+      show: true,
+      reviewId: reviewId,
+      reviewerName: reviewerName
+    });
+  };
+
+  const handleDeleteConfirm = async () => {
+    const { reviewId } = deleteConfirmation;
+    
+    try {
+      await deleteReview(reviewId);
+      
+      // Remove the deleted review from the local state
+      setReviews(prevReviews => prevReviews.filter(review => review.id !== reviewId));
+      
+      // Close the confirmation modal
+      setDeleteConfirmation({ show: false, reviewId: null, reviewerName: '' });
+      
+      // Optionally show a success message
+      alert('Review deleted successfully!');
+      
+    } catch (error) {
+      console.error('Error deleting review:', error);
+      alert('Failed to delete review. Please try again.');
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteConfirmation({ show: false, reviewId: null, reviewerName: '' });
   };
 
   const getStatsData = () => {
@@ -637,11 +749,53 @@ const ReviewsSection = () => {
                       </div>
                     </div>
                   </div>
+                  <div style={styles.reviewActions}>
+                    <button 
+                      style={styles.deleteButton}
+                      onClick={() => handleDeleteClick(review.id, review.name)}
+                      onMouseOver={(e) => e.target.style.backgroundColor = '#c82333'}
+                      onMouseOut={(e) => e.target.style.backgroundColor = '#dc3545'}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
               ))
             )}
           </div>
         </>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteConfirmation.show && (
+        <div style={styles.modalOverlay}>
+          <div style={styles.modal}>
+            <div style={styles.modalTitle}>Confirm Delete</div>
+            <div style={styles.modalText}>
+              Are you sure you want to delete the review by <strong>{deleteConfirmation.reviewerName}</strong>?
+              <br /><br />
+              This action cannot be undone.
+            </div>
+            <div style={styles.modalButtons}>
+              <button 
+                style={styles.confirmButton}
+                onClick={handleDeleteConfirm}
+                onMouseOver={(e) => e.target.style.backgroundColor = '#c82333'}
+                onMouseOut={(e) => e.target.style.backgroundColor = '#dc3545'}
+              >
+                Yes, Delete
+              </button>
+              <button 
+                style={styles.cancelButton}
+                onClick={handleDeleteCancel}
+                onMouseOver={(e) => e.target.style.backgroundColor = '#5a6268'}
+                onMouseOut={(e) => e.target.style.backgroundColor = '#6c757d'}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
