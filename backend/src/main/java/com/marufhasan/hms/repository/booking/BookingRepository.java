@@ -134,7 +134,7 @@ public class BookingRepository {
                 JOIN booking b ON u.email = b.user_email
                 JOIN booking_room br ON b.id = br.booking_id
                 JOIN room r ON br.room_id = r.id
-                WHERE u.email = ? AND r.id = ?
+                WHERE r.id = re.room_id AND u.email = ? AND r.id = ?
                 """;
         return jdbcTemplate.queryForObject(sql, new Object[]{email, id}, Integer.class);
     }
