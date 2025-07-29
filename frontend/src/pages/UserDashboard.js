@@ -128,20 +128,6 @@ export default function UserDashboard() {
             </Link>
           </div>
         </nav>
-
-        <section className={styles.dashboardStats}>
-          <h2 className={styles.statsTitle}>Dashboard Overview</h2>
-          <div className={styles.statsGrid}>
-            <div className={styles.statCard}>
-              <h3>Account Status</h3>
-              <p className={styles.statValue}>Active</p>
-            </div>
-            <div className={styles.statCard}>
-              <h3>Member Since</h3>
-              <p className={styles.statValue}>Welcome!</p>
-            </div>
-          </div>
-        </section>
       </main>
 
       {/* Logout Confirmation Modal */}
