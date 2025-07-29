@@ -116,13 +116,6 @@ export default function AdminDashboard() {
           Rooms
         </button>
         <button
-          className={`nav-item ${activeSection === 'roomStatuses' ? 'active' : ''}`}
-          onClick={() => setActiveSection('roomStatuses')}
-        >
-          <span className="nav-icon">📊</span>
-          Room Statuses
-        </button>
-        <button
           className={`nav-item ${activeSection === 'roomClasses' ? 'active' : ''}`}
           onClick={() => setActiveSection('roomClasses')}
         >
@@ -173,8 +166,6 @@ export default function AdminDashboard() {
         return <ReviewsSection />;
       case 'rooms':
         return <RoomSection />;
-      case 'roomStatuses':
-        return renderPlaceholderSection('Room Statuses');
       case 'roomClasses':
         return <RoomClassesSection />;
       case 'roomFeatures':
