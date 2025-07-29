@@ -107,14 +107,8 @@ export default function RoomDetails() {
     if (!status) return "status-available";
 
     switch (status.toLowerCase()) {
-      case "available":
-        return "status-available";
-      case "booked":
-        return "status-booked";
-      case "out of service":
-        return "status-out-of-service";
       default:
-        return "status-unknown";
+        return "available";
     }
   };
 

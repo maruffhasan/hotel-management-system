@@ -79,12 +79,8 @@ export default function RoomList() {
     setLoading(true);
     try {
       const data = await getRooms(filters);
-      const availableRooms = data.filter(
-        (room) =>
-          room.room_status_name?.toLowerCase() === "available" ||
-          !room.room_status_name
-      );
-      setRooms(availableRooms);
+    
+      setRooms(data);
     } catch (error) {
       console.error("Error fetching rooms:", error);
     } finally {

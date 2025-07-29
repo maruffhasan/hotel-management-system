@@ -26,12 +26,7 @@ export default function Home() {
     })
       .then(data => {
         // Apply the same filtering logic as RoomList
-        const availableRooms = data.filter(
-          (room) =>
-            room.room_status_name?.toLowerCase() === "available" ||
-            !room.room_status_name
-        );
-        setRooms(availableRooms);
+        setRooms(data);
       })
       .finally(() => setLoading(false));
   }, []);
