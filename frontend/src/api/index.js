@@ -263,9 +263,10 @@ export const editHotelInfo = async(formData) => {
   const token = localStorage.getItem('token');
   const response = fetch(`${API}/api/hotel/edit`,{
     method: 'PUT',
-    body: formData,
+    body: JSON.stringify(formData),
     headers: {
       "Authorization" :`Bearer ${token}`,
+      "Content-Type": "application/json"
     }
   });
 
