@@ -32,4 +32,6 @@ public interface UserService {
     List<User> getAllUsers();
 
     void adminSignup(User user) throws CustomError;
+
+    void disableUser(String email);
 }

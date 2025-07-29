@@ -329,4 +329,5 @@ ALTER TABLE room_class_feature
             REFERENCES room_class(id)
             ON DELETE CASCADE;
 
-
+ALTER TABLE users
+    ADD COLUMN enabled BOOLEAN DEFAULT TRUE;

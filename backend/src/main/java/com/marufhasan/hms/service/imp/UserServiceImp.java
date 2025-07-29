@@ -125,4 +125,13 @@ public class UserServiceImp implements UserService {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.addADmin(user);
     }
+
+    @Override
+    public void disableUser(String email) {
+        if (userRepository.getUser(email).get().getEnabled()) {
+            userRepository.disableUser(email, false);
+        } else {
+            userRepository.disableUser(email, true);
+        }
+    }
 }

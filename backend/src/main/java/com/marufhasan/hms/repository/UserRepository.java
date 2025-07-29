@@ -82,4 +82,9 @@ public class UserRepository {
                 """;
         jdbcTemplate.update(sql, user.getEmail(), user.getFirst_name(), user.getLast_name(), user.getPassword(), user.getRole());
     }
+
+    public void disableUser(String email, boolean b) {
+        String sql = "UPDATE users SET enabled = ? WHERE  email = ?";
+        jdbcTemplate.update(sql, b, email);
+    }
 }

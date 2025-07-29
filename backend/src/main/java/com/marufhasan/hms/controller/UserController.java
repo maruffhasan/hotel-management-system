@@ -46,4 +46,11 @@ public class UserController {
     public ResponseEntity<List<User>> getAllUsers(){
         return ResponseEntity.ok(userService.getAllUsers());
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/disable")
+    public ResponseEntity<?> disableUser(@RequestParam String email){
+        userService.disableUser(email);
+        return ResponseEntity.ok().build();
+    }
 }
