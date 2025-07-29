@@ -10,6 +10,7 @@ export default function RoomDetails() {
   const [room, setRoom] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [role, setRole] = useState(localStorage.getItem('role'));
 
   // Review-related state
   const [canReview, setCanReview] = useState(false);
@@ -444,25 +445,35 @@ export default function RoomDetails() {
 
           {/* Action Buttons */}
           <div className="room-actions">
-                <button
-                  className={`btn ${selected ? 'btn-danger' : 'btn-primary'} book-btn`}
-                  onClick={() => toggleSelect(parseInt(room.id))}
-                >
-                  <span className="btn-icon">
-                    {selected ? '✖️' : '🛒'}
-                  </span>
-                  {selected ? 'Remove from Cart' : 'Add to Cart'}
-                </button>
+            <button
+              className={`btn ${selected ? 'btn-danger' : 'btn-primary'} book-btn`}
+              onClick={() => toggleSelect(parseInt(room.id))}
+            >
+              <span className="btn-icon">
+                {selected ? '✖️' : '🛒'}
+              </span>
+              {selected ? 'Remove from Cart' : 'Add to Cart'}
+            </button>
 
-                {selected && (
-                  <button
-                    className="btn btn-primary view-cart-btn"
-                    onClick={goToCart}
-                  >
-                    <span className="btn-icon">🛒</span>
-                    View Cart
-                  </button>
-                )}
+            {selected && (
+              role ? (
+                <button
+                  className="btn btn-primary view-cart-btn"
+                  onClick={goToCart}
+                >
+                  <span className="btn-icon">🛒</span>
+                  View Cart
+                </button>
+              ) : (
+                <button
+                  className="btn btn-disabled view-cart-btn"
+                  disabled
+                >
+                  <span className="btn-icon">🛒</span>
+                  Please log in to view cart
+                </button>
+              )
+            )}
             <button
               className="btn btn-outline"
               onClick={() => navigate(-1)}

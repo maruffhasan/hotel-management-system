@@ -22,7 +22,7 @@ export default function Login({ setRole }) {
         setRole(res.role);
 
         // <-- Redirect based on role here!
-        navigate(res.role === "admin" ? "/admin" : "/user");
+        navigate(res.role === "admin" ? "/admin" : "/");
     }
     catch(err)
     {

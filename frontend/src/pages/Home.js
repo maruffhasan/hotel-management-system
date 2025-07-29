@@ -9,12 +9,30 @@ export default function Home() {
   const [hotelInfo, setHotelInfo] = useState(null);
   const [features, setFeatures] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [userInfo, setUserInfo] = useState({ email: "", role: "" });
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const navigate = useNavigate();
   const role = localStorage.getItem("role");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // Get user info if logged in
+        if (role) {
+          const token = localStorage.getItem("token");
+          if (token) {
+            try {
+              const decodedToken = JSON.parse(atob(token.split('.')[1]));
+              setUserInfo({
+                email: decodedToken.sub,
+                role: role
+              });
+            } catch (error) {
+              console.error("Error decoding token:", error);
+            }
+          }
+        }
+
         // Fetch hotel info
         const hotelData = await getHotelInfo();
         setHotelInfo(hotelData);
@@ -44,10 +62,41 @@ export default function Home() {
     };
 
     fetchData();
-  }, []);
+  }, [role]);
 
-  const handleDashboardClick = () => {
-    navigate(role === "admin" ? "/admin" : "/user");
+  const handleLogout = () => {
+    localStorage.clear();
+    setUserInfo({ email: "", role: "" });
+    setShowLogoutConfirm(false);
+    navigate("/login");
+  };
+
+  const confirmLogout = () => {
+    setShowLogoutConfirm(true);
+  };
+
+  const cancelLogout = () => {
+    setShowLogoutConfirm(false);
+  };
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good morning";
+    if (hour < 17) return "Good afternoon";
+    return "Good evening";
+  };
+
+  const getRoleDisplayName = (role) => {
+    switch (role?.toLowerCase()) {
+      case "admin":
+        return "Administrator";
+      case "manager":
+        return "Hotel Manager";
+      case "guest":
+        return "Guest";
+      default:
+        return role;
+    }
   };
 
   if (loading) {
@@ -61,6 +110,52 @@ export default function Home() {
 
   return (
     <div className={styles.homeContainer}>
+      {/* Top Navigation Bar - Only show if user is logged in */}
+      {role && (
+        <nav className={styles.topNavbar}>
+          <div className={styles.navbarContent}>
+            <div className={styles.userInfo}>
+              <span className={styles.greeting}>
+                {getGreeting()}, {userInfo.email.split('@')[0]}!
+              </span>
+              <span className={styles.roleDisplay}>
+                {getRoleDisplayName(userInfo.role)}
+              </span>
+            </div>
+            
+            <div className={styles.navLinks}>
+              <Link to="/rooms" className={styles.navLink}>
+                <span className={styles.navIcon}>🏨</span>
+                Browse Rooms
+              </Link>
+              
+              <Link to="/bookingLog" className={styles.navLink}>
+                <span className={styles.navIcon}>📅</span>
+                Booking Logs
+              </Link>
+              
+              <Link to="/chatbot" className={styles.navLink}>
+                <span className={styles.navIcon}>💬</span>
+                Ask Chatbot
+              </Link>
+              
+              <Link to="/cart" className={styles.navLink}>
+                <span className={styles.navIcon}>🛒</span>
+                Cart
+              </Link>
+              
+              <button 
+                className={styles.logoutBtn}
+                onClick={confirmLogout}
+                aria-label="Logout"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        </nav>
+      )}
+
       {/* Header Section */}
       <header className={styles.heroSection}>
         <div className={styles.heroContent}>
@@ -78,24 +173,17 @@ export default function Home() {
             </p>
           )}
 
-          <div className={styles.authSection}>
-            {role ? (
-              <button
-                className={`${styles.btn} ${styles.btnPrimary} ${styles.dashboardBtn}`}
-                onClick={handleDashboardClick}
-              >
-                <span className={styles.btnIcon}>📊</span>
-                Go to Dashboard
-              </button>
-            ) : (
+          {/* Show login button only if not logged in */}
+          {!role && (
+            <div className={styles.authSection}>
               <Link to="/login" className={styles.btnLink}>
                 <button className={`${styles.btn} ${styles.btnSecondary} ${styles.loginBtn}`}>
                   <span className={styles.btnIcon}>🔐</span>
                   Login
                 </button>
               </Link>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </header>
 
@@ -222,6 +310,30 @@ export default function Home() {
             </div>
           </div>
         </section>
+      )}
+
+      {/* Logout Confirmation Modal */}
+      {showLogoutConfirm && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <h3>Confirm Logout</h3>
+            <p>Are you sure you want to logout?</p>
+            <div className={styles.modalActions}>
+              <button 
+                className={styles.cancelBtn}
+                onClick={cancelLogout}
+              >
+                Cancel
+              </button>
+              <button 
+                className={styles.confirmBtn}
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Footer */}
