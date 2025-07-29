@@ -118,7 +118,9 @@ public class RoomRepository {
             JOIN room_class rc ON r.room_class_id = rc.id
             JOIN bed_type bt ON r.bed_type_id = bt.id
             JOIN room_status rs ON r.room_status_id = rs.id
-            WHERE r.id NOT IN (
+            WHERE UPPER(rs.status) LIKE UPPER('%available%')  
+                    AND 
+                    r.id NOT IN (
                       SELECT room_id FROM booking_room br
                       JOIN booking b ON br.booking_id = b.id
                       WHERE
