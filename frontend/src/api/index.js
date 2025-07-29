@@ -261,7 +261,7 @@ export const getHotelInfo = async () => {
 
 export const editHotelInfo = async(formData) => {
   const token = localStorage.getItem('token');
-  const response = fetch(`${API}/api/hotel/edit`,{
+  const response = await fetch(`${API}/api/hotel/edit`,{
     method: 'PUT',
     body: JSON.stringify(formData),
     headers: {
