@@ -491,6 +491,9 @@
   margin-top: 20px;
   padding-top: 20px;
   border-top: 1px solid #e2e8f0;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .select-btn {
@@ -498,6 +501,21 @@
   justify-content: center;
   padding: 14px 20px;
   font-size: 1rem;
+}
+
+.view-details-btn {
+  flex: 1;
+  min-width: 120px;
+}
+
+.select-btn {
+  flex: 1;
+  min-width: 140px;
+}
+
+.btn-link {
+  text-decoration: none;
+  flex: 1;
 }
 
 /* No Results */
@@ -569,6 +587,137 @@
   font-weight: 600;
 }
 
+.features-filter {
+  grid-column: 1 / -1; /* Take full width */
+}
+
+.features-checkboxes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.feature-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.checkbox-input {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.checkbox-label {
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  user-select: none;
+}
+
+.checkbox-label:hover {
+  color: #0066cc;
+}
+
+.checkbox-input:checked + .checkbox-label {
+  color: #0066cc;
+  font-weight: 500;
+}
+
+.back-button-container {
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+/* Back button with identical header styling */
+.btn-back {
+  margin-right: auto;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.9);
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-back:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.btn-back .btn-icon {
+  font-size: 16px;
+}
+
+/* Alternative back button styles (if needed) */
+.btn-back-tonal {
+  background: rgba(248, 249, 250, 0.8);
+  border: 1px solid rgba(248, 249, 250, 0.9);
+  color: rgba(0, 0, 0, 0.35);
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-back-tonal:hover {
+  background: rgba(248, 249, 250, 1);
+  color: rgba(0, 0, 0, 0.6);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+.btn-back-minimal {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  padding: 8px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 4px;
+}
+
+.btn-back-minimal:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.btn-back-glass {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  color: rgba(255, 255, 255, 0.7);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-back-glass:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.9);
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .page-title {
@@ -618,6 +767,10 @@
     height: 50px;
     font-size: 1.3rem;
   }
+
+  .features-checkboxes {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 480px) {
@@ -641,70 +794,3 @@
     gap: 10px;
   }
 }
-
-.features-filter {
-  grid-column: 1 / -1; /* Take full width */
-}
-
-.features-checkboxes {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 8px;
-  margin-top: 8px;
-}
-
-.feature-checkbox {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.checkbox-input {
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
-}
-
-.checkbox-label {
-  cursor: pointer;
-  font-size: 14px;
-  color: #333;
-  user-select: none;
-}
-
-.checkbox-label:hover {
-  color: #0066cc;
-}
-
-.checkbox-input:checked + .checkbox-label {
-  color: #0066cc;
-  font-weight: 500;
-}
-
-@media (max-width: 768px) {
-  .features-checkboxes {
-    grid-template-columns: 1fr;
-  }
-}
-
-.room-actions {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.view-details-btn {
-  flex: 1;
-  min-width: 120px;
-}
-
-.select-btn {
-  flex: 1;
-  min-width: 140px;
-}
-
-.btn-link {
-  text-decoration: none;
-  flex: 1;
-}
-

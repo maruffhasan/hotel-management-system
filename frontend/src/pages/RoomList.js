@@ -101,6 +101,10 @@ export default function RoomList() {
     });
   };
 
+  const goToHome = async() =>{
+    navigate('/');
+  };
+
   const goToCart = () => {
     setStoredData("check_in", filters.check_in);
     setStoredData("check_out", filters.check_out);
@@ -129,6 +133,15 @@ export default function RoomList() {
       {/* Header */}
       <header className="roomlist-header">
         <div className="container">
+          <div className="back-button-container">
+            <button
+              className="btn btn-back"
+              onClick={goToHome}
+            >
+              <span className="btn-icon">🏠</span>
+              Back to Home
+            </button>
+          </div>
           <h1 className="page-title">
             <span className="title-icon">🔍</span>
             Find Your Perfect Room
