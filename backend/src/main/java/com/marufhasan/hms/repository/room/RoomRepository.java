@@ -139,12 +139,12 @@ public class RoomRepository {
 
 
         if (room_class_id != null) {
-            sql.append(" AND rc.id = ?");
+            sql.append(" AND rc.id = ? ");
             params.add(room_class_id);
         }
 
         if (bed_type_id != null) {
-            sql.append(" AND bt.id = ?");
+            sql.append(" AND bt.id = ? ");
             params.add(bed_type_id);
         }
 
@@ -167,26 +167,26 @@ public class RoomRepository {
 
 
         if (floor != null) {
-            sql.append(" AND r.floor = ?");
+            sql.append(" AND r.floor = ? ");
             params.add(floor);
         }
 
         if (min_price != null) {
-            sql.append(" AND rc.base_price >= ?");
+            sql.append(" AND rc.base_price >= ? ");
             params.add(min_price);
         }
 
         if (max_price != null) {
-            sql.append(" AND rc.base_price <= ?");
+            sql.append(" AND rc.base_price <= ? ");
             params.add(max_price);
         }
 
         if (person_count != null) {
-            sql.append(" AND r.bed_count * bt.max_person >= ?");
+            sql.append(" AND r.bed_count * bt.max_person >= ? ");
             params.add(person_count);
         }
 
-        sql.append(" ORDER BY r.id");
+        sql.append(" ORDER BY r.id ");
 
         return jdbcTemplate.query(sql.toString(), params.toArray(), (rs, rowNum) -> {
             byte[] imageBytes = rs.getBytes("image");
