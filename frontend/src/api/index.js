@@ -242,3 +242,41 @@ export const roomAdd = async (formData) => {
     throw err;
   }
 };
+
+export const getHotelInfo = async () => {
+  const response = await fetch(`${API}/api/hotel/details`);
+
+  try{
+    if(!response.ok)
+        throw new Error("Error fetching hotel info");
+
+    return await response.json();
+  }
+  catch(err)
+  {
+    console.log(err);
+    throw err;
+  }
+};
+
+export const editHotelInfo = async(formData) => {
+  const token = localStorage.getItem('token');
+  const response = fetch(`${API}/api/hotel/edit`,{
+    method: 'PUT',
+    body: formData,
+    headers: {
+      "Authorization" :`Bearer ${token}`,
+    }
+  });
+
+  try{
+    if(!response.ok)
+        throw new Error("Error editing hotel information");
+    
+    return await response.json();
+  }
+  catch(err){
+    console.log(err);
+    throw err;
+  }
+};

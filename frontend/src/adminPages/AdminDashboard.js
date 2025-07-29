@@ -8,6 +8,7 @@ import RoomClassesSection from './RoomClassesSection.js';
 import RoomFeaturesSection from './RoomFeaturesSection.js';
 import ReviewsSection from './ReviewsSection.js';
 import RoomSection from './RoomSection.js';
+import HotelSection from './HotelSection.js';
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -133,17 +134,6 @@ export default function AdminDashboard() {
     </div>
   );
 
-  const renderPlaceholderSection = (title) => (
-    <div className="content-section">
-      <div className="section-header">
-        <h1>{title}</h1>
-      </div>
-      <div className="placeholder-content">
-        <p>{title} section coming soon...</p>
-      </div>
-    </div>
-  );
-
   const renderMainContent = () => {
     switch (activeSection) {
       case 'users':
@@ -159,7 +149,7 @@ export default function AdminDashboard() {
           />
         );
       case 'hotels':
-        return renderPlaceholderSection('Hotels');
+        return <HotelSection />;
       case 'bookings':
         return <BookingsSection />;
       case 'reviews':
