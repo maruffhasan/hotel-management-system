@@ -6,6 +6,9 @@ import com.google.genai.Client;
 import com.google.genai.types.GenerateContentResponse;
 import com.marufhasan.hms.DTO.RoomDetailsDTO;
 import com.marufhasan.hms.model.Hotel;
+import com.marufhasan.hms.repository.HotelRepository;
+import com.marufhasan.hms.repository.room.RoomRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -24,35 +27,23 @@ public class ChatBotController {
 
     RestTemplate restTemplate = new RestTemplate();
 
-    private List<RoomDetailsDTO> getAllRooms() {
-        String check_in = LocalDate.now().toString();
-        String check_out = LocalDate.now().plusYears(1).toString();
-        String roomAPI = "http://localhost:8080/api/rooms/all?" + "check_in=" + check_in + "&check_out=" + check_out;
-        ResponseEntity<List<RoomDetailsDTO>> response = restTemplate.exchange(
-                roomAPI,
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<>() {}
-        );
+    @Autowired
+    RoomRepository roomRepository;
+    @Autowired
+    HotelRepository hotelRepository;
 
-        return response.getBody();
+    private List<RoomDetailsDTO> getAllRooms() {
+        return roomRepository.getRooms();
     }
 
     private Hotel getHotelDetails() {
-        String hotelApi = "http://localhost:8080/api/hotel/details";
-        ResponseEntity<Hotel> response = restTemplate.exchange(
-                 hotelApi,
-                 HttpMethod.GET,
-                 null,
-                 new ParameterizedTypeReference<>() {}
-         );
-         return response.getBody();
+        return hotelRepository.getDetails();
     }
 
 
     @GetMapping("/chatbot")
     public String chatbot(@RequestParam String qns) throws JsonProcessingException {
-        // The client gets the API key from the environment variable `GOOGLE_API_KEY`.
+            // The client gets the API key from the environment variable `GOOGLE_API_KEY`.
 
         ObjectMapper objectMapper = new ObjectMapper();
 
