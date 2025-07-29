@@ -70,7 +70,7 @@ public class UserRepository {
     }
 
     public List<User> getAllUsers() {
-        String sql = "SELECT email, first_name, last_name, role FROM users";
+        String sql = "SELECT email, first_name, last_name, role, enabled FROM users";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
     }
 
