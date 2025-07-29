@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { getAllRooms } from '../utils/apiHelpers';
 import styles from '../styles/RoomSection.module.css';
 import RoomEdit from './RoomEdit';
+import RoomAdd from './RoomAdd'; // Added import for RoomAdd
 
 const RoomSection = () => {
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editingRoomId, setEditingRoomId] = useState(null);
+  const [isAddingRoom, setIsAddingRoom] = useState(false); // Added state for adding room
   const [formData, setFormData] = useState({
         room_class_id: '',
         bed_type_id: '',
@@ -44,8 +46,14 @@ const RoomSection = () => {
     });
   };
 
+  // Added function to handle adding new room
+  const handleAddRoom = () => {
+    setIsAddingRoom(true);
+  };
+
   const handleBackToRoomSection = () => {
     setEditingRoomId(null);
+    setIsAddingRoom(false); // Added to handle back from add room
     // Refetch rooms to show any updates
     fetchRooms();
   };
@@ -62,6 +70,15 @@ const RoomSection = () => {
         return styles.statusDefault;
     }
   };
+
+  // Added condition to show RoomAdd component
+  if (isAddingRoom) {
+    return (
+      <RoomAdd 
+        onBack={handleBackToRoomSection}
+      />
+    );
+  }
 
   if (editingRoomId) {
     return (
@@ -96,8 +113,16 @@ const RoomSection = () => {
     <div className={styles.container}>
       <div className={styles.header}>
         <h2 className={styles.title}>Room Management</h2>
-        <div className={styles.roomCount}>
-          Total Rooms: {rooms.length}
+        <div className={styles.headerActions}> {/* Added container for header actions */}
+          <div className={styles.roomCount}>
+            Total Rooms: {rooms.length}
+          </div>
+          <button 
+            className={styles.addButton} 
+            onClick={handleAddRoom}
+          >
+             Add New Room
+          </button>
         </div>
       </div>
 
@@ -147,10 +172,6 @@ const RoomSection = () => {
                   <span className={styles.priceLabel}>Base Price:</span>
                   <span className={styles.priceValue}>${room.base_price}</span>
                 </div>
-                <div className={styles.bedPrice}>
-                  <span className={styles.priceLabel}>Per Bed:</span>
-                  <span className={styles.priceValue}>${room.price_per_bed}</span>
-                </div>
               </div>
 
               {room.features && room.features.length > 0 && (
@@ -188,6 +209,12 @@ const RoomSection = () => {
       {rooms.length === 0 && (
         <div className={styles.emptyState}>
           <p>No rooms found.</p>
+          <button 
+            className={styles.addButton} 
+            onClick={handleAddRoom}
+          >
+            + Add Your First Room
+          </button>
         </div>
       )}
     </div>

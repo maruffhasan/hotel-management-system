@@ -218,3 +218,27 @@ export const roomEdit = async (roomId, formData) => {
     throw err;
   }
 };
+
+export const roomAdd = async (formData) => {
+  const token = localStorage.getItem('token');
+  
+  try {
+    const response = await fetch(`${API}/api/rooms/add`, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    });
+    
+    if (!response.ok) {
+      throw new Error("Add failed");
+    }
+    
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.error("Update error:", err);
+    throw err;
+  }
+};

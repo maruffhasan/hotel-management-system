@@ -268,3 +268,47 @@
   color: #666;
   font-size: 16px;
 }
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.addButton {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.addButton:hover {
+  background-color: #0056b3;
+}
+
+.addButton:active {
+  background-color: #004085;
+}
+
+.addButton:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+/* Style for empty state button */
+.emptyState .addButton {
+  margin-top: 16px;
+  background-color: #28a745;
+}
+
+.emptyState .addButton:hover {
+  background-color: #218838;
+}
