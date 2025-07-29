@@ -7,6 +7,7 @@ import '../styles/AdminDashboard.css';
 import RoomClassesSection from './RoomClassesSection.js';
 import RoomFeaturesSection from './RoomFeaturesSection.js';
 import ReviewsSection from './ReviewsSection.js';
+import RoomSection from './RoomSection.js';
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -171,7 +172,7 @@ export default function AdminDashboard() {
       case 'reviews':
         return <ReviewsSection />;
       case 'rooms':
-        return renderPlaceholderSection('Rooms');
+        return <RoomSection />;
       case 'roomStatuses':
         return renderPlaceholderSection('Room Statuses');
       case 'roomClasses':
