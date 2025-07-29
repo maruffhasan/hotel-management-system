@@ -329,6 +329,7 @@ public class RoomRepository {
                 JOIN room_class rc ON r.room_class_id = rc.id
                 JOIN bed_type bt ON r.bed_type_id = bt.id
                 JOIN room_status rs ON r.room_status_id = rs.id
+                ORDER BY r.id
                 """;
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             byte[] imageBytes = rs.getBytes("image");
