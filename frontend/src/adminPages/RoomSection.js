@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { getAllRooms } from '../utils/apiHelpers';
 import styles from '../styles/RoomSection.module.css';
+import RoomEdit from './RoomEdit';
 
 const RoomSection = () => {
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [editingRoomId, setEditingRoomId] = useState(null);
 
   useEffect(() => {
     fetchRooms();
@@ -26,10 +28,13 @@ const RoomSection = () => {
   };
 
   const handleEdit = (roomId) => {
-    // Handle edit functionality - you can implement navigation to edit form
-    console.log('Edit room with ID:', roomId);
-    // Example: navigate to edit page
-    // navigate(`/admin/rooms/edit/${roomId}`);
+    setEditingRoomId(roomId);
+  };
+
+  const handleBackToRoomSection = () => {
+    setEditingRoomId(null);
+    // Refetch rooms to show any updates
+    fetchRooms();
   };
 
   const getStatusColor = (status) => {
@@ -44,6 +49,15 @@ const RoomSection = () => {
         return styles.statusDefault;
     }
   };
+
+  if (editingRoomId) {
+    return (
+      <RoomEdit 
+        roomId={editingRoomId} 
+        onBack={handleBackToRoomSection}
+      />
+    );
+  }
 
   if (loading) {
     return (

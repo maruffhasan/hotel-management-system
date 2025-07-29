@@ -6,32 +6,31 @@ export async function loginUser(email, password) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
   });
-   if (!res.ok) {
+  if (!res.ok) {
     const text = await res.text();  // get plain text response
-    const error=new Error(text || 'LOGIN ERROR');
-    error.status=res.status;
+    const error = new Error(text || 'LOGIN ERROR');
+    error.status = res.status;
     throw error;
   }
 
   return await res.json();
 }
 
-export async function signupUser(first_name,last_name,email,password)
-{
-    const res= await fetch(`${API}/api/auth/user-sign-up`,{
+export async function signupUser(first_name, last_name, email, password) {
+  const res = await fetch(`${API}/api/auth/user-sign-up`, {
     method: "POST",
-    headers: {"Content-Type":  "application/json"},
-    body: JSON.stringify({first_name, last_name, email, password}),
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ first_name, last_name, email, password }),
   });
 
-  if(!res.ok) {
+  if (!res.ok) {
     const text = await res.text();
-    const error=new Error(text || 'SIGNUP ERROR');
-    error.status=res.status;
+    const error = new Error(text || 'SIGNUP ERROR');
+    error.status = res.status;
     throw error;
   }
 
-  return await loginUser(email,password);
+  return await loginUser(email, password);
 }
 
 export async function getRooms(filters) {
@@ -65,14 +64,14 @@ export async function getFeatures() {
   return res.json();
 }
 
- export async function getAddon() {
+export async function getAddon() {
   const res = await fetch(`${API}/api/addon/all`);
   return res.json();
- }
+}
 
 export async function bookRoom(data) {
   const token = localStorage.getItem("token");
-  
+
   const response = await fetch(`${API}/api/booking/add`, {
     method: "POST",
     headers: {
@@ -81,12 +80,12 @@ export async function bookRoom(data) {
     },
     body: JSON.stringify(data)
   });
-  
+
   if (!response.ok) {
     throw new Error(`Booking failed: ${response.status} ${response.statusText}`);
   }
-  
-    return await response.text();
+
+  return await response.text();
 }
 
 export async function askChatbot(qns) {
@@ -101,29 +100,29 @@ export async function getRoomById(id) {
 }
 
 export async function getBookingDetailsUser() {
-  const token=localStorage.getItem("token");
+  const token = localStorage.getItem("token");
   const res = await fetch(`${API}/api/user/booking`, {
-    method : "GET",
-    headers : {
+    method: "GET",
+    headers: {
       "Authorization": `Bearer ${token}`,
       "Content-type": "application/json"
     },
- })
+  })
 
- if(!res.ok) 
+  if (!res.ok)
     throw new Error(`Couldnt fetch details booking for the user: ${response.status} `);
-  
- return await res.json();
+
+  return await res.json();
 };
 
 export async function verifyBooking(bookingId) {
-  const token=localStorage.getItem("token");
+  const token = localStorage.getItem("token");
   try {
     const response = await fetch(`${API}/api/booking/details/${bookingId.trim()}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-         'Authorization': `Bearer ${token}`
+        'Authorization': `Bearer ${token}`
       }
     });
 
@@ -142,9 +141,19 @@ export async function verifyBooking(bookingId) {
   }
 };
 
-export const getRoomClass= async() =>{
-    const roomClassesResponse = await fetch(`${API}/api/room-class/all`);
-    return await roomClassesResponse.json();
+export const getRoomClass = async () => {
+  const roomClassesResponse = await fetch(`${API}/api/room-class/all`);
+  return await roomClassesResponse.json();
+};
+
+export const getBedType = async () => {
+  const response = await fetch(`${API}/api/bed-type/all`);
+  return await response.json();
+};
+
+export const getRoomStatus = async () => {
+  const response = await fetch(`${API}/api/room-status/all`);
+  return await response.json();
 };
 
 // New review-related API functions
@@ -157,7 +166,7 @@ export async function checkReviewEligibility(roomId) {
       "Content-Type": "application/json"
     }
   });
-  
+
   return res.ok;
 }
 
@@ -175,13 +184,37 @@ export async function postReview(roomId, rating, comment) {
       comment: comment
     })
   });
-  
+
   if (!res.ok) {
     const text = await res.text();
     const error = new Error(text || 'Failed to post review');
     error.status = res.status;
     throw error;
   }
-  
+
   return await res.text();
-}
+};
+
+export const roomEdit = async (roomId, formData) => {
+  const token = localStorage.getItem('token');
+  
+  try {
+    const response = await fetch(`${API}/api/rooms/${roomId}`, {
+      method: 'PUT',
+      body: formData,
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    });
+    
+    if (!response.ok) {
+      throw new Error("Update failed");
+    }
+    
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.error("Update error:", err);
+    throw err;
+  }
+};
