@@ -278,7 +278,7 @@ export default function RoomDetails() {
                       Status
                     </span>
                     <span className={`status-badge ${getStatusBadgeClass(room.room_status_name)}`}>
-                      {room.room_status_name || "Available"}
+                      {"Available"}
                     </span>
                   </div>
                 </div>
@@ -444,8 +444,6 @@ export default function RoomDetails() {
 
           {/* Action Buttons */}
           <div className="room-actions">
-            {isAvailable ? (
-              <>
                 <button
                   className={`btn ${selected ? 'btn-danger' : 'btn-primary'} book-btn`}
                   onClick={() => toggleSelect(parseInt(room.id))}
@@ -465,14 +463,6 @@ export default function RoomDetails() {
                     View Cart
                   </button>
                 )}
-              </>
-            ) : (
-              <button className="btn btn-disabled" disabled>
-                <span className="btn-icon">❌</span>
-                Room Not Available
-              </button>
-            )}
-
             <button
               className="btn btn-outline"
               onClick={() => navigate(-1)}

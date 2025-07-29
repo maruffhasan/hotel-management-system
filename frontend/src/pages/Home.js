@@ -215,7 +215,7 @@ export default function Home() {
                   
                   <div className={styles.featurePrice}>
                     <span className={styles.priceAmount}>{formatPrice(feature.price_per_use)}</span>
-                    {feature.price > 0 && <span className={styles.pricePeriod}>per use</span>}
+                    {feature.price_per_use > 0 && <span className={styles.pricePeriod}>per use</span>}
                   </div>
                 </div>
               ))}
