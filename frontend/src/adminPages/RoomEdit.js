@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getRoomClass, getBedType, getRoomStatus, roomEdit } from '../api/index';
 import styles from '../styles/RoomEdit.module.css';
 
-const RoomEdit = ({ roomId, onBack }) => {
+const RoomEdit = ({ roomId, sentFormData, onBack }) => {
     const [formData, setFormData] = useState({
         room_class_id: '',
         bed_type_id: '',
@@ -10,7 +10,6 @@ const RoomEdit = ({ roomId, onBack }) => {
         floor: 1,
         bed_count: 1
     });
-
     const [image, setImage] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
     const [roomClasses, setRoomClasses] = useState([]);
@@ -22,6 +21,7 @@ const RoomEdit = ({ roomId, onBack }) => {
 
     useEffect(() => {
         fetchAllData();
+        setFormData(sentFormData);
     }, []);
 
     const fetchAllData = async () => {

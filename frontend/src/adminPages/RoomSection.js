@@ -8,6 +8,13 @@ const RoomSection = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editingRoomId, setEditingRoomId] = useState(null);
+  const [formData, setFormData] = useState({
+        room_class_id: '',
+        bed_type_id: '',
+        room_status_id: '',
+        floor: 1,
+        bed_count: 1
+    });
 
   useEffect(() => {
     fetchRooms();
@@ -27,8 +34,14 @@ const RoomSection = () => {
     }
   };
 
-  const handleEdit = (roomId) => {
+  const handleEdit = (roomId,room_class_id,bed_type_id,room_status_id,floor,bed_count) => {
     setEditingRoomId(roomId);
+    setFormData({room_class_id,
+      bed_type_id,
+      room_status_id,
+      floor,
+      bed_count
+    });
   };
 
   const handleBackToRoomSection = () => {
@@ -54,6 +67,7 @@ const RoomSection = () => {
     return (
       <RoomEdit 
         roomId={editingRoomId} 
+        sentFormData={formData}
         onBack={handleBackToRoomSection}
       />
     );
@@ -161,7 +175,7 @@ const RoomSection = () => {
               <div className={styles.cardActions}>
                 <button 
                   className={styles.editButton}
-                  onClick={() => handleEdit(room.id)}
+                  onClick={() => handleEdit(room.id,room.room_class_id,room.bed_type_id,room.room_status_id,room.floor,room.bed_count)}
                 >
                   Edit Room
                 </button>
