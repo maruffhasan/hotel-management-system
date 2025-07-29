@@ -331,3 +331,30 @@ ALTER TABLE room_class_feature
 
 ALTER TABLE users
     ADD COLUMN enabled BOOLEAN DEFAULT TRUE;
+
+ALTER TABLE booking
+    ADD COLUMN success BOOLEAN DEFAULT TRUE;
+
+
+CREATE OR REPLACE FUNCTION trg_disable_on_failed_bookings()
+RETURNS TRIGGER AS $$
+DECLARE
+    failed_count INT;
+BEGIN
+    SELECT COUNT(*) INTO failed_count
+    FROM booking
+    WHERE user_email = NEW.user_email AND success = FALSE;
+
+    IF failed_count >= 3 THEN
+    UPDATE users SET enabled = FALSE WHERE email = NEW.user_email;
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_fail_block_user
+    AFTER INSERT ON booking
+    FOR EACH ROW
+    WHEN (NEW.success = FALSE)
+    EXECUTE FUNCTION trg_disable_on_failed_bookings();
