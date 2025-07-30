@@ -96,4 +96,9 @@ public class RoomController {
     public ResponseEntity<?> getAll(){
         return new ResponseEntity<>(roomService.getRooms(), HttpStatus.OK);
     }
+
+    @GetMapping("/all/get")
+    public ResponseEntity<?> getAllGet(){
+        return new ResponseEntity<>(roomService.getRooms(), HttpStatus.OK);
+    }
 }
