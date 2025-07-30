@@ -27,7 +27,7 @@ export default function Login({ setRole }) {
     catch(err)
     {
         const status = err.status || null;
-        const message = getErrorMessageByStatus(status);
+        const message = await getErrorMessageByStatus(status);
         setErrorMessage(message);
         setShowError(true);
     }
