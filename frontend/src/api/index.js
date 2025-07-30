@@ -38,7 +38,7 @@ export async function getRooms(filters) {
 
   for (const key in filters) {
     if (key === "feature_ids" && Array.isArray(filters[key])) {
-      filters[key].forEach((id) => params.append("feature_id", id)); // ✅ CORRECT: not "feature_ids"
+      filters[key].forEach((id) => params.append("feature_id", id));
     } else if (filters[key] !== "" && filters[key] !== null && filters[key] !== undefined) {
       params.append(key, filters[key]);
     }
@@ -72,6 +72,7 @@ export async function getAddon() {
 export async function bookRoom(data) {
   const token = localStorage.getItem("token");
 
+  //data.success=false;
   const response = await fetch(`${API}/api/booking/add`, {
     method: "POST",
     headers: {
@@ -197,7 +198,7 @@ export async function postReview(roomId, rating, comment) {
 
 export const roomEdit = async (roomId, formData) => {
   const token = localStorage.getItem('token');
-  
+
   try {
     const response = await fetch(`${API}/api/rooms/${roomId}`, {
       method: 'PUT',
@@ -206,11 +207,11 @@ export const roomEdit = async (roomId, formData) => {
         "Authorization": `Bearer ${token}`
       }
     });
-    
+
     if (!response.ok) {
       throw new Error("Update failed");
     }
-    
+
     const data = await response.json();
     return data;
   } catch (err) {
@@ -221,7 +222,7 @@ export const roomEdit = async (roomId, formData) => {
 
 export const roomAdd = async (formData) => {
   const token = localStorage.getItem('token');
-  
+
   try {
     const response = await fetch(`${API}/api/rooms/add`, {
       method: 'POST',
@@ -230,11 +231,11 @@ export const roomAdd = async (formData) => {
         "Authorization": `Bearer ${token}`
       }
     });
-    
+
     if (!response.ok) {
       throw new Error("Add failed");
     }
-    
+
     const data = await response.json();
     return data;
   } catch (err) {
@@ -246,37 +247,36 @@ export const roomAdd = async (formData) => {
 export const getHotelInfo = async () => {
   const response = await fetch(`${API}/api/hotel/details`);
 
-  try{
-    if(!response.ok)
-        throw new Error("Error fetching hotel info");
+  try {
+    if (!response.ok)
+      throw new Error("Error fetching hotel info");
 
     return await response.json();
   }
-  catch(err)
-  {
+  catch (err) {
     console.log(err);
     throw err;
   }
 };
 
-export const editHotelInfo = async(formData) => {
+export const editHotelInfo = async (formData) => {
   const token = localStorage.getItem('token');
-  const response = await fetch(`${API}/api/hotel/edit`,{
+  const response = await fetch(`${API}/api/hotel/edit`, {
     method: 'PUT',
     body: JSON.stringify(formData),
     headers: {
-      "Authorization" :`Bearer ${token}`,
+      "Authorization": `Bearer ${token}`,
       "Content-Type": "application/json"
     }
   });
 
-  try{
-    if(!response.ok)
-        throw new Error("Error editing hotel information");
-    
+  try {
+    if (!response.ok)
+      throw new Error("Error editing hotel information");
+
     return await response.json();
   }
-  catch(err){
+  catch (err) {
     console.log(err);
     throw err;
   }
@@ -285,12 +285,32 @@ export const editHotelInfo = async(formData) => {
 export const deleteReview = async (reviewId) => {
   const response = fetch(`${API}/api/review/delete/${reviewId}`);
 
-  try{
-    if(!response.ok)
-        throw new Error("Review deletion failed");
+  try {
+    if (!response.ok)
+      throw new Error("Review deletion failed");
   }
-  catch(err)
-  {
+  catch (err) {
     console.log(err);
   }
 };
+
+export const toggleBan = async (userInfo) => {
+  const params = new URLSearchParams();
+  params.append("email",userInfo.email);
+  const token = localStorage.getItem('token');
+  const response = fetch(`${API}/api/user/disable?${params.toString()}`, {
+    method: 'PUT',
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json"
+    }
+  });
+
+  try {
+    if (!response.ok)
+      throw new Error("Error toggling ban");
+  }
+  catch (err) {
+    console.log(err);
+  }
+};  

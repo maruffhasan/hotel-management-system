@@ -134,46 +134,48 @@ export default function AdminDashboard() {
     </div>
   );
 
-  const renderMainContent = () => {
-    switch (activeSection) {
-      case 'users':
-        return (
-          <UsersSection
-            users={users}
-            showAddUserModal={showAddUserModal}
-            setShowAddUserModal={setShowAddUserModal}
-            newUser={newUser}
-            setNewUser={setNewUser}
-            handleAddUser={handleAddUser}
-            loading={loading}
-          />
-        );
-      case 'hotels':
-        return <HotelSection />;
-      case 'bookings':
-        return <BookingsSection />;
-      case 'reviews':
-        return <ReviewsSection />;
-      case 'rooms':
-        return <RoomSection />;
-      case 'roomClasses':
-        return <RoomClassesSection />;
-      case 'roomFeatures':
-        return <RoomFeaturesSection />;
-      default:
-        return (
-          <UsersSection
-            users={users}
-            showAddUserModal={showAddUserModal}
-            setShowAddUserModal={setShowAddUserModal}
-            newUser={newUser}
-            setNewUser={setNewUser}
-            handleAddUser={handleAddUser}
-            loading={loading}
-          />
-        );
-    }
-  };
+const renderMainContent = () => {
+  switch (activeSection) {
+    case 'users':
+      return (
+        <UsersSection
+          users={users}
+          showAddUserModal={showAddUserModal}
+          setShowAddUserModal={setShowAddUserModal}
+          newUser={newUser}
+          setNewUser={setNewUser}
+          handleAddUser={handleAddUser}
+          loading={loading}
+          onUserUpdate={fetchUsers} // Add this line to refresh users after ban/unban
+        />
+      );
+    case 'hotels':
+      return <HotelSection />;
+    case 'bookings':
+      return <BookingsSection />;
+    case 'reviews':
+      return <ReviewsSection />;
+    case 'rooms':
+      return <RoomSection />;
+    case 'roomClasses':
+      return <RoomClassesSection />;
+    case 'roomFeatures':
+      return <RoomFeaturesSection />;
+    default:
+      return (
+        <UsersSection
+          users={users}
+          showAddUserModal={showAddUserModal}
+          setShowAddUserModal={setShowAddUserModal}
+          newUser={newUser}
+          setNewUser={setNewUser}
+          handleAddUser={handleAddUser}
+          loading={loading}
+          onUserUpdate={fetchUsers} // Add this line here too
+        />
+      );
+  }
+};
 
   return (
     <div className="admin-dashboard">

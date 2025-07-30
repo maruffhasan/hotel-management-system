@@ -384,3 +384,38 @@
     margin: 20px;
   }
 }
+
+/* Add these styles to your existing AdminDashboard.css */
+
+/* Status badge styles */
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.status-badge.active {
+  background-color: #27ae60;
+  color: white;
+}
+
+.status-badge.inactive {
+  background-color: #e74c3c;
+  color: white;
+}
+
+/* Update table layout for 6 columns (including Status and Actions) */
+.users-table .table-header,
+.users-table .table-row {
+  grid-template-columns: 2fr 1.2fr 1.2fr 1fr 1fr 1fr;
+}
+
+/* Responsive updates for mobile */
+@media (max-width: 768px) {
+  .users-table .table-header,
+  .users-table .table-row {
+    grid-template-columns: 1fr;
+  }
+}
