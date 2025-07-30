@@ -23,14 +23,15 @@ public class BookingRepository {
     private JdbcTemplate jdbcTemplate;
 
     public void save(BookingDTO bookingDTO) {
-        String sql = "INSERT INTO booking (id, user_email, check_in, check_out, booking_date, price) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO booking (id, user_email, check_in, check_out, booking_date, price, success) VALUES (?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql,
                 bookingDTO.getId(),
                 bookingDTO.getEmail(),
                 bookingDTO.getCheck_in(),
                 bookingDTO.getCheck_out(),
                 bookingDTO.getBooking_date(),
-                bookingDTO.getPrice());
+                bookingDTO.getPrice(),
+                bookingDTO.getSuccess());
     }
 
     public List<Booking> getLogs(LocalDate from, LocalDate to) {

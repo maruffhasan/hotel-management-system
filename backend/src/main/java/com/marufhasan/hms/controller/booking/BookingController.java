@@ -24,6 +24,9 @@ public class BookingController {
     @PostMapping("/add")
     public ResponseEntity<?> addBooking(@RequestBody BookingDTO bookingDTO, Authentication auth){
         bookingDTO.setEmail(auth.getName());
+        if (bookingDTO.getSuccess() == null){
+            bookingDTO.setSuccess(Boolean.TRUE);
+        }
         return new ResponseEntity<>(bookingService.add(bookingDTO), HttpStatus.CREATED);
     }
 

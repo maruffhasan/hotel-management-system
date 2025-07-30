@@ -34,4 +34,5 @@ public class BookingDTO extends Booking {
     LocalDate check_in;
     LocalDate check_out;
     Double price;
+    private Boolean success;
 }
