@@ -69,7 +69,7 @@ const UsersSection = ({
           className="btn btn-primaryy"
           onClick={() => setShowAddUserModal(true)}
         >
-          Add New
+          Add New Admin
         </button>
       </div>
       

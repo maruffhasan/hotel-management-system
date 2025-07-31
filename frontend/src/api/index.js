@@ -48,6 +48,12 @@ export async function getRooms(filters) {
   return res.json();
 }
 
+export async function getAllRoomsNew() {
+  const res = await fetch(`${API}/api/rooms/all/get`);
+  return res.json();
+  
+}
+
 
 export async function getOptions() {
   const [bed, feature, roomClass, status] = await Promise.all([

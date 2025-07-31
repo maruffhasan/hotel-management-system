@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { getRooms, getHotelInfo, getFeatures } from "../api";
+import { getAllRoomsNew, getHotelInfo, getFeatures } from "../api";
 import { formatPrice, getRoomIcon } from "../utils/utility";
 import styles from "../styles/Home.module.css";
 
@@ -49,11 +49,13 @@ export default function Home() {
         checkOutDate.setDate(checkOutDate.getDate() + 1); // 1 day later
         const checkOut = checkOutDate.toISOString().split("T")[0];
 
-        const roomsData = await getRooms({
-          check_in: checkIn,
-          check_out: checkOut
-        });
+        // const roomsData = await getRooms({
+        //   check_in: checkIn,
+        //   check_out: checkOut
+        // });
+        const roomsData = await getAllRoomsNew();
         setRooms(roomsData);
+        console.log(rooms)
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -261,7 +263,7 @@ export default function Home() {
                   )}
 
                   <div className={styles.cardActions}>
-                    <Link to={`/room/${room.id}`} className={styles.btnLink}>
+                    <Link to={`/room2/${room.id}`} className={styles.btnLink}>
                       <button className={styles.editButton}>
                         View Details
                       </button>
